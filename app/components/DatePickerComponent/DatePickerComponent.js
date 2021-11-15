@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Button, TextInput } from "react-native-paper";
-import DatePicker from "react-native-date-picker";
+import React, { useState } from "react";
+import { TextInput } from "react-native-paper";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 export default DatePickerComponent = (props) => {

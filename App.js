@@ -4,15 +4,17 @@ import NavigationMainContainer from "./app/components/Navigation/NavigationMainC
 import LoginScreen from "./app/screens/LoginScreen";
 import { Provider as PaperProvider } from "react-native-paper";
 import RegisterScreen from "./app/screens/RegisterScreen";
-import { getValueFor } from "./app/utils/tokenStorage";
+import { getMyData, getValueFor } from "./app/utils/tokenStorage";
 
 export default function App() {
   const [userSecret, setUserSecret] = useState(false);
   const [login, setLoginScreen] = useState(true);
 
   useEffect(async () => {
-    let token = await getValueFor("access_token");
-    setUserSecret(token);
+    if (await getMyData()) {
+      let token = await getValueFor("access_token");
+      setUserSecret(token);
+    }
   }, [login]);
 
   if (userSecret) return <NavigationMainContainer />;

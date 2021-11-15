@@ -7,25 +7,22 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { LineChart } from "react-native-chart-kit";
-import Period from "../components/Period/Period";
-import {
-  getChartData,
-  getChartPeriod,
-  groupDataByPeriod,
-} from "../utils/chartLabels";
+import { getChartPeriod, groupDataByPeriod } from "../utils/chartLabels";
 import FinanceDetails from "../components/FinanseDetails/FinanceDetails";
 import { getMyData } from "../utils/tokenStorage";
 import { getBudgetData } from "../utils/budgetData";
 
-const SummaryScreen = () => {
+const SummaryScreen = (props) => {
+  const { period } = props;
   const [expanded, setExpanded] = useState(true);
-  const [period, setPeriod] = useState("month");
-  const [chartLabels, setChartLabels] = useState(getChartPeriod("year"));
+  // const [period, setPeriod] = useState("month");
+  const [chartLabels, setChartLabels] = useState("month");
   const [userIncome, setUserIncome] = useState([]);
   const [userExpense, setUserExpense] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(async () => {
+    console.log(period);
     await periodSwitch();
   }, [period]);
 
@@ -36,21 +33,28 @@ const SummaryScreen = () => {
       //Getting Income and Spent details
       let expenses = await getBudgetData(period, "expense");
       let income = await getBudgetData(period, "income");
+      let userExpenses = await groupDataByPeriod(
+        expenses,
+        user?.currency?.symbol
+      );
+      let userIncomes = await groupDataByPeriod(income, user?.currency?.symbol);
       //here we will get period Data
-      setUserExpense(await groupDataByPeriod(expenses, user?.currency?.symbol));
-      setUserIncome(await groupDataByPeriod(income, user?.currency?.symbol));
-      let periods = getChartPeriod(period, userIncome, userExpense);
+      setUserExpense(userExpenses);
+      setUserIncome(userIncomes);
+      let periods = getChartPeriod(period, userIncomes, userExpenses);
       setChartLabels(periods);
 
       setIsLoading(false);
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handlePress = () => setExpanded(!expanded);
 
   return (
     <ScrollView>
-      <Period setPeriod={setPeriod} period={period} />
+      {/* <Period setPeriod={setPeriod} period={period} /> */}
       {!isLoading ? (
         <>
           <View>

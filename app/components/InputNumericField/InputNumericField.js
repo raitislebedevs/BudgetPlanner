@@ -3,7 +3,7 @@ import { TextInput } from "react-native-paper";
 import { formatNumber } from "../../utils/standaloneFunctions";
 
 const InputNumericField = (props) => {
-  const { handleOnChange, id, label } = props;
+  const { handleOnChange, id, label, currency } = props;
   const [numericValue, setNumericValue] = useState("");
 
   const handleOnChangeNumber = (event) => {
@@ -31,7 +31,7 @@ const InputNumericField = (props) => {
       value = 0;
     }
 
-    setNumericValue(formatNumber(value));
+    setNumericValue(formatNumber(value, currency));
 
     handleOnChange({
       target: { value, id },

@@ -11,10 +11,12 @@ import { TextInput, Button, Switch } from "react-native-paper";
 import { handleGetCurrencies } from "../../utils/currencyData";
 import { getMyData } from "../../utils/tokenStorage";
 import userInfoServices from "../../services/userInfoServices";
+import userServices from "../../services/userServices";
 
 const LeftModal = (props) => {
   const { isModalVisible, setModalVisible } = props;
   const [user, setUser] = useState(false);
+  const [invitePerson, setInvitePerson] = useState("");
   const [currency, setCurrency] = useState("");
   const [items, setItems] = useState([]);
   const [isEnabled, setIsEnabled] = useState(false);
@@ -29,8 +31,7 @@ const LeftModal = (props) => {
       let payload = {
         currency: event.value,
       };
-      const { data } = await userInfoServices.UPDATE(user?.id, payload);
-      console.log(data);
+      await userInfoServices.UPDATE(user?.id, payload);
     } catch (error) {
       console.log(error);
     }
@@ -39,12 +40,88 @@ const LeftModal = (props) => {
   useEffect(async () => {
     let currencyData = await handleGetCurrencies();
     setItems(currencyData);
-    setUser(await getMyData());
+    await refreshUser();
   }, []);
+
+  const refreshUser = async () => {
+    setUser(await getMyData());
+  };
 
   useEffect(async () => {
     if (user) setCurrency(user?.currency?.id);
   }, [user]);
+
+  const removeInvite = async (personId) => {
+    try {
+      console.log("Prior filter invites", user?.invites);
+      let invites = user?.invites.filter((person) => personId != person.id);
+      console.log("Filtered invites", invites);
+
+      let payload = {
+        invites,
+      };
+      console.log("Payload", payload);
+      await userInfoServices.UPDATE(user?.id, payload);
+      await refreshUser();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const acceptInvite = async (userId, personId) => {
+    try {
+      console.log("Prior filter invites", user?.invites);
+
+      let linkedUsers = [];
+      user?.linkedUsers.forEach((person) => {
+        linkedUsers.push(person?.id);
+      });
+      linkedUsers.push(userId);
+      let invites = user?.invites.filter((person) => personId != person.id);
+
+      console.log("Filtered invites", linkedUsers);
+
+      let payload = {
+        linkedUsers,
+        invites,
+      };
+      console.log("Payload", payload);
+      await userInfoServices.UPDATE(user?.id, payload);
+      await refreshUser();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const sendInvatation = async () => {
+    try {
+      if (invitePerson) {
+        let invites = [];
+        let filter = { email: invitePerson };
+        let person = await userServices.FIND(filter);
+        console.log(person);
+        if (person.data.length == 0) {
+          return;
+        }
+        const userInfoData = person?.data[0].userInfo;
+        userInfoData?.invites.forEach((person) => {
+          invites.push(person?.id);
+        });
+
+        let data = await getMyData();
+        invites.push(data.id);
+        let payload = {
+          invites,
+        };
+        console.log(payload);
+        console.log(userInfoData.id);
+
+        await userInfoServices.UPDATE(userInfoData.id, payload);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <Modal
@@ -103,7 +180,7 @@ const LeftModal = (props) => {
           </View>
         )}
 
-        {user?.invites && (
+        {user?.invites?.length > 0 && (
           <View style={styles.marginTop}>
             <Text style={styles.subText}>Invitations</Text>
 
@@ -113,17 +190,32 @@ const LeftModal = (props) => {
                   <Text
                     style={styles.person}
                   >{`${person.firstName} ${person.lastName}`}</Text>
-                  <Button mode="contained">Yes</Button>
-                  <Button mode="contained">No</Button>
+                  <Button
+                    mode="contained"
+                    onPress={() => acceptInvite(person.userId, person.id)}
+                  >
+                    Yes
+                  </Button>
+                  <Button
+                    mode="contained"
+                    onPress={() => removeInvite(person.id)}
+                  >
+                    No
+                  </Button>
                 </View>
               );
             })}
           </View>
         )}
         <View style={styles.marginTop}>
-          <TextInput label={"Link User By Email"}></TextInput>
+          <TextInput
+            label={"Link User By Email"}
+            onChangeText={(value) => setInvitePerson(value)}
+          ></TextInput>
         </View>
-        <Button mode="contained">Send</Button>
+        <Button mode="contained" onPress={() => sendInvatation()}>
+          Send
+        </Button>
       </View>
       <View style={styles.marginTop}>
         <Text style={styles.subText}>Settings</Text>

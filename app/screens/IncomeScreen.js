@@ -20,7 +20,8 @@ import { getBudgetData } from "../utils/budgetData";
 import InputNumericField from "../components/InputNumericField/InputNumericField";
 import greenColorCodes from "../utils/greenColorCodes";
 
-const IncomeScreen = () => {
+const IncomeScreen = (props) => {
+  const { period } = props;
   const [categoryItems, setCategoryItems] = useState([
     {
       label: "Income",
@@ -67,10 +68,10 @@ const IncomeScreen = () => {
   const [incomeChartData, setIncomeChartData] = useState([]);
   const [userIncome, setUserIncome] = useState([]);
   const [icon, setIcon] = useState();
+  const [currencySymbol, setCurrencySymbol] = useState("$");
   const [errorText, setErrorText] = useState("");
   const [successText, setSuccessText] = useState("");
   const [inputValues, setInputValues] = useState({ ActivityDate: new Date() });
-  const [period, setPeriod] = useState("month");
 
   const handleOnChange = (event) => {
     const value = event?.target?.value ?? event?.value ?? event;
@@ -150,7 +151,9 @@ const IncomeScreen = () => {
     setIsLoading(true);
     let user = await getMyData();
     let income = await getBudgetData(period, "income");
+    setCurrencySymbol(user?.currency?.symbol);
     setUserIncome(await groupDataByPeriod(income, user?.currency?.symbol));
+    console.log(userIncome, incomeChartData);
     setIsLoading(false);
   };
 
@@ -162,7 +165,6 @@ const IncomeScreen = () => {
     let colors = greenColorCodes();
     let count = 0;
     let data = userIncome.map((sum) => {
-      //const rndInt = Math.floor(Math.random() * colors.length) + 1;
       count++;
       return {
         name: sum.label,
@@ -172,7 +174,6 @@ const IncomeScreen = () => {
         legendFontSize: 15,
       };
     });
-    console.log(data);
     setIncomeChartData(data);
   };
 
@@ -192,20 +193,23 @@ const IncomeScreen = () => {
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.text}>Income</Text>
-      <Period setPeriod={setPeriod} period={period} />
       {!isLoading ? (
-        <PieChart
-          data={incomeChartData}
-          width={screenWidth}
-          height={220}
-          chartConfig={chartConfig}
-          accessor={"amount"}
-          // backgroundColor={"transparent"}
-          paddingLeft={"15"}
-          // hasLegend= {false}
-          center={[0, 0]}
-          absolute
-        />
+        <>
+          {incomeChartData.length > 0 && (
+            <PieChart
+              data={incomeChartData}
+              width={screenWidth}
+              height={220}
+              chartConfig={chartConfig}
+              accessor={"amount"}
+              // backgroundColor={"transparent"}
+              paddingLeft={"15"}
+              // hasLegend= {false}
+              center={[0, 0]}
+              absolute
+            />
+          )}
+        </>
       ) : (
         <ActivityIndicator
           style={styles.loader}
@@ -271,6 +275,7 @@ const IncomeScreen = () => {
                   id={"ActivityAmount"}
                   handleOnChange={handleOnChange}
                   label={"Value"}
+                  currency={currencySymbol}
                 />
               </View>
               <View style={errorText ? styles.errorText : styles.successText}>
@@ -300,7 +305,7 @@ const IncomeScreen = () => {
 
       {!isLoading ? (
         <>
-          {userIncome.length > 0 && (
+          {userIncome?.length > 0 && (
             <FinanceDetails financeData={userIncome} title="Income Data" />
           )}
         </>

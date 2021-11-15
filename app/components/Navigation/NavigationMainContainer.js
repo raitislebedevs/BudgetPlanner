@@ -10,6 +10,8 @@ import ExpensesScreen from "../../screens/ExpensesScreen";
 import IncomeScreen from "../../screens/IncomeScreen";
 import BudgetScreen from "../../screens/BudgetScreen";
 import Header from "../Header/Header";
+import Period from "../Period/Period";
+import { useState } from "react";
 
 //Screen Names
 
@@ -21,9 +23,11 @@ const budgetScreen = "Budget";
 const Tab = createBottomTabNavigator();
 
 function NavigationMainContainer(props) {
+  const [period, setPeriod] = useState("month");
   return (
     <NavigationContainer>
       <Header />
+      <Period period={period} setPeriod={setPeriod} />
       <Tab.Navigator
         initialRouteName={summarryScren}
         screenOptions={({ route }) => ({
@@ -55,23 +59,23 @@ function NavigationMainContainer(props) {
         }}
       >
         <Tab.Screen
+          children={() => <SummaryScreen period={period} />}
           name={summarryScren}
-          component={SummaryScreen}
           options={{ headerShown: false }}
         />
         <Tab.Screen
+          children={() => <IncomeScreen period={period} />}
           name={incomeScreen}
-          component={IncomeScreen}
           options={{ headerShown: false }}
         />
         <Tab.Screen
+          children={() => <ExpensesScreen period={period} />}
           name={expensesScreen}
-          component={ExpensesScreen}
           options={{ headerShown: false }}
         />
         <Tab.Screen
+          children={() => <BudgetScreen period={period} />}
           name={budgetScreen}
-          component={BudgetScreen}
           options={{ headerShown: false }}
         />
       </Tab.Navigator>

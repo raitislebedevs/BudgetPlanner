@@ -34,15 +34,7 @@ export async function getMyData() {
     data.userId = user?.data?.id;
     return data;
   } catch (error) {}
-
-  // console.log("User Data", data);
-  // await save("user_data", JSON.stringify(data));
-  // let result = await SecureStore.getItemAsync("user_data");
-  // if (result) {
-  //   return JSON.parse(result);
-  // } else {
-  //   return false;
-  // }
+  return null;
 }
 
 const getRawLinkedUsers = (users) => {
@@ -61,7 +53,7 @@ const getRawLinkedUsers = (users) => {
 
 export async function getLinkedUsers() {
   let user = await getMyData();
-  let users = [user.id];
+  let users = [user.userId];
   user?.linkedUsers.forEach((person) => {
     users.push(person._id);
   });

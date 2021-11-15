@@ -15,7 +15,8 @@ import { budgetData } from "../demoData/summarydata";
 import { getChartPeriod } from "../utils/chartLabels";
 import { ProgressChart } from "react-native-chart-kit";
 
-function BudgetScreen({ navigation }) {
+const BudgetScreen = (props) => {
+  const { period } = props;
   const [categoryItems, setCategoryItems] = useState([
     {
       label: "Housing",
@@ -119,11 +120,8 @@ function BudgetScreen({ navigation }) {
     },
   ]);
   const [items, setItems] = useState([{ label: "Choose Category", value: "" }]);
-
   const [categoryValue, setCategoryValue] = useState("");
   const [categoryItemValue, setCategoryItemValue] = useState("");
-
-  const [period, setPeriod] = useState("month");
   const [chartLabels, setChartLabels] = useState(getChartPeriod("year"));
 
   useEffect(() => {
@@ -171,11 +169,7 @@ function BudgetScreen({ navigation }) {
 
   return (
     <ScrollView style={styles.container}>
-      <Text onPress={() => navigation.navigate("Home")} style={styles.text}>
-        Budget Plan
-      </Text>
-      <Period setPeriod={setPeriod} period={period} />
-
+      <Text style={styles.text}>Budget Plan</Text>
       <ProgressChart
         data={data}
         width={screenWidth}
@@ -228,6 +222,26 @@ function BudgetScreen({ navigation }) {
             </Picker>
           </View>
         </View>
+        <View style={styles.pickerContainer}>
+          <Picker
+            selectedValue={categoryValue}
+            style={{ height: 50, width: 150 }}
+            onValueChange={(itemValue, itemIndex) =>
+              setCategoryValue(itemValue)
+            }
+          >
+            <Picker.Item label="Category" value="" />
+            {categoryItems.map((item) => {
+              return (
+                <Picker.Item
+                  label={item.label}
+                  value={item.value}
+                  key={item.label}
+                />
+              );
+            })}
+          </Picker>
+        </View>
         <TextInput
           underlineColor="brown"
           label="Value"
@@ -249,7 +263,7 @@ function BudgetScreen({ navigation }) {
       />
     </ScrollView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   text: {

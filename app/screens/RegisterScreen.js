@@ -20,6 +20,22 @@ const RegisterScreen = (props) => {
     setIsLoading(true);
     try {
       setErrorText("");
+      if (
+        !inputValues.email ||
+        !inputValues.firstName ||
+        !inputValues.lastName ||
+        !inputValues.password
+      ) {
+        setErrorText("Please fill all of the details");
+        setIsLoading(false);
+        return;
+      }
+      if (inputValues.password != inputValues.confirmPassword) {
+        setErrorText("Passwords don't match");
+        setIsLoading(false);
+        return;
+      }
+
       let payload = {
         username: inputValues.email,
         email: inputValues.email,

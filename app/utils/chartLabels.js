@@ -1,21 +1,22 @@
 import moment from "moment";
-import { calculateMonth, calculateMonthDays } from "./budgetData";
 
 export const getChartPeriod = (period, income, expense) => {
   try {
+    console.log(period);
     let periodData = getPeriodData(period);
+    console.log("Period Data", periodData);
     const { periodLabel, periodDates } = periodData;
     let chartData = {
       xLabels: periodLabel,
       incomeData: getChartFunctionData(periodDates, income),
       expenseData: getChartFunctionData(periodDates, expense),
     };
-
     return chartData;
   } catch (error) {
     console.log(error);
   }
 };
+
 export const groupDataByPeriod = (budgetData, currency) => {
   try {
     let categorySummaryData = [];
@@ -76,9 +77,9 @@ export const groupDataByPeriod = (budgetData, currency) => {
 };
 
 const getChartFunctionData = (dates, data) => {
-  if (dates) {
+  if (dates && data) {
     let chartData = [];
-    dates.forEach((chartDate, dateIndex) => {
+    dates.forEach((chartDate, dateIndex, array) => {
       let chartPoint = 0;
       data.forEach((category) => {
         category?.data.forEach((categoryItem) => {
@@ -98,10 +99,17 @@ const getChartFunctionData = (dates, data) => {
               compareDate.isBetween(startDate, endDate) ||
               compareDate.isSame(startDate);
 
+            if (dateIndex === array.length - 1) {
+              result =
+                compareDate.isBetween(startDate, endDate) ||
+                compareDate.isSame(startDate) ||
+                compareDate.isSame(endDate);
+            }
+
             // console.log("*********************************************");
-            // console.log("Compare Date", compareDate);
-            // console.log("Start Data", startDate);
-            // console.log("End data", endDate);
+            console.log("Compare Date", compareDate);
+            console.log("Start Data", startDate);
+            console.log("End data", endDate);
             // console.log("RESULT:", result);
 
             // console.log(
@@ -120,7 +128,6 @@ const getChartFunctionData = (dates, data) => {
       chartData.push(chartPoint);
     });
 
-    console.log("Chart Data", chartData);
     return chartData;
   }
 };
@@ -136,7 +143,7 @@ const getPeriodData = (period) => {
     case "all":
       return formatAll();
     default:
-      break;
+      return formatAll();
   }
 };
 
@@ -153,65 +160,128 @@ const formatWeek = () => {
 };
 
 const formatMonth = () => {
-  let periodLabel = [];
-  let periodDates = [];
+  try {
+    let periodLabel = [];
+    let periodDates = [];
 
-  let days = calculateMonth();
+    let dayPeriods = getMonthDatePeriod();
+    let addDays = 0;
+    for (var i = 0; i < dayPeriods.length; i++) {
+      let monthLabels = `Week ${i + 1}`;
+      periodLabel.push(monthLabels);
 
-  let startOfMonth = moment().startOf("month");
-  let dayPeriods = getMonthDatePeriod(startOfMonth, days);
-  let currentDate = moment();
-  periodDates.push(startOfMonth);
+      let monthPeriod = moment()
+        .startOf("month")
+        .add(addDays, "days")
+        .format("YYYY-MM-DD");
+      periodDates.push(monthPeriod);
+      addDays = addDays + dayPeriods[i];
+    }
 
-  let period = Math.floor(days / 7);
-  let index = 4;
-  let count = 1;
-
-  for (index; index > 0; index--) {
-    let monthLabels = `Week ${count++}`;
-    periodLabel.push(monthLabels);
-
-    let monthDates = moment()
-      .subtract(index * period, "days")
+    let monthPeriod = moment()
+      .startOf("month")
+      .add(addDays - 1, "days")
       .format("YYYY-MM-DD");
-    periodDates.push(monthDates);
-  }
-  periodDates.push(currentDate);
-  console.log("Period Dates", periodDates);
-  return { periodLabel, periodDates };
-};
+    periodDates.push(monthPeriod);
 
-const getMonthDatePeriod = (dayOfWeek, days) => {
-  // let loopDays = days;
-  // let periodDays = [];
-  // const date = moment(dayOfWeek); // Thursday Feb 2015
-  // let weekOne = 8 - date.day();
-  // periodDays.push(weekOne);
-  // for (let i = 0; i < loopDays; i + 7) {
-  //   days = days - 7;
-  //   periodDays.push(7);
-  //   console.log(days);
-  // }
-  // periodDays.push(days);
-  // console.log('Period Days Split in weeks', periodDays);
+    // console.log("Period Dates", periodDates);
+    return { periodLabel, periodDates };
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 const formatYear = () => {
-  let year = [];
-  for (let index = 5; index >= 0; index--) {
-    let month = moment().subtract(index, "months").format("MMM");
-    year.push(month);
+  try {
+    let periodLabel = [];
+    let periodDates = [];
+    let yearPeriod = getYearDatePeriod();
+
+    for (let i = 0; i < yearPeriod.length; i++) {
+      let monthLabel = moment().startOf("year").add(i, "months").format("MMM");
+
+      periodLabel.push(monthLabel);
+
+      let monthDate = moment()
+        .startOf("year")
+        .add(i, "months")
+        .format("YYYY-MM-DD");
+      periodDates.push(monthDate);
+    }
+    return { periodLabel, periodDates };
+  } catch (error) {
+    console.log("Format Year Error", error);
   }
-  return year;
 };
 
 const formatAll = () => {
-  let year = [];
-  for (let index = 5; index >= 0; index--) {
-    let month = moment().subtract(index, "years").format("YYYY");
-    year.push(month);
+  try {
+    let periodLabel = [];
+    let periodDates = [];
+
+    for (let i = 5; i >= 0; i--) {
+      let monthLabel = moment()
+        .startOf("year")
+        .subtract(i - 1, "years")
+        .format("YYYY");
+
+      periodLabel.push(monthLabel);
+
+      let monthDate = moment()
+        .endOf("year")
+        .subtract(i, "years")
+        .format("YYYY-MM-DD");
+      periodDates.push(monthDate);
+    }
+    delete periodLabel[6];
+    // console.log(periodDates, periodLabel);
+    return { periodLabel, periodDates };
+  } catch (error) {}
+};
+
+const getMonthDatePeriod = () => {
+  let periodDays = [];
+  let days = moment().daysInMonth();
+  let dayOfWeek = moment().startOf("month");
+
+  const date = moment(dayOfWeek); // Thursday Feb 2015
+  let weekOne = 8 - date.day();
+  periodDays.push(weekOne);
+  days -= 7;
+  while (Math.floor(days / 7) > 0) {
+    days -= 7;
+    periodDays.push(7);
   }
-  return year;
+  periodDays.push(days);
+  return periodDays;
+};
+
+const getYearDatePeriod = () => {
+  try {
+    let yearPeriod = [];
+    let startDate = moment().startOf("year");
+    yearPeriod.push(startDate);
+    for (let i = 1; i < 12; i++) {
+      yearPeriod.push(moment(startDate).add(i, "months"));
+    }
+    return yearPeriod;
+  } catch (error) {
+    console.log("Year Period Error", error);
+  }
+};
+
+const getAllDatePeriod = () => {
+  try {
+    let yearPeriod = [];
+    let startDate = moment().startOf("year");
+    yearPeriod.push(startDate);
+    for (let i = 1; i < 12; i++) {
+      yearPeriod.push(moment(startDate).add(i, "months"));
+    }
+    return yearPeriod;
+  } catch (error) {
+    console.log("Year Period Error", error);
+  }
 };
 
 //Helper Functions

@@ -20,7 +20,8 @@ import { Dimensions } from "react-native";
 import { PieChart } from "react-native-chart-kit";
 import redColorCodes from "../utils/redColorCodes";
 
-const ExpensesScreen = () => {
+const ExpensesScreen = (props) => {
+  const { period } = props;
   const [categoryItems, setCategoryItems] = useState([
     {
       label: "Housing",
@@ -133,16 +134,15 @@ const ExpensesScreen = () => {
   ]);
   const [isLoading, setIsLoading] = useState(true);
   const [items, setItems] = useState([]);
+  const [currencySymbol, setCurrencySymbol] = useState("$");
   const [isAdding, setIsAdding] = useState(false);
   const [userExpense, setUserExpense] = useState([]);
   const [expenseChartData, setExpenseChartData] = useState([]);
-
   const [expenseInput, setExpenseInput] = useState(false);
   const [icon, setIcon] = useState();
   const [errorText, setErrorText] = useState("");
   const [successText, setSuccessText] = useState("");
   const [inputValues, setInputValues] = useState({ ActivityDate: new Date() });
-  const [period, setPeriod] = useState("month");
 
   const handleOnChange = (event) => {
     const value = event?.target?.value ?? event?.value ?? event;
@@ -170,7 +170,6 @@ const ExpensesScreen = () => {
 
   const addExpense = async () => {
     try {
-      console.log(" here");
       setIsAdding(true);
       if (!expenseInput) {
         setIsAdding(false);
@@ -223,6 +222,7 @@ const ExpensesScreen = () => {
     setIsLoading(true);
     let user = await getMyData();
     let expenses = await getBudgetData(period, "expense");
+    setCurrencySymbol(user?.currency?.symbol);
     setUserExpense(await groupDataByPeriod(expenses, user?.currency?.symbol));
     setIsLoading(false);
   };
@@ -245,7 +245,6 @@ const ExpensesScreen = () => {
         legendFontSize: 15,
       };
     });
-    console.log(data);
     setExpenseChartData(data);
   };
 
@@ -265,20 +264,23 @@ const ExpensesScreen = () => {
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.text}>Expenses</Text>
-      <Period setPeriod={setPeriod} period={period} />
       {!isLoading ? (
-        <PieChart
-          data={expenseChartData}
-          width={screenWidth}
-          height={220}
-          chartConfig={chartConfig}
-          accessor={"amount"}
-          // backgroundColor={"transparent"}
-          paddingLeft={"15"}
-          // hasLegend= {false}
-          center={[0, 0]}
-          absolute
-        />
+        <>
+          {expenseChartData.length > 0 && (
+            <PieChart
+              data={expenseChartData}
+              width={screenWidth}
+              height={220}
+              chartConfig={chartConfig}
+              accessor={"amount"}
+              // backgroundColor={"transparent"}
+              paddingLeft={"15"}
+              // hasLegend= {false}
+              center={[0, 0]}
+              absolute
+            />
+          )}
+        </>
       ) : (
         <ActivityIndicator style={styles.loader} size="large" color="darkred" />
       )}
@@ -340,6 +342,7 @@ const ExpensesScreen = () => {
                   id={"ActivityAmount"}
                   handleOnChange={handleOnChange}
                   label={"Value"}
+                  currency={currencySymbol}
                 />
               </View>
               <View style={errorText ? styles.errorText : styles.successText}>
@@ -363,7 +366,7 @@ const ExpensesScreen = () => {
         underlayColor="darred"
         onPress={() => addExpense()}
       >
-        <Text style={styles.submitText}>Submit</Text>
+        <Text style={styles.submitText}>Add Expense</Text>
       </TouchableHighlight>
 
       {!isLoading ? (

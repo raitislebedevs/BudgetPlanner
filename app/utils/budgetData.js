@@ -17,6 +17,7 @@ export async function defaultValue(filter) {
 export async function getBudgetData(period, activity) {
   try {
     let users = await getLinkedUsers();
+    console.log(users);
     let filter = { user_in: users, activity_contains: activity };
     let count = 0;
 
@@ -40,7 +41,7 @@ export async function getBudgetData(period, activity) {
     const { data } = await budgetJournal.FIND({
       _where: filter,
     });
-
+    console.log(data);
     return data;
   } catch (error) {
     console.log(error);
