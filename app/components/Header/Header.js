@@ -1,9 +1,17 @@
 import React, { useState } from "react";
-import { StatusBar, StyleSheet, Text, View } from "react-native";
+import {
+  StatusBar,
+  StyleSheet,
+  Text,
+  View,
+  ActivityIndicator,
+} from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import { formatNumber } from "../../utils/standaloneFunctions";
 import LeftModal from "../LeftModal/LeftModal";
 
 const Header = (props) => {
+  const { isLoading, currencySymbol, userIncome, userExpense } = props;
   const [isModalVisible, setModalVisible] = useState(false);
 
   const toggleModal = () => {
@@ -20,14 +28,27 @@ const Header = (props) => {
           onPress={toggleModal}
         />
       </View>
-      <View>
-        <Text style={styles.label}>Saved</Text>
-        <Text style={styles.positiveAmount}>$ 17,822</Text>
-      </View>
-      <View>
-        <Text style={styles.label}>Spent</Text>
-        <Text style={styles.negativeAmount}>$ 17,822</Text>
-      </View>
+      {!isLoading ? (
+        <View>
+          <Text style={styles.label}>Saved</Text>
+          <Text style={styles.positiveAmount}>
+            {`${formatNumber(userIncome - userExpense, currencySymbol)}`}
+          </Text>
+        </View>
+      ) : (
+        <ActivityIndicator style={styles.loader} size="large" color="#e26a00" />
+      )}
+
+      {!isLoading ? (
+        <View>
+          <Text style={styles.label}>Spent</Text>
+          <Text style={styles.negativeAmount}>
+            {`${formatNumber(userExpense, currencySymbol)}`}
+          </Text>
+        </View>
+      ) : (
+        <ActivityIndicator style={styles.loader} size="large" color="#e26a00" />
+      )}
 
       <LeftModal
         isModalVisible={isModalVisible}
@@ -50,23 +71,28 @@ const styles = StyleSheet.create({
   },
   positiveAmount: {
     color: "green",
-    fontSize: 20,
+    fontSize: 15,
     fontWeight: "bold",
   },
   negativeAmount: {
     color: "darkred",
-    fontSize: 20,
+    fontSize: 15,
     fontWeight: "bold",
   },
   label: {
-    color: "black",
-    fontSize: 10,
+    color: "#480048",
+    fontSize: 17,
     fontWeight: "bold",
     alignSelf: "center",
   },
   leftNav: {
     color: "black",
     alignSelf: "center",
+  },
+  loader: {
+    justifyContent: "center",
+    alignItems: "center",
+    paddingLeft: 45,
   },
 });
 

@@ -5,6 +5,7 @@ import {
   TouchableHighlight,
   View,
   Picker,
+  ActivityIndicator,
 } from "react-native";
 import Modal from "react-native-modal";
 import { TextInput, Button, Switch } from "react-native-paper";
@@ -19,6 +20,7 @@ const LeftModal = (props) => {
   const [invitePerson, setInvitePerson] = useState("");
   const [currency, setCurrency] = useState("");
   const [items, setItems] = useState([]);
+  const [isInviting, setIsInviting] = useState(false);
   const [isEnabled, setIsEnabled] = useState(false);
   const toggleSwitch = async () => {
     setIsEnabled((previousState) => !previousState);
@@ -53,14 +55,11 @@ const LeftModal = (props) => {
 
   const removeInvite = async (personId) => {
     try {
-      console.log("Prior filter invites", user?.invites);
       let invites = user?.invites.filter((person) => personId != person.id);
-      console.log("Filtered invites", invites);
-
       let payload = {
         invites,
       };
-      console.log("Payload", payload);
+
       await userInfoServices.UPDATE(user?.id, payload);
       await refreshUser();
     } catch (error) {
@@ -70,8 +69,6 @@ const LeftModal = (props) => {
 
   const acceptInvite = async (userId, personId) => {
     try {
-      console.log("Prior filter invites", user?.invites);
-
       let linkedUsers = [];
       user?.linkedUsers.forEach((person) => {
         linkedUsers.push(person?.id);
@@ -79,13 +76,11 @@ const LeftModal = (props) => {
       linkedUsers.push(userId);
       let invites = user?.invites.filter((person) => personId != person.id);
 
-      console.log("Filtered invites", linkedUsers);
-
       let payload = {
         linkedUsers,
         invites,
       };
-      console.log("Payload", payload);
+
       await userInfoServices.UPDATE(user?.id, payload);
       await refreshUser();
     } catch (error) {
@@ -95,12 +90,14 @@ const LeftModal = (props) => {
 
   const sendInvatation = async () => {
     try {
+      setIsInviting(true);
       if (invitePerson) {
         let invites = [];
         let filter = { email: invitePerson };
         let person = await userServices.FIND(filter);
-        console.log(person);
+
         if (person.data.length == 0) {
+          setIsInviting(false);
           return;
         }
         const userInfoData = person?.data[0].userInfo;
@@ -109,18 +106,23 @@ const LeftModal = (props) => {
         });
 
         let data = await getMyData();
+
+        if (invites.includes(data.id)) {
+          setIsInviting(false);
+          return;
+        }
+
         invites.push(data.id);
         let payload = {
           invites,
         };
-        console.log(payload);
-        console.log(userInfoData.id);
-
         await userInfoServices.UPDATE(userInfoData.id, payload);
+        setIsInviting(false);
       }
     } catch (error) {
       console.log(error);
     }
+    setIsInviting(false);
   };
 
   return (
@@ -213,9 +215,19 @@ const LeftModal = (props) => {
             onChangeText={(value) => setInvitePerson(value)}
           ></TextInput>
         </View>
-        <Button mode="contained" onPress={() => sendInvatation()}>
-          Send
-        </Button>
+        {!isInviting ? (
+          <>
+            <Button mode="contained" onPress={() => sendInvatation()}>
+              Send
+            </Button>
+          </>
+        ) : (
+          <ActivityIndicator
+            style={styles.loader}
+            size="large"
+            color="orange"
+          />
+        )}
       </View>
       <View style={styles.marginTop}>
         <Text style={styles.subText}>Settings</Text>

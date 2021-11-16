@@ -1,12 +1,27 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { List } from "react-native-paper";
+import { useState } from "react/cjs/react.development";
 import { formatNumber } from "../../utils/standaloneFunctions";
+import AskModal from "../AskModal/AskModal";
 
 const FinanceDetails = (props) => {
-  const { financeData, title, budgetData } = props;
+  const { financeData, title, budgetData, reloadBudgetData } = props;
+  const [modalVisible, setModalVisible] = useState(false);
+  const [id, setId] = useState(false);
+
+  const hilightEntry = (id) => {
+    setId(id);
+    setModalVisible(true);
+  };
   return (
     <View>
+      <AskModal
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+        id={id}
+        reloadBudgetData={reloadBudgetData}
+      />
       <List.Section title={title}>
         {financeData.map((items) => (
           <List.Accordion
@@ -63,6 +78,7 @@ const FinanceDetails = (props) => {
                       return (
                         <List.Item
                           title={singleEntry?.date}
+                          onPress={() => hilightEntry(singleEntry?.id)}
                           right={(props) => (
                             <View style={styles.budgetMarkings}>
                               <Text style={items.style}>

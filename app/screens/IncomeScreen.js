@@ -12,7 +12,6 @@ import { Dimensions } from "react-native";
 import { PieChart } from "react-native-chart-kit";
 import DatePickerComponent from "../components/DatePickerComponent/DatePickerComponent";
 import { groupDataByPeriod } from "../utils/chartLabels";
-import Period from "../components/Period/Period";
 import FinanceDetails from "../components/FinanseDetails/FinanceDetails";
 import budgetJournal from "../services/budgetJournal";
 import { getMyData } from "../utils/tokenStorage";
@@ -153,7 +152,6 @@ const IncomeScreen = (props) => {
     let income = await getBudgetData(period, "income");
     setCurrencySymbol(user?.currency?.symbol);
     setUserIncome(await groupDataByPeriod(income, user?.currency?.symbol));
-    console.log(userIncome, incomeChartData);
     setIsLoading(false);
   };
 
@@ -306,7 +304,11 @@ const IncomeScreen = (props) => {
       {!isLoading ? (
         <>
           {userIncome?.length > 0 && (
-            <FinanceDetails financeData={userIncome} title="Income Data" />
+            <FinanceDetails
+              financeData={userIncome}
+              title="Income Data"
+              reloadBudgetData={reloadBudgetData}
+            />
           )}
         </>
       ) : (
