@@ -1,17 +1,18 @@
 import React, { useState } from "react";
 import {
+  ActivityIndicator,
   Modal,
+  Pressable,
   StyleSheet,
   Text,
-  Pressable,
   View,
-  ActivityIndicator,
 } from "react-native";
 import budgetJournal from "../../services/budgetJournal";
 
 const AskModal = (props) => {
-  const { modalVisible, setModalVisible, id, reloadBudgetData } = props;
+  const { modalVisible, setModalVisible, id } = props;
   const [isDeleting, setIsDeleting] = useState(false);
+
   const deleteRecord = async () => {
     setIsDeleting(true);
     setModalVisible(!modalVisible);
@@ -63,12 +64,6 @@ const AskModal = (props) => {
           )}
         </View>
       </Modal>
-      {/* <Pressable
-        style={[styles.button, styles.buttonOpen]}
-        onPress={() => setModalVisible(true)}
-      >
-        <Text style={styles.textStyle}>Show Modal</Text>
-      </Pressable> */}
     </View>
   );
 };

@@ -18,6 +18,7 @@ import { getMyData } from "../utils/tokenStorage";
 import { getBudgetData } from "../utils/budgetData";
 import InputNumericField from "../components/InputNumericField/InputNumericField";
 import greenColorCodes from "../utils/greenColorCodes";
+import AskModal from "../components/AskModal/AskModal";
 
 const IncomeScreen = (props) => {
   const { period } = props;
@@ -60,6 +61,7 @@ const IncomeScreen = (props) => {
       items: [{ label: "Others", value: "Others" }],
     },
   ]);
+  const [modalVisible, setModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isAdding, setIsAdding] = useState(false);
   const [items, setItems] = useState([]);
@@ -188,8 +190,21 @@ const IncomeScreen = (props) => {
     useShadowColorFromDataset: false,
   };
 
+  const [id, setId] = useState(false);
+
+  const highlight = (id) => {
+    setId(id);
+    setModalVisible(true);
+  };
+
   return (
     <ScrollView style={styles.container}>
+      <AskModal
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+        reloadBudgetData={reloadBudgetData}
+        id={id}
+      />
       <Text style={styles.text}>Income</Text>
       {!isLoading ? (
         <>
@@ -308,6 +323,7 @@ const IncomeScreen = (props) => {
               financeData={userIncome}
               title="Income Data"
               reloadBudgetData={reloadBudgetData}
+              highlight={highlight}
             />
           )}
         </>

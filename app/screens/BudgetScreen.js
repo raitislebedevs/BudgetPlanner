@@ -140,6 +140,7 @@ const BudgetScreen = (props) => {
   const [chartLabels, setChartLabels] = useState(getChartPeriod("year"));
 
   useEffect(async () => {
+    let users = [];
     let periods = getChartPeriod(period);
     let user = await getMyData();
 
@@ -254,7 +255,7 @@ const BudgetScreen = (props) => {
           </View>
         </View>
         <View style={styles.pickerItemContainer}>
-          {/* <View style={styles.pickerContainer}>
+          <View style={styles.pickerContainer}>
             <Picker
               selectedValue={userOptions}
               style={{ height: 50, width: 150 }}
@@ -293,7 +294,7 @@ const BudgetScreen = (props) => {
                 );
               })}
             </Picker>
-          </View> */}
+          </View>
         </View>
         <TextInput
           underlineColor="brown"
