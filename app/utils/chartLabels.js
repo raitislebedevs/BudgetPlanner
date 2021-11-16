@@ -2,9 +2,7 @@ import moment from "moment";
 
 export const getChartPeriod = (period, income, expense) => {
   try {
-    console.log(period);
     let periodData = getPeriodData(period);
-    console.log("Period Data", periodData);
     const { periodLabel, periodDates } = periodData;
     let chartData = {
       xLabels: periodLabel,
@@ -46,6 +44,7 @@ export const groupDataByPeriod = (budgetData, currency) => {
           detailData.push({
             date: item.activityDate,
             amount: parseFloat(item.activityAmount).toFixed(2),
+            id: item.id,
           });
         });
         detailData.sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -107,9 +106,9 @@ const getChartFunctionData = (dates, data) => {
             }
 
             // console.log("*********************************************");
-            console.log("Compare Date", compareDate);
-            console.log("Start Data", startDate);
-            console.log("End data", endDate);
+            // console.log("Compare Date", compareDate);
+            // console.log("Start Data", startDate);
+            // console.log("End data", endDate);
             // console.log("RESULT:", result);
 
             // console.log(

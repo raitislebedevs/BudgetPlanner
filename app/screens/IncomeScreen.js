@@ -12,13 +12,13 @@ import { Dimensions } from "react-native";
 import { PieChart } from "react-native-chart-kit";
 import DatePickerComponent from "../components/DatePickerComponent/DatePickerComponent";
 import { groupDataByPeriod } from "../utils/chartLabels";
-import Period from "../components/Period/Period";
 import FinanceDetails from "../components/FinanseDetails/FinanceDetails";
 import budgetJournal from "../services/budgetJournal";
 import { getMyData } from "../utils/tokenStorage";
 import { getBudgetData } from "../utils/budgetData";
 import InputNumericField from "../components/InputNumericField/InputNumericField";
 import greenColorCodes from "../utils/greenColorCodes";
+import AskModal from "../components/AskModal/AskModal";
 
 const IncomeScreen = (props) => {
   const { period } = props;
@@ -61,6 +61,7 @@ const IncomeScreen = (props) => {
       items: [{ label: "Others", value: "Others" }],
     },
   ]);
+  const [modalVisible, setModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isAdding, setIsAdding] = useState(false);
   const [items, setItems] = useState([]);
@@ -153,7 +154,6 @@ const IncomeScreen = (props) => {
     let income = await getBudgetData(period, "income");
     setCurrencySymbol(user?.currency?.symbol);
     setUserIncome(await groupDataByPeriod(income, user?.currency?.symbol));
-    console.log(userIncome, incomeChartData);
     setIsLoading(false);
   };
 
@@ -190,8 +190,21 @@ const IncomeScreen = (props) => {
     useShadowColorFromDataset: false,
   };
 
+  const [id, setId] = useState(false);
+
+  const highlight = (id) => {
+    setId(id);
+    setModalVisible(true);
+  };
+
   return (
     <ScrollView style={styles.container}>
+      <AskModal
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+        reloadBudgetData={reloadBudgetData}
+        id={id}
+      />
       <Text style={styles.text}>Income</Text>
       {!isLoading ? (
         <>
@@ -306,7 +319,12 @@ const IncomeScreen = (props) => {
       {!isLoading ? (
         <>
           {userIncome?.length > 0 && (
-            <FinanceDetails financeData={userIncome} title="Income Data" />
+            <FinanceDetails
+              financeData={userIncome}
+              title="Income Data"
+              reloadBudgetData={reloadBudgetData}
+              highlight={highlight}
+            />
           )}
         </>
       ) : (

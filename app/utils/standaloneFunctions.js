@@ -10,6 +10,15 @@ export const formatNumber = (num, currency) => {
   return "";
 };
 
+export const sumWithReduce = (items, prop) => {
+  console.log(items);
+  return items.reduce((a, b) => {
+    console.log(b);
+    console.log(b[prop]);
+    return a + b[prop];
+  }, 0);
+};
+
 export const formatPhoneNumber = (phone) => {
   if (phone)
     return phone

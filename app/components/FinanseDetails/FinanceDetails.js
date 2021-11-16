@@ -1,10 +1,13 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { List } from "react-native-paper";
+import { useState } from "react/cjs/react.development";
 import { formatNumber } from "../../utils/standaloneFunctions";
+// import AskModal from "../AskModal/AskModal";
 
 const FinanceDetails = (props) => {
-  const { financeData, title, budgetData } = props;
+  const { financeData, title, budgetData, reloadBudgetData, highlight } = props;
+
   return (
     <View>
       <List.Section title={title}>
@@ -63,6 +66,7 @@ const FinanceDetails = (props) => {
                       return (
                         <List.Item
                           title={singleEntry?.date}
+                          onPress={() => highlight(singleEntry?.id)}
                           right={(props) => (
                             <View style={styles.budgetMarkings}>
                               <Text style={items.style}>

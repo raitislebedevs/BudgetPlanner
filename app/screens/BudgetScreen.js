@@ -10,10 +10,10 @@ import {
 import { Dimensions } from "react-native";
 import { TextInput } from "react-native-paper";
 import FinanceDetails from "../components/FinanseDetails/FinanceDetails";
-import Period from "../components/Period/Period";
 import { budgetData } from "../demoData/summarydata";
 import { getChartPeriod } from "../utils/chartLabels";
 import { ProgressChart } from "react-native-chart-kit";
+import { getMyData } from "../utils/tokenStorage";
 
 const BudgetScreen = (props) => {
   const { period } = props;
@@ -119,13 +119,45 @@ const BudgetScreen = (props) => {
       ],
     },
   ]);
+  const [budgetPeriods, setBudgetPeriods] = useState([
+    {
+      label: "Week",
+      value: "Week",
+    },
+    {
+      label: "Month",
+      value: "Month",
+    },
+    {
+      label: "Year",
+      value: "Year",
+    },
+  ]);
+  const [userOptions, setUserOptions] = useState([]);
   const [items, setItems] = useState([{ label: "Choose Category", value: "" }]);
   const [categoryValue, setCategoryValue] = useState("");
   const [categoryItemValue, setCategoryItemValue] = useState("");
   const [chartLabels, setChartLabels] = useState(getChartPeriod("year"));
 
-  useEffect(() => {
+  useEffect(async () => {
+    let users = [];
     let periods = getChartPeriod(period);
+    let user = await getMyData();
+
+    user?.linkedUsers.map((person) => {
+      users.push({
+        label: person?.email,
+        value: person?.id,
+      });
+    });
+
+    users.push({
+      label: `${user?.firstName} ${user?.lastName}`,
+      value: user?.id,
+    });
+
+    setUserOptions(users);
+    console.log(user);
     setChartLabels(periods);
   }, [period]);
 
@@ -222,25 +254,47 @@ const BudgetScreen = (props) => {
             </Picker>
           </View>
         </View>
-        <View style={styles.pickerContainer}>
-          <Picker
-            selectedValue={categoryValue}
-            style={{ height: 50, width: 150 }}
-            onValueChange={(itemValue, itemIndex) =>
-              setCategoryValue(itemValue)
-            }
-          >
-            <Picker.Item label="Category" value="" />
-            {categoryItems.map((item) => {
-              return (
-                <Picker.Item
-                  label={item.label}
-                  value={item.value}
-                  key={item.label}
-                />
-              );
-            })}
-          </Picker>
+        <View style={styles.pickerItemContainer}>
+          <View style={styles.pickerContainer}>
+            <Picker
+              selectedValue={userOptions}
+              style={{ height: 50, width: 150 }}
+              onValueChange={(itemValue, itemIndex) =>
+                setCategoryValue(itemValue)
+              }
+            >
+              <Picker.Item label="User" value="" />
+              {categoryItems.map((item) => {
+                return (
+                  <Picker.Item
+                    label={item.label}
+                    value={item.value}
+                    key={item.label}
+                  />
+                );
+              })}
+            </Picker>
+          </View>
+          <View style={styles.pickerContainer}>
+            <Picker
+              selectedValue={budgetPeriods}
+              style={{ height: 50, width: 150 }}
+              onValueChange={(itemValue, itemIndex) =>
+                setCategoryItemValue(itemValue)
+              }
+            >
+              <Picker.Item label="Period" value="" />
+              {items.map((item) => {
+                return (
+                  <Picker.Item
+                    label={item.label}
+                    value={item.value}
+                    key={item.label}
+                  />
+                );
+              })}
+            </Picker>
+          </View>
         </View>
         <TextInput
           underlineColor="brown"

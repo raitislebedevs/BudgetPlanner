@@ -37,20 +37,6 @@ export async function getMyData() {
   return null;
 }
 
-const getRawLinkedUsers = (users) => {
-  let linkedUsers = [];
-  users.map((user) => {
-    linkedUsers.push({
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-      userInfo: user.userInfo,
-    });
-  });
-
-  return linkedUsers;
-};
-
 export async function getLinkedUsers() {
   let user = await getMyData();
   let users = [user.userId];
@@ -59,5 +45,3 @@ export async function getLinkedUsers() {
   });
   return users;
 }
-/// Tokens
-// token

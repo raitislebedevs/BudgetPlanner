@@ -7,6 +7,7 @@ import { getValueFor } from "../utils/tokenStorage";
 class CoreServices {
   constructor(service) {
     this.service = service;
+    // this.apiEnpoint = `${"https://placifull-budget-planner-api.herokuapp.com"}`;
     this.apiEnpoint = `${"http://192.168.1.107:1337"}`;
   }
 

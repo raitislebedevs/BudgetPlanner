@@ -22,7 +22,6 @@ const SummaryScreen = (props) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(async () => {
-    console.log(period);
     await periodSwitch();
   }, [period]);
 
