@@ -22,6 +22,7 @@ const SubmitActivity = (props) => {
     colorTheme,
     buttonText,
     period,
+    submitButtonStyle,
   } = props;
   const [showInput, setShowInput] = useState(false);
 
@@ -159,15 +160,15 @@ const SubmitActivity = (props) => {
             <ActivityIndicator
               style={styles.loader}
               size="large"
-              color="darkgreen"
+              color={colorTheme}
             />
           )}
         </>
       )}
       <TouchableHighlight
-        style={styles.submit}
+        style={submitButtonStyle}
         onPress={() => null}
-        underlayColor={colorTheme}
+        underlayColor={"gold"}
         onPress={() => submitEntry()}
       >
         <Text style={styles.submitText}>{buttonText}</Text>
@@ -195,17 +196,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
 
-  submit: {
-    marginRight: 40,
-    marginLeft: 40,
-    marginTop: 10,
-    paddingTop: 12,
-    paddingBottom: 12,
-    backgroundColor: "darkgreen",
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: "#fff",
-  },
   submitText: {
     color: "#fff",
     textAlign: "center",

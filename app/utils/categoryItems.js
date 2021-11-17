@@ -24,7 +24,7 @@ export const incomeCategory = () => {
     {
       label: "Investment",
       value: "Investment",
-      icon: "money",
+      icon: "cash",
       items: [
         { label: "Markets", value: "Markets" },
         { label: "Real Estate", value: "Real Estate" },

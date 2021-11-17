@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { ActivityIndicator, Dimensions, StyleSheet } from "react-native";
 import { PieChart } from "react-native-chart-kit";
 
 function BudgetPieChart(props) {
-  const { isLoading, incomeChartData } = props;
+  const { isLoading, chartData, color } = props;
   const screenWidth = Dimensions.get("window").width;
 
   const chartConfig = {
@@ -17,13 +17,17 @@ function BudgetPieChart(props) {
     useShadowColorFromDataset: false,
   };
 
+  useEffect(() => {
+    console.log("Chart Data", chartData);
+  });
+
   return (
     <>
       {!isLoading ? (
         <>
-          {incomeChartData.length > 0 && (
+          {chartData?.length > 0 && (
             <PieChart
-              data={incomeChartData}
+              data={chartData}
               width={screenWidth}
               height={220}
               chartConfig={chartConfig}
@@ -35,11 +39,7 @@ function BudgetPieChart(props) {
           )}
         </>
       ) : (
-        <ActivityIndicator
-          style={styles.loader}
-          size="large"
-          color="darkgreen"
-        />
+        <ActivityIndicator style={styles.loader} size="large" color={color} />
       )}
     </>
   );

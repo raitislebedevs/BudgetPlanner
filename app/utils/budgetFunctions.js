@@ -22,15 +22,30 @@ export const initilizeData = async (period) => {
   user = await getMyData();
   currency = user?.currency?.symbol;
   rawIncomeData = await getBudgetData(period, "income");
+
+  // console.log("*******************************************");
+  // console.log("*******************************************");
+  // console.log("Raw Income Data", rawIncomeData);
+  // console.log("*******************************************");
+  // console.log("*******************************************");
+
   rawExpenseData = await getBudgetData(period, "expense");
   await getGroupedIncomeData(currency);
   await getGroupedExpenseData(currency);
+
   incomeAmount = sumWithReduce(incomeData, "total");
   spentAmount = sumWithReduce(expenseData, "total");
   savedAmount = incomeAmount - spentAmount;
   incomeChartData = chartData(incomeData, greenColorCodes);
   spentChartData = chartData(expenseData, redColorCodes);
   getBezierChartPeriod(period, incomeData, expenseData);
+
+  // console.log("*******************************************");
+  // console.log("*******************************************");
+  // console.log("Income Data", incomeData);
+  // console.log("*******************************************");
+  // console.log("*******************************************");
+
   return {
     rawIncomeData,
     rawExpenseData,
@@ -234,8 +249,8 @@ const getBezierChartPeriod = (period, income, expense) => {
     const { chartLabel, chartPeriods } = periodData;
     let chartData = {
       xLabels: chartLabel,
-      incomeData: getBezierChartData(chartPeriods, income),
-      expenseData: getBezierChartData(chartPeriods, expense),
+      incomeChartData: getBezierChartData(chartPeriods, income),
+      expenseChartData: getBezierChartData(chartPeriods, expense),
     };
     bezierChartData = chartData;
   } catch (error) {

@@ -18,10 +18,6 @@ const Header = (props) => {
     setModalVisible(!isModalVisible);
   };
 
-  useEffect(async () => {
-    //await budget.initilizeData(period);
-  });
-
   return (
     <View style={styles.topNavigation}>
       <View>

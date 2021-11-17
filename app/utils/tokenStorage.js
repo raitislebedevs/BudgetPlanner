@@ -29,8 +29,8 @@ export async function getValueFor(key) {
 
 export async function getMyData() {
   try {
-    const user = await userServices.GET_ME();
-    const { data } = await userInfoServices.GET(user?.data.userInfo);
+    const user = await getUser();
+    const { data } = await getUserInfo(user?.data.userInfo);
     data.userId = user?.data?.id;
     return data;
   } catch (error) {}
@@ -44,4 +44,19 @@ export async function getLinkedUsers() {
     users.push(person._id);
   });
   return users;
+}
+
+async function getUser() {
+  let user = await userServices.GET_ME();
+  return user;
+}
+
+async function getUserInfo(id) {
+  let user = await userInfoServices.GET(id);
+  return user;
+}
+
+async function getUserId() {
+  let user = await userServices.GET_ME();
+  return user?.data?.id;
 }

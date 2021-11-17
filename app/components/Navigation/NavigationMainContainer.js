@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { StyleSheet, Text, View, Platform, StatusBar } from "react-native";
+import { StyleSheet } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -14,15 +14,14 @@ import Period from "../Period/Period";
 import { useState } from "react";
 import { initilizeData } from "../../utils/budgetFunctions";
 
-//Screen Names
-const summarryScren = "Summary";
-const incomeScreen = "Income";
-const expensesScreen = "Expenses";
-const budgetScreen = "Budget";
-
-const Tab = createBottomTabNavigator();
-
 const NavigationMainContainer = (props) => {
+  //Screen Names
+  const summarryScren = "Summary";
+  const incomeScreen = "Income";
+  const expensesScreen = "Expenses";
+  const budgetScreen = "Budget";
+
+  const Tab = createBottomTabNavigator();
   const [period, setPeriod] = useState("month");
   const [globalBudget, setGlobalBudget] = useState({});
   const [isLoading, setIsLoading] = useState(false);

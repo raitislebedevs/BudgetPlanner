@@ -26,8 +26,8 @@ class CoreServices {
     }
   }
 
-  getToken() {
-    return Cookies.get("access_token");
+  async getToken() {
+    return await getValueFor("access_token");
   }
 
   getErrorMessage(error) {
@@ -52,7 +52,7 @@ class CoreServices {
         query ? `?${query}` : ""
       }`;
       let { data } = await axios.get(endpoint, {
-        headers: this.headers(this.getToken()),
+        headers: this.headers(await this.getToken()),
       });
       return { data };
     } catch (error) {
@@ -70,7 +70,7 @@ class CoreServices {
         query ? `?${query}` : ""
       }`;
       let { data } = await axios.get(endpoint, {
-        headers: this.headers(this.getToken()),
+        headers: this.headers(await this.getToken()),
       });
       return { data };
     } catch (error) {
@@ -88,7 +88,7 @@ class CoreServices {
         query ? `?${query}` : ""
       }`;
       let { data } = await axios.get(endpoint, {
-        headers: this.headers(this.getToken()),
+        headers: this.headers(await this.getToken()),
       });
       return { data };
     } catch (error) {
@@ -106,7 +106,7 @@ class CoreServices {
         query ? `?${query}` : ""
       }`;
       let { data } = await axios.get(endpoint, {
-        headers: this.headers(this.getToken()),
+        headers: this.headers(await this.getToken()),
       });
       return { data };
     } catch (error) {
@@ -117,7 +117,7 @@ class CoreServices {
   async GET_WITHOUT_ID() {
     try {
       let { data } = await axios.get(`${this.apiEnpoint}${this.service}`, {
-        headers: this.headers(this.getToken()),
+        headers: this.headers(await this.getToken()),
       });
       return { data };
     } catch (error) {
@@ -130,7 +130,7 @@ class CoreServices {
       let { data } = await axios.get(
         `${this.apiEnpoint}${this.service}/${id}`,
         {
-          headers: this.headers(this.getToken()),
+          headers: this.headers(await this.getToken()),
         }
       );
       return { data };
@@ -156,7 +156,7 @@ class CoreServices {
         `${this.apiEnpoint}${this.service}`,
         payload,
         {
-          headers: this.headers(this.getToken()),
+          headers: this.headers(await this.getToken()),
         }
       );
       return { data };
@@ -171,7 +171,7 @@ class CoreServices {
         `${this.apiEnpoint}${this.service}/send-email`,
         payload,
         {
-          headers: this.headers(this.getToken()),
+          headers: this.headers(await this.getToken()),
         }
       );
       return { data };
@@ -186,7 +186,7 @@ class CoreServices {
         `${this.apiEnpoint}${this.service}/${id}`,
         payload,
         {
-          headers: this.headers(this.getToken()),
+          headers: this.headers(await this.getToken()),
         }
       );
       return { data };
@@ -201,7 +201,7 @@ class CoreServices {
         `${this.apiEnpoint}${this.service}/me`,
         payload,
         {
-          headers: this.headers(this.getToken()),
+          headers: this.headers(await this.getToken()),
         }
       );
       return { data };
@@ -216,7 +216,7 @@ class CoreServices {
         `${this.apiEnpoint}${this.service}`,
         payload,
         {
-          headers: this.headers(this.getToken()),
+          headers: this.headers(await this.getToken()),
         }
       );
       return { data };
@@ -230,7 +230,7 @@ class CoreServices {
       let { data } = await axios.delete(
         `${this.apiEnpoint}${this.service}/${id}`,
         {
-          headers: this.headers(this.getToken()),
+          headers: this.headers(await this.getToken()),
         }
       );
       return { data };

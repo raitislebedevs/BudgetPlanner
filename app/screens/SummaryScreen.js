@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   Dimensions,
   StyleSheet,
@@ -7,53 +7,14 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { LineChart } from "react-native-chart-kit";
-import { getChartPeriod, groupDataByPeriod } from "../utils/chartLabels";
 import FinanceDetails from "../components/FinanseDetails/FinanceDetails";
 import { getMyData } from "../utils/tokenStorage";
-import { getBudgetData } from "../utils/budgetData";
 
 const SummaryScreen = (props) => {
-  const { period } = props;
-  const [expanded, setExpanded] = useState(true);
-  // const [period, setPeriod] = useState("month");
-  const [chartLabels, setChartLabels] = useState("month");
-  const [userIncome, setUserIncome] = useState([]);
-  const [userExpense, setUserExpense] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(async () => {
-    await periodSwitch();
-  }, [period]);
-
-  const periodSwitch = async () => {
-    try {
-      setIsLoading(true);
-      let user = await getMyData();
-      //Getting Income and Spent details
-      let expenses = await getBudgetData(period, "expense");
-      let income = await getBudgetData(period, "income");
-      let userExpenses = await groupDataByPeriod(
-        expenses,
-        user?.currency?.symbol
-      );
-      let userIncomes = await groupDataByPeriod(income, user?.currency?.symbol);
-      //here we will get period Data
-      setUserExpense(userExpenses);
-      setUserIncome(userIncomes);
-      let periods = getChartPeriod(period, userIncomes, userExpenses);
-      setChartLabels(periods);
-
-      setIsLoading(false);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handlePress = () => setExpanded(!expanded);
+  const { budget, chartLabels, isLoading } = props;
 
   return (
     <ScrollView>
-      {/* <Period setPeriod={setPeriod} period={period} /> */}
       {!isLoading ? (
         <>
           <View>
@@ -62,13 +23,13 @@ const SummaryScreen = (props) => {
                 labels: chartLabels?.xLabels,
                 datasets: [
                   {
-                    data: chartLabels?.incomeData || [0, 0, 0, 0, 0],
+                    data: chartLabels?.incomeChartData || [0, 0, 0, 0, 0],
                     strokeWidth: 1,
                     color: (opacity = 1) => "lightgreen",
                     // optional
                   },
                   {
-                    data: chartLabels?.expenseData || [0, 0, 0, 0, 0, 0],
+                    data: chartLabels?.expenseChartData || [0, 0, 0, 0, 0, 0],
                     strokeWidth: 1,
                     color: (opacity = 1) => "red", // optional
                   },
@@ -102,11 +63,11 @@ const SummaryScreen = (props) => {
               }}
             />
           </View>
-          {userIncome.length > 0 && (
-            <FinanceDetails financeData={userIncome} title="Income" />
+          {budget?.incomeData?.length > 0 && (
+            <FinanceDetails financeData={budget.incomeData} title="Income" />
           )}
-          {userExpense.length > 0 && (
-            <FinanceDetails financeData={userExpense} title="Expenses" />
+          {budget?.expenseData?.length > 0 && (
+            <FinanceDetails financeData={budget.expenseData} title="Expenses" />
           )}
         </>
       ) : (
