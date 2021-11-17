@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { ActivityIndicator, Dimensions, StyleSheet } from "react-native";
 import { PieChart } from "react-native-chart-kit";
 
@@ -16,10 +16,6 @@ function BudgetPieChart(props) {
     barPercentage: 0.5,
     useShadowColorFromDataset: false,
   };
-
-  useEffect(() => {
-    console.log("Chart Data", chartData);
-  });
 
   return (
     <>

@@ -77,7 +77,7 @@ const chartData = (userData, colorCodes) => {
   return data;
 };
 
-const refreshData = async (period) => {
+export const refreshData = async (period) => {
   resetValues();
   await initilizeData(period);
 };
@@ -291,7 +291,7 @@ const getBezierChartData = (dates, data) => {
             if (result) {
               chartPoint += parseFloat(point.amount);
 
-              delete categoryItem.items[index];
+              // delete categoryItem.items[index];
             }
           });
         });
