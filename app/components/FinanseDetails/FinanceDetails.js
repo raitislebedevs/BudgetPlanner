@@ -1,17 +1,15 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { List } from "react-native-paper";
-import { useState } from "react/cjs/react.development";
 import { formatNumber } from "../../utils/standaloneFunctions";
-// import AskModal from "../AskModal/AskModal";
 
 const FinanceDetails = (props) => {
-  const { financeData, title, budgetData, reloadBudgetData, highlight } = props;
+  const { financeData, title, budgetData, highlight } = props;
 
   return (
     <View>
       <List.Section title={title}>
-        {financeData.map((items) => (
+        {financeData?.map((items) => (
           <List.Accordion
             title={items.label}
             description={items.description}

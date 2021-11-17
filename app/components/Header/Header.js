@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StatusBar,
   StyleSheet,
@@ -11,12 +11,16 @@ import { formatNumber } from "../../utils/standaloneFunctions";
 import LeftModal from "../LeftModal/LeftModal";
 
 const Header = (props) => {
-  const { isLoading, currencySymbol, userIncome, userExpense } = props;
+  const { isLoading, currencySymbol, budget } = props;
   const [isModalVisible, setModalVisible] = useState(false);
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
+
+  useEffect(async () => {
+    //await budget.initilizeData(period);
+  });
 
   return (
     <View style={styles.topNavigation}>
@@ -32,7 +36,10 @@ const Header = (props) => {
         <View>
           <Text style={styles.label}>Saved</Text>
           <Text style={styles.positiveAmount}>
-            {`${formatNumber(userIncome - userExpense, currencySymbol)}`}
+            {`${
+              formatNumber(budget?.savedAmount, currencySymbol) ||
+              parseFloat(0).toFixed(2)
+            }`}
           </Text>
         </View>
       ) : (
@@ -43,7 +50,10 @@ const Header = (props) => {
         <View>
           <Text style={styles.label}>Spent</Text>
           <Text style={styles.negativeAmount}>
-            {`${formatNumber(userExpense, currencySymbol)}`}
+            {`${
+              formatNumber(budget?.spentAmount, currencySymbol) ||
+              parseFloat(0).toFixed(2)
+            }`}
           </Text>
         </View>
       ) : (

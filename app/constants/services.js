@@ -59,3 +59,7 @@ export const CURRENCIES = {
 export const BUDGET_JOURNALS = {
   BASE: "/budget-journals",
 };
+
+export const USER_BUDGET = {
+  BASE: "/budgets",
+};

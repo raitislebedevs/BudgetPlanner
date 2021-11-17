@@ -1,5 +1,3 @@
-// import * as moment from "node_modules/moment/moment";
-
 export const formatNumber = (num, currency) => {
   if (num) {
     return `${currency || "$"} ${num
@@ -11,10 +9,7 @@ export const formatNumber = (num, currency) => {
 };
 
 export const sumWithReduce = (items, prop) => {
-  console.log(items);
   return items.reduce((a, b) => {
-    console.log(b);
-    console.log(b[prop]);
     return a + b[prop];
   }, 0);
 };
@@ -53,33 +48,6 @@ export const cleanObject = (obj) => {
 
 export const random = (min, max) =>
   Math.floor(Math.random() * (max - min)) + min;
-
-// export const formatMonth = (date, t) => {
-//   let year = moment(Date.parse(date)).format("YYYY");
-//   let month = t(`common:month.${moment(Date.parse(date)).format("MMM")}`);
-//   return `${year} ${month}`;
-// };
-
-// export const formatYear = (date) => {
-//   let year = moment(Date.parse(date)).format("YYYY");
-//   return `${year}`;
-// };
-
-// export const formatDate = (date, t) => {
-//   let year = moment(Date.parse(date)).format("YYYY");
-//   let days = moment(Date.parse(date)).format("DD");
-//   let month = t(`common:month.${moment(Date.parse(date)).format("MMM")}`);
-//   return `${year} ${month} ${days}`;
-// };
-
-// export const addDays = (date, days) => {
-//   if (!days) {
-//     return "-";
-//   }
-//   var result = new Date(date);
-//   result.setDate(result.getDate() + days);
-//   return moment(result).format("YYYY-MM-DD");
-// };
 
 export const referralCode = () => {
   return "xxxxxxx-xxxxxxx".replace(/[xy]/g, function (c) {

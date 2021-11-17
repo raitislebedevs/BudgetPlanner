@@ -12,10 +12,7 @@ import Header from "../Header/Header";
 import Period from "../Period/Period";
 //Utils
 import { useState } from "react";
-import { getMyData } from "../../utils/tokenStorage";
-import { getBudgetData } from "../../utils/budgetData";
-import { getChartPeriod, groupDataByPeriod } from "../../utils/chartLabels";
-import { sumWithReduce } from "../../utils/standaloneFunctions";
+import { initilizeData } from "../../utils/budgetFunctions";
 
 //Screen Names
 const summarryScren = "Summary";
@@ -27,66 +24,29 @@ const Tab = createBottomTabNavigator();
 
 const NavigationMainContainer = (props) => {
   const [period, setPeriod] = useState("month");
-  const [chartLabels, setChartLabels] = useState("month");
-  const [userIncome, setUserIncome] = useState([]);
-  const [userExpense, setUserExpense] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [currencySymbol, setCurrencySymbol] = useState("$");
+  const [globalBudget, setGlobalBudget] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(async () => {
-    await periodSwitch();
-  }, [period]);
-
-  const periodSwitch = async () => {
     try {
-      setIsLoading(true);
-      let user = await getMyData();
-      setCurrencySymbol(user?.currency?.symbol);
-      //Getting Income and Spent details
-      let expenses = await getBudgetData(period, "expense");
-      let income = await getBudgetData(period, "income");
-      let userExpenses = await groupDataByPeriod(
-        expenses,
-        user?.currency?.symbol
-      );
-      let userIncomes = await groupDataByPeriod(income, user?.currency?.symbol);
-      //here we will get period Data
-
-      console.log(
-        "INCOME DATA IN ARRAY **************************************",
-        income
-      );
-      let subTotalIncome = sumWithReduce(userIncomes, "total");
-      let subTotalExpense = sumWithReduce(userExpenses, "total");
-      setUserExpense(subTotalExpense);
-      setUserIncome(subTotalIncome);
-      console.log(subTotalExpense, subTotalIncome);
-
-      let periods = await getChartPeriod(period, userIncomes, userExpenses);
-      setChartLabels(periods);
-
-      setIsLoading(false);
+      if (period) {
+        setIsLoading(true);
+        let data = await initilizeData(period);
+        setGlobalBudget(data);
+        setIsLoading(false);
+      }
     } catch (error) {
       console.log(error);
     }
-  };
-  //Income Data
-  const relodIncomeData = async () => {
-    setIsLoading(true);
-    let user = await getMyData();
-    let income = await getBudgetData(period, "income");
-    setCurrencySymbol(user?.currency?.symbol);
-    setUserIncome(await groupDataByPeriod(income, user?.currency?.symbol));
-    setIsLoading(false);
-  };
+  }, [period]);
 
   return (
     <NavigationContainer>
       <Header
+        budget={globalBudget}
         isLoading={isLoading}
-        currencySymbol={currencySymbol}
-        userIncome={userIncome}
-        userExpense={userExpense}
+        currencySymbol={globalBudget.currency}
+        period={period}
       />
       <Period period={period} setPeriod={setPeriod} />
       <Tab.Navigator
@@ -123,10 +83,9 @@ const NavigationMainContainer = (props) => {
           children={() => (
             <SummaryScreen
               period={period}
-              chartLabels={chartLabels}
-              userExpense={userExpense}
-              userIncome={userIncome}
+              budget={globalBudget}
               isLoading={isLoading}
+              chartLabels={globalBudget?.bezierChartData}
             />
           )}
           name={summarryScren}
@@ -136,22 +95,33 @@ const NavigationMainContainer = (props) => {
           children={() => (
             <IncomeScreen
               period={period}
+              budget={globalBudget}
               isLoading={isLoading}
-              userIncome={userIncome}
-              currencySymbol={currencySymbol}
-              relodIncomeData={relodIncomeData}
+              currencySymbol={globalBudget.currency}
             />
           )}
           name={incomeScreen}
           options={{ headerShown: false }}
         />
         <Tab.Screen
-          children={() => <ExpensesScreen period={period} />}
+          children={() => (
+            <ExpensesScreen
+              period={period}
+              budget={globalBudget}
+              isLoading={isLoading}
+            />
+          )}
           name={expensesScreen}
           options={{ headerShown: false }}
         />
         <Tab.Screen
-          children={() => <BudgetScreen period={period} />}
+          children={() => (
+            <BudgetScreen
+              period={period}
+              budget={globalBudget}
+              isLoading={isLoading}
+            />
+          )}
           name={budgetScreen}
           options={{ headerShown: false }}
         />
