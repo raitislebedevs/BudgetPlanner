@@ -4,9 +4,10 @@ import {
   Text,
   TouchableHighlight,
   View,
-  Picker,
   ActivityIndicator,
 } from "react-native";
+
+import { Picker } from "@react-native-picker/picker";
 import Modal from "react-native-modal";
 import { TextInput, Button, Switch } from "react-native-paper";
 import { handleGetCurrencies } from "../../utils/currencyData";

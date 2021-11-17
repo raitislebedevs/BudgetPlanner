@@ -65,6 +65,7 @@ const FinanceDetails = (props) => {
                         <List.Item
                           title={singleEntry?.date}
                           onPress={() => highlight(singleEntry?.id)}
+                          key={`${singleEntry?.id}`}
                           right={(props) => (
                             <View style={styles.budgetMarkings}>
                               <Text style={items.style}>

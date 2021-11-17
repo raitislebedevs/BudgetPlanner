@@ -70,13 +70,20 @@ const NavigationMainContainer = (props) => {
 
             return <Ionicons name={iconName} size={size} color={color} />;
           },
+          tabBarActiveTintColor: "brown",
+          tabBarInactiveTintColor: "lightgrey",
+          tabBarLabelStyle: {
+            paddingBottom: 3,
+            fontSize: 10,
+            fontWeight: "bold",
+          },
+          tabBarStyle: [
+            {
+              display: "flex",
+            },
+            null,
+          ],
         })}
-        tabBarOptions={{
-          activeTintColor: "brown",
-          inactiveTintColor: "lightgrey",
-          labelStyle: { paddingBottom: 3, fontSize: 10, fontWeight: "bold" },
-          headerShown: false,
-        }}
       >
         <Tab.Screen
           children={() => (

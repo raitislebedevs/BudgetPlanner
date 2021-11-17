@@ -1,8 +1,6 @@
-import config from "../config";
 import axios from "axios";
-import Cookies from "js-cookie";
 import qs from "qs";
-import { getValueFor } from "../utils/tokenStorage";
+import { getValueFor } from "../utils/expoSecure";
 
 class CoreServices {
   constructor(service) {

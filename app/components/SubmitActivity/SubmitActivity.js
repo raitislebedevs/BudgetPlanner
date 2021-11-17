@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import {
   Text,
   View,
-  Picker,
   StyleSheet,
   TouchableHighlight,
   ActivityIndicator,
 } from "react-native";
+import { Picker } from "@react-native-picker/picker";
 import budgetJournal from "../../services/budgetJournal";
 import { getMyData } from "../../utils/tokenStorage";
 import DatePickerComponent from "../DatePickerComponent/DatePickerComponent";

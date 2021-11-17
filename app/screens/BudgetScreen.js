@@ -4,10 +4,11 @@ import {
   Text,
   ScrollView,
   View,
-  Picker,
   TouchableHighlight,
   ActivityIndicator,
 } from "react-native";
+
+import { Picker } from "@react-native-picker/picker";
 import { Dimensions } from "react-native";
 import FinanceDetails from "../components/FinanseDetails/FinanceDetails";
 import { budgetData } from "../demoData/summarydata";
