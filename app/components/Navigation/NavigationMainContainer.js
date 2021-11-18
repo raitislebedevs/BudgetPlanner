@@ -127,6 +127,7 @@ const NavigationMainContainer = (props) => {
               period={period}
               budget={globalBudget}
               isLoading={isLoading}
+              currencySymbol={globalBudget.currency}
             />
           )}
           name={budgetScreen}

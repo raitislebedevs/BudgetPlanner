@@ -18,7 +18,7 @@ import BudgetChart from "../components/BudgetChart/BudgetChart";
 import AskModal from "../components/AskModal/AskModal";
 
 const BudgetScreen = (props) => {
-  const { period, budget, isLoading } = props;
+  const { period, budget, isLoading, currencySymbol } = props;
   const categoryItems = expenseCategory();
   const [budgetPeriods, setBudgetPeriods] = useState([
     {
@@ -42,8 +42,6 @@ const BudgetScreen = (props) => {
   const [inputingBudget, setInputingBudget] = useState(false);
   const [errorText, setErrorText] = useState("");
   const [successText, setSuccessText] = useState("");
-  const [currencySymbol, setCurrencySymbol] = useState("$");
-  const [userBudgetData, setUserBudgetData] = useState([]);
 
   const [id, setId] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -52,14 +50,6 @@ const BudgetScreen = (props) => {
     setId(id);
     setModalVisible(true);
   };
-
-  useEffect(async () => {
-    try {
-      setUserBudgetData(budget?.budgetPlanningData);
-    } catch (error) {
-      console.log(error);
-    }
-  }, [period]);
 
   const handleOnChange = (event) => {
     const value = event?.target?.value ?? event?.value ?? event;
@@ -121,7 +111,6 @@ const BudgetScreen = (props) => {
     setInputingBudget(false);
     return null;
   };
-  /// Getting initiall data
 
   return (
     <ScrollView style={styles.container}>
@@ -132,7 +121,7 @@ const BudgetScreen = (props) => {
         budget={true}
       />
       <Text style={styles.text}>Budget Plan</Text>
-      <BudgetChart />
+      <BudgetChart budget={budget} isLoading={isLoading} />
       {inputBudget && (
         <>
           {!inputingBudget ? (
