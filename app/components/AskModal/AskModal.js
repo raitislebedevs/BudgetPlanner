@@ -8,17 +8,23 @@ import {
   View,
 } from "react-native";
 import budgetJournal from "../../services/budgetJournal";
+import userBudget from "../../services/userBudget";
 
 const AskModal = (props) => {
-  const { modalVisible, setModalVisible, id } = props;
+  const { modalVisible, setModalVisible, id, budget } = props;
   const [isDeleting, setIsDeleting] = useState(false);
 
   const deleteRecord = async () => {
     setIsDeleting(true);
     setModalVisible(!modalVisible);
     try {
-      await budgetJournal.DELETE(id);
-      await reloadBudgetData();
+      if (budget) {
+        await userBudget.DELETE(id);
+      } else {
+        await budgetJournal.DELETE(id);
+      }
+
+      // await reloadBudgetData();
     } catch (error) {
       console.log(error);
     }

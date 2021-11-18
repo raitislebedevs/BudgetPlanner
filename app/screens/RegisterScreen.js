@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
 import { TextInput, Button, Appbar } from "react-native-paper";
 import { ConnectionServices } from "../services";
-import { getValueFor, save } from "../utils/tokenStorage";
+import { save } from "../utils/expoSecure";
 
 const RegisterScreen = (props) => {
   const { setLoginScreen } = props;

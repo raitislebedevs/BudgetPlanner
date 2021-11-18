@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { SafeAreaView, StyleSheet, View, Text } from "react-native";
 import { TextInput, Card, Button } from "react-native-paper";
 import { ConnectionServices } from "../services";
-import { save } from "../utils/tokenStorage";
+import { save } from "../utils/expoSecure";
 
 const LoginScreen = (props) => {
   const { setLoginScreen, setUserSecret } = props;

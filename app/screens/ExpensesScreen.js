@@ -42,7 +42,7 @@ const ExpensesScreen = (props) => {
         currencySymbol={currencySymbol}
         inputValues={inputValues}
         setInputValues={setInputValues}
-        activity={"expanse"}
+        activity={"expense"}
         categoryItems={categoryItems}
         colorTheme={"brown"}
         buttonText={"Add Expense"}

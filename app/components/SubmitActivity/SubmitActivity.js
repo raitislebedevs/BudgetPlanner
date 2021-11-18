@@ -8,9 +8,11 @@ import {
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import budgetJournal from "../../services/budgetJournal";
-import { getMyData } from "../../utils/tokenStorage";
 import DatePickerComponent from "../DatePickerComponent/DatePickerComponent";
 import InputNumericField from "../InputNumericField/InputNumericField";
+import { getMyData } from "../../utils/userData";
+import ToastMessage from "../ToastMessage/ToastMessage";
+import { refreshData } from "../../utils/budgetFunctions";
 
 const SubmitActivity = (props) => {
   const {
@@ -30,15 +32,23 @@ const SubmitActivity = (props) => {
   const [items, setItems] = useState([]);
 
   const handleOnChange = (event) => {
+    console.log(event);
     const value = event?.target?.value ?? event?.value ?? event;
     const id = event?.target?.id ?? event?.id;
+
+    console.log(value, id);
     setInputValues({ ...inputValues, [id]: value });
   };
 
-  const handleOnChangeCategoryInputValue = (event) => {
+  const handleOnChangeCategoryInputValue = (event, iconTarget) => {
     const value = event?.target?.value ?? event?.value ?? event;
     const id = event?.target?.id ?? event?.id;
-    setInputValues({ ...inputValues, [id]: value, CategoryItem: "" });
+    setInputValues({
+      ...inputValues,
+      [id]: value,
+      CategoryItem: "",
+      [iconTarget?.id]: iconTarget.value,
+    });
   };
 
   const handleOnChangeCategory = (event) => {
@@ -48,11 +58,12 @@ const SubmitActivity = (props) => {
     })[0];
 
     setItems(category?.items);
-    handleOnChange({ target: { value: category?.icon, id: "icon" } });
-    handleOnChangeCategoryInputValue(event);
+    let iconTarget = { value: category?.icon, id: "icon" };
+    handleOnChangeCategoryInputValue(event, iconTarget);
   };
 
   const submitEntry = async () => {
+    console.log(inputValues);
     try {
       setIsSubmiting(true);
       if (!showInput) {
@@ -67,9 +78,14 @@ const SubmitActivity = (props) => {
         !inputValues.ActivityAmount
       ) {
         setIsSubmiting(false);
-        return setErrorText("Fill all fields");
+        return ToastMessage(
+          "error",
+          "Hold your horses",
+          "Please fill all fields"
+        );
       }
       let user = await getMyData();
+
       let payload = {
         category: inputValues.Category,
         categoryItem: inputValues.CategoryItem,
@@ -79,12 +95,13 @@ const SubmitActivity = (props) => {
         icon: inputValues.icon,
         user: user?.userId,
       };
-
+      console.log(payload);
       const { data } = await budgetJournal.CREATE(payload);
       setIsSubmiting(false);
       setShowInput(!showInput);
       setInputValues({});
       refreshData(period);
+      console.log(data);
       return data;
     } catch (error) {
       console.log(error);

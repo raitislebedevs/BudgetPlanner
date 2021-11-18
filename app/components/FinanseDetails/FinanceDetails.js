@@ -4,7 +4,7 @@ import { List } from "react-native-paper";
 import { formatNumber } from "../../utils/standaloneFunctions";
 
 const FinanceDetails = (props) => {
-  const { financeData, title, budgetData, highlight } = props;
+  const { financeData, title, highlight, budget } = props;
 
   return (
     <View>
@@ -16,18 +16,37 @@ const FinanceDetails = (props) => {
             left={(props) => <List.Icon {...props} icon={items?.icon} />}
             right={(props) => (
               <View style={styles.budgetMarkings}>
-                <Text style={items.style}>
-                  {`${formatNumber(items.total, items?.currency)}`}
+                <Text
+                  style={
+                    budget && items.total === 0
+                      ? styles.budgetNotDefined
+                      : [items.style, styles.itemWidth]
+                  }
+                >
+                  {`${formatNumber(
+                    parseFloat(items.total).toFixed(2),
+                    items?.currency
+                  )}  `}
+                  {budget &&
+                    `  ${
+                      items.total - items?.amountSpent > 0
+                        ? "👍"
+                        : items.total == 0
+                        ? "❗"
+                        : "👎"
+                    }`}
                 </Text>
-                {budgetData && (
+                {budget && (
                   <Text
                     style={
-                      items.percentage > 0
+                      items.total - items.amountSpent > 0
                         ? styles.positiveBudget
                         : styles.negativeBudget
                     }
                   >
-                    {` ${items.percentage} % `}
+                    {` ${items?.currency} ${parseFloat(
+                      items.amountSpent
+                    ).toFixed(2)}  `}
                   </Text>
                 )}
               </View>
@@ -41,10 +60,19 @@ const FinanceDetails = (props) => {
                   style={styles.listIem}
                   right={(props) => (
                     <View style={styles.budgetMarkings}>
-                      <Text style={items.style}>
-                        {`${formatNumber(item.amount, items?.currency)}`}
+                      <Text
+                        style={
+                          budget && item.amount === 0
+                            ? styles.budgetNotDefined
+                            : [items.style, styles.itemWidth]
+                        }
+                      >
+                        {`${formatNumber(
+                          parseFloat(item.amount).toFixed(2),
+                          items?.currency
+                        )} ${item.amount == 0 ? "❗" : ""}`}
                       </Text>
-                      {budgetData && (
+                      {budget && item.title != "ANY" && (
                         <Text
                           style={
                             item.percentage > 0
@@ -52,7 +80,9 @@ const FinanceDetails = (props) => {
                               : styles.negativeBudget
                           }
                         >
-                          {` ${item.percentage} % `}
+                          {` ${items?.currency} ${parseFloat(
+                            item.amountSpent
+                          ).toFixed(2)}  `}
                         </Text>
                       )}
                     </View>
@@ -67,24 +97,15 @@ const FinanceDetails = (props) => {
                           onPress={() => highlight(singleEntry?.id)}
                           key={`${singleEntry?.id}`}
                           right={(props) => (
-                            <View style={styles.budgetMarkings}>
+                            <View
+                              style={[styles.budgetMarkings, styles.itemWidth]}
+                            >
                               <Text style={items.style}>
                                 {`${formatNumber(
                                   singleEntry?.amount,
                                   items?.currency
                                 )}`}
                               </Text>
-                              {budgetData && (
-                                <Text
-                                  style={
-                                    singleEntry.percentage > 0
-                                      ? styles.positiveBudget
-                                      : styles.negativeBudget
-                                  }
-                                >
-                                  {` ${singleEntry.percentage} % `}
-                                </Text>
-                              )}
                             </View>
                           )}
                         />
@@ -103,15 +124,29 @@ const FinanceDetails = (props) => {
 const styles = StyleSheet.create({
   positiveBudget: {
     color: "green",
+    alignSelf: "flex-start",
+    minWidth: 100,
   },
   negativeBudget: {
     color: "red",
+    alignSelf: "flex-start",
+    minWidth: 100,
   },
   budgetMarkings: {
-    alignItems: "center",
+    alignItems: "flex-start",
   },
   listIem: {
     backgroundColor: "#E8E8E8",
+  },
+  itemWidth: {
+    alignSelf: "flex-start",
+    minWidth: 100,
+  },
+  budgetNotDefined: {
+    color: "darkblue",
+    alignSelf: "flex-start",
+    minWidth: 100,
+    fontWeight: "bold",
   },
 });
 export default FinanceDetails;

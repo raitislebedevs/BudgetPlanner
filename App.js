@@ -4,11 +4,15 @@ import NavigationMainContainer from "./app/components/Navigation/NavigationMainC
 import LoginScreen from "./app/screens/LoginScreen";
 import { Provider as PaperProvider } from "react-native-paper";
 import RegisterScreen from "./app/screens/RegisterScreen";
-import { getMyData, getValueFor } from "./app/utils/tokenStorage";
+import { getValueFor } from "./app/utils/expoSecure";
+import { getMyData } from "./app/utils/userData";
+import Toast from "react-native-toast-message";
+import { toastConfig } from "./app/components/ToastMessage/ToastConfig";
 
 export default function App() {
   const [userSecret, setUserSecret] = useState(false);
   const [login, setLoginScreen] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(async () => {
     if (await getMyData()) {
@@ -17,7 +21,13 @@ export default function App() {
     }
   }, [login]);
 
-  if (userSecret) return <NavigationMainContainer />;
+  if (userSecret)
+    return (
+      <>
+        {/* <Toast config={toastConfig} topOffset={80} /> */}
+        <NavigationMainContainer />
+      </>
+    );
 
   if (!userSecret)
     return (
@@ -44,5 +54,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
+  },
+  toastStyle: {
+    backgroundColor: "black",
+    color: "#fff",
   },
 });

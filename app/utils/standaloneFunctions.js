@@ -1,5 +1,5 @@
 export const formatNumber = (num, currency) => {
-  if (num) {
+  if (num || num === 0) {
     return `${currency || "$"} ${num
       ?.toString()
       .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")}`;

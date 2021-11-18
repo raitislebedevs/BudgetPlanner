@@ -11,9 +11,9 @@ import { Picker } from "@react-native-picker/picker";
 import Modal from "react-native-modal";
 import { TextInput, Button, Switch } from "react-native-paper";
 import { handleGetCurrencies } from "../../utils/currencyData";
-import { getMyData } from "../../utils/tokenStorage";
 import userInfoServices from "../../services/userInfoServices";
 import userServices from "../../services/userServices";
+import { getMyData } from "../../utils/userData";
 
 const LeftModal = (props) => {
   const { isModalVisible, setModalVisible } = props;

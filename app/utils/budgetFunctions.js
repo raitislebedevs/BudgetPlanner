@@ -1,9 +1,10 @@
 import moment from "moment";
 import budgetJournal from "../services/budgetJournal";
+import userBudget from "../services/userBudget";
 import greenColorCodes from "./greenColorCodes";
 import redColorCodes from "./redColorCodes";
 import { sumWithReduce } from "./standaloneFunctions";
-import { getLinkedUsers, getMyData } from "./tokenStorage";
+import { getLinkedUsers, getMyData } from "./userData";
 
 let rawIncomeData = [];
 let rawExpenseData = [];
@@ -16,6 +17,9 @@ let savedAmount = 0;
 let incomeAmount = 0;
 let spentAmount = 0;
 let currency = "$";
+let rawBudgetData = [];
+let budgetPlanningData = [];
+let budgetChart = [];
 let user = {};
 
 export const initilizeData = async (period) => {
@@ -30,8 +34,16 @@ export const initilizeData = async (period) => {
   // console.log("*******************************************");
 
   rawExpenseData = await getBudgetData(period, "expense");
+
+  rawBudgetData = await getBudgetPlanData(period);
   await getGroupedIncomeData(currency);
   await getGroupedExpenseData(currency);
+  await getGroupedPlannedData(currency);
+
+  let refObj = JSON.stringify(expenseData);
+  let newExpenseData = JSON.parse(refObj);
+  await updateGroupedPlannedData(budgetPlanningData, newExpenseData);
+  console.log("Budget Data", budgetPlanningData);
 
   incomeAmount = sumWithReduce(incomeData, "total");
   spentAmount = sumWithReduce(expenseData, "total");
@@ -47,8 +59,6 @@ export const initilizeData = async (period) => {
   // console.log("*******************************************");
 
   return {
-    rawIncomeData,
-    rawExpenseData,
     incomeData,
     expenseData,
     incomeAmount,
@@ -58,6 +68,7 @@ export const initilizeData = async (period) => {
     spentChartData,
     bezierChartData,
     currency,
+    budgetPlanningData,
   };
 };
 
@@ -105,28 +116,19 @@ const getGroupedExpenseData = (currency) => {
   expenseData = groupDataByPeriod(rawExpenseData, currency);
 };
 
+const getGroupedPlannedData = (currency) => {
+  if (rawBudgetData.length == 0) return (budgetPlanningData = []);
+
+  budgetPlanningData = groupDataByPeriod(rawBudgetData, currency);
+};
+
 const getBudgetData = async (period, activity) => {
   try {
     let users = await getLinkedUsers();
     let filter = { user_in: users, activity_contains: activity };
     let count = 0;
 
-    switch (period) {
-      case "week":
-        count = calculateWeek();
-        filter.activityDate_gte = moment().subtract(count, "d").format();
-        break;
-      case "month":
-        count = calculateMonth();
-        filter.activityDate_gte = moment().subtract(count, "d").format();
-        break;
-      case "year":
-        count = calculateYear();
-        filter.activityDate_gte = moment().subtract(count, "d").format();
-        break;
-      default:
-        break;
-    }
+    getPeriodFilter(period, count, filter);
 
     const { data } = await budgetJournal.FIND({
       _where: filter,
@@ -139,6 +141,87 @@ const getBudgetData = async (period, activity) => {
   return null;
 };
 
+const getBudgetPlanData = async (period) => {
+  try {
+    let users = await getLinkedUsers();
+    let filter = { user_in: users, period_contains: period };
+
+    getBudgetPeriodFilter(period, filter);
+    const { data } = await userBudget.FIND({
+      _where: filter,
+    });
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+
+  return null;
+};
+
+const updateGroupedPlannedData = (budgetEntries, spentEntries) => {
+  try {
+    spentEntries.forEach((item) => {
+      item.data.forEach((dataPoint) => {
+        let index;
+        let titleIndex;
+        if (budgetEntries.filter((e) => e.label === item.label).length > 0) {
+          index = budgetEntries.indexOf(
+            budgetEntries.filter((e) => e.label === item.label)[0]
+          );
+          if (
+            budgetEntries[index].data.filter((e) => e.title === dataPoint.title)
+              .length > 0
+          ) {
+            titleIndex = budgetEntries[index].data.indexOf(
+              budgetEntries[index].data.filter(
+                (e) => e.title === dataPoint.title
+              )[0]
+            );
+
+            return (budgetEntries[index].data[titleIndex].amountSpent =
+              dataPoint.amount);
+          }
+
+          const dataItem = dataPoint;
+          dataItem.amountSpent = dataPoint.amount;
+          dataItem.amount = 0;
+          budgetEntries[index].data.push(dataItem);
+        }
+      });
+
+      if (budgetEntries.filter((e) => e.label === item.label).length > 0) {
+        const index = budgetEntries.indexOf(
+          budgetEntries.filter((e) => e.label === item.label)[0]
+        );
+        return (budgetEntries[index].amountSpent = item.total);
+      }
+
+      const budgetItem = item;
+      budgetItem.amountSpent = item.total;
+      budgetItem.total = 0;
+      budgetItem.data.forEach((dataItem) => {
+        const entry = dataItem;
+        entry.amountSpent = dataItem.amount;
+        entry.amount = 0;
+      });
+
+      budgetEntries.push(budgetItem);
+    });
+
+    budgetEntries.forEach((item) => {
+      if (!item?.amountSpent) {
+        item.amountSpent = 0.0;
+      }
+      item.data.forEach((dataPoint) => {
+        if (!dataPoint?.amountSpent) {
+          dataPoint.amountSpent = 0.0;
+        }
+      });
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
 const groupDataByPeriod = (budgetData, currency) => {
   try {
     let groupedBudgetData = [];
@@ -166,7 +249,7 @@ const groupDataByPeriod = (budgetData, currency) => {
 
         categoryItems[el].forEach((item) => {
           itemData.push({
-            date: item.activityDate,
+            date: item.activityDate || item?.createdAt,
             amount: parseFloat(item.activityAmount).toFixed(2),
             id: item.id,
           });
@@ -185,7 +268,7 @@ const groupDataByPeriod = (budgetData, currency) => {
         icon,
         currency: currency,
         style: {
-          color: activity == "income" ? "darkgreen" : "darkred",
+          color: activity == "expense" ? "darkred" : "darkgreen",
           fontWeight: "bold",
         },
 
@@ -449,3 +532,45 @@ const groupDataByIndex = (budgetData, key) => {
 
   return result;
 };
+
+function getPeriodFilter(period, count, filter) {
+  switch (period) {
+    case "week":
+      count = calculateWeek();
+      filter.activityDate_gte = moment().subtract(count, "d").format();
+      break;
+    case "month":
+      count = calculateMonth();
+      filter.activityDate_gte = moment().subtract(count, "d").format();
+      break;
+    case "year":
+      count = calculateYear();
+      filter.activityDate_gte = moment().subtract(count, "d").format();
+      break;
+    default:
+      break;
+  }
+  return count;
+}
+
+function getBudgetPeriodFilter(period, filter) {
+  switch (period) {
+    case "day":
+      filter.period_contains = "Day";
+      break;
+    case "week":
+      filter.period_contains = "Week";
+      break;
+    case "month":
+      filter.period_contains = "Month";
+      break;
+    case "year":
+      filter.period_contains = "Year";
+      break;
+    case "all":
+      filter.period_contains = "All";
+      break;
+    default:
+      break;
+  }
+}

@@ -1,7 +1,7 @@
 import userInfoServices from "../services/userInfoServices";
 import userServices from "../services/userServices";
 
-export const getMyData = async () => {
+export async function getMyData() {
   try {
     const user = await getUser();
     const { data } = await getUserInfo(user?.data.userInfo);
@@ -9,16 +9,16 @@ export const getMyData = async () => {
     return data;
   } catch (error) {}
   return null;
-};
+}
 
-export const getLinkedUsers = async () => {
+export async function getLinkedUsers() {
   let user = await getMyData();
   let users = [user.userId];
   user?.linkedUsers.forEach((person) => {
     users.push(person._id);
   });
   return users;
-};
+}
 
 async function getUser() {
   let user = await userServices.GET_ME();

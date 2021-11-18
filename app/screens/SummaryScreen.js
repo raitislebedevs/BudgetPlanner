@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Dimensions,
   StyleSheet,
@@ -8,10 +8,11 @@ import {
 } from "react-native";
 import { LineChart } from "react-native-chart-kit";
 import FinanceDetails from "../components/FinanseDetails/FinanceDetails";
-import { getMyData } from "../utils/tokenStorage";
 
 const SummaryScreen = (props) => {
   const { budget, chartLabels, isLoading } = props;
+
+  const highlight = (id) => {};
 
   return (
     <ScrollView>
@@ -64,10 +65,18 @@ const SummaryScreen = (props) => {
             />
           </View>
           {budget?.incomeData?.length > 0 && (
-            <FinanceDetails financeData={budget.incomeData} title="Income" />
+            <FinanceDetails
+              financeData={budget.incomeData}
+              title="Income"
+              highlight={highlight}
+            />
           )}
           {budget?.expenseData?.length > 0 && (
-            <FinanceDetails financeData={budget.expenseData} title="Expenses" />
+            <FinanceDetails
+              financeData={budget.expenseData}
+              title="Expenses"
+              highlight={highlight}
+            />
           )}
         </>
       ) : (

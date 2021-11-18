@@ -1,6 +1,6 @@
 import moment from "moment";
 import budgetJournal from "../services/budgetJournal";
-import { getLinkedUsers } from "./tokenStorage";
+import { getLinkedUsers } from "./userData";
 
 export async function defaultValue(filter) {
   try {

@@ -31,7 +31,13 @@ const Header = (props) => {
       {!isLoading ? (
         <View>
           <Text style={styles.label}>Saved</Text>
-          <Text style={styles.positiveAmount}>
+          <Text
+            style={
+              budget?.spentAmount > budget?.savedAmount
+                ? styles.overspentAmount
+                : styles.positiveAmount
+            }
+          >
             {`${
               formatNumber(budget?.savedAmount, currencySymbol) ||
               parseFloat(0).toFixed(2)
@@ -83,6 +89,12 @@ const styles = StyleSheet.create({
   negativeAmount: {
     color: "darkred",
     fontSize: 15,
+    fontWeight: "bold",
+  },
+  overspentAmount: {
+    color: "red",
+    fontSize: 15,
+    fontStyle: "italic",
     fontWeight: "bold",
   },
   label: {
