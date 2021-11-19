@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { Button } from "react-native-paper";
+import AppButton from "../AppButton/AppButton";
 
 const Period = (props) => {
   const { period, setPeriod } = props;
@@ -9,13 +10,37 @@ const Period = (props) => {
   };
   return (
     <View style={styles.inlineButtons}>
-      <Button
+      <AppButton
+        title={"Week"}
+        onPress={(e) => changeActivePeriod({ id: "week" })}
+        mode={period === "week" ? "contained" : "outlined"}
+        color={period === "week" ? "primary" : "white"}
+      />
+      <AppButton
+        title={"Month"}
+        onPress={(e) => changeActivePeriod({ id: "month" })}
+        mode={period === "month" ? "contained" : "outlined"}
+        color={period === "month" ? "primary" : "white"}
+      />
+      <AppButton
+        title={"Year"}
+        onPress={(e) => changeActivePeriod({ id: "year" })}
+        mode={period === "year" ? "contained" : "outlined"}
+        color={period === "year" ? "primary" : "white"}
+      />
+      <AppButton
+        title={"All"}
+        onPress={(e) => changeActivePeriod({ id: "all" })}
+        mode={period === "all" ? "contained" : "outlined"}
+        color={period === "all" ? "primary" : "white"}
+      />
+      {/* <Button
         onPress={(e) => changeActivePeriod({ id: "week" })}
         mode={period === "week" ? "contained" : "outlined"}
       >
         Week
-      </Button>
-      <Button
+      </Button> */}
+      {/* <Button
         onPress={(e) => changeActivePeriod({ id: "month" })}
         mode={period === "month" ? "contained" : "outlined"}
       >
@@ -32,7 +57,7 @@ const Period = (props) => {
         mode={period === "all" ? "contained" : "outlined"}
       >
         All
-      </Button>
+      </Button> */}
     </View>
   );
 };

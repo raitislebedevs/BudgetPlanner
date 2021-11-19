@@ -1,8 +1,20 @@
 import React, { useState } from "react";
-import { SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
-import { TextInput, Button, Appbar } from "react-native-paper";
+import {
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+  ImageBackground,
+  Image,
+} from "react-native";
+import { Appbar } from "react-native-paper";
+import AppButton from "../components/AppButton/AppButton";
+import AppTextInput from "../components/AppTextInput/AppTextInput";
+import { colors } from "../config/colors";
 import { ConnectionServices } from "../services";
 import { save } from "../utils/expoSecure";
+
+const image = require("../assets/Light.jpg");
 
 const RegisterScreen = (props) => {
   const { setLoginScreen } = props;
@@ -24,7 +36,8 @@ const RegisterScreen = (props) => {
         !inputValues.email ||
         !inputValues.firstName ||
         !inputValues.lastName ||
-        !inputValues.password
+        !inputValues.password ||
+        !inputValues.confirmPassword
       ) {
         setErrorText("Please fill all of the details");
         setIsLoading(false);
@@ -65,66 +78,82 @@ const RegisterScreen = (props) => {
 
   return (
     <SafeAreaView style={styles.content}>
-      <ScrollView style={styles.view}>
-        <Appbar>
-          <Appbar.BackAction onPress={() => setLoginScreen(true)} />
-          <Appbar.Content title="Register" />
-        </Appbar>
-        <TextInput
-          underlineColor="brown"
-          label="First Name"
-          keyboardType="email-address"
-          onChangeText={(e) =>
-            handleOnChange({ target: { value: e, id: "firstName" } })
-          }
-        ></TextInput>
-        <TextInput
-          underlineColor="brown"
-          label="Last Name"
-          keyboardType="email-address"
-          onChangeText={(e) =>
-            handleOnChange({ target: { value: e, id: "lastName" } })
-          }
-        ></TextInput>
-        <TextInput
-          underlineColor="brown"
-          label="Email"
-          keyboardType="email-address"
-          onChangeText={(e) =>
-            handleOnChange({ target: { value: e, id: "email" } })
-          }
-        ></TextInput>
-        <TextInput
-          underlineColor="brown"
-          label="Password"
-          secureTextEntry={true}
-          right={<TextInput.Icon name="eye-off-outline" />}
-          onChangeText={(e) =>
-            handleOnChange({ target: { value: e, id: "password" } })
-          }
-        ></TextInput>
-        <TextInput
-          underlineColor="brown"
-          label="Confirm Password"
-          secureTextEntry={true}
-          right={<TextInput.Icon name="eye-off-outline" />}
-          onChangeText={(e) =>
-            handleOnChange({ target: { value: e, id: "confirmPassword" } })
-          }
-        ></TextInput>
+      <ImageBackground
+        blurRadius={7}
+        source={image}
+        resizeMode="cover"
+        style={styles.image}
+      >
+        <View style={[styles.view, styles.formControl]}>
+          <Appbar style={styles.appbar}>
+            <Appbar.BackAction
+              color={colors.white}
+              onPress={() => setLoginScreen(true)}
+            />
 
-        <Button
-          mode="contained"
-          style={styles.buttons}
-          onPress={handleRegister}
-          disabled={isLoading}
-        >
-          {isLoading ? "Registering...." : "Register"}
-        </Button>
-        <View style={styles.errorText}>
-          <Text style={styles.errorText}>{errorText}</Text>
+            <Appbar.Content title="Login" color={colors.white} />
+
+            <View style={styles.header}>
+              <Image
+                style={styles.logo}
+                source={require("../assets/favicon.png")}
+              />
+            </View>
+          </Appbar>
+
+          <AppTextInput
+            icon="email"
+            placeholder="First Name"
+            keyboardType="text"
+            onChangeText={(e) =>
+              handleOnChange({ target: { value: e, id: "firstName" } })
+            }
+          />
+          <AppTextInput
+            icon="email"
+            placeholder="Last Name"
+            keyboardType="text"
+            onChangeText={(e) =>
+              handleOnChange({ target: { value: e, id: "lastName" } })
+            }
+          />
+          <AppTextInput
+            icon="email"
+            placeholder="Email"
+            keyboardType="email-address"
+            onChangeText={(e) =>
+              handleOnChange({ target: { value: e, id: "email" } })
+            }
+          />
+          <AppTextInput
+            icon="key"
+            placeholder="Password"
+            rightIcon={"eye"}
+            keyboardType="email-address"
+            onChangeText={(e) =>
+              handleOnChange({ target: { value: e, id: "password" } })
+            }
+          />
+          <AppTextInput
+            icon="key"
+            placeholder="Confirm Password"
+            keyboardType="email-address"
+            onChangeText={(e) =>
+              handleOnChange({ target: { value: e, id: "confirmPassword" } })
+            }
+          />
+
+          <AppButton
+            title={isLoading ? "Registering...." : "Register"}
+            onPress={handleRegister}
+            disabled={isLoading}
+          />
+
+          <View style={styles.errorText}>
+            <Text style={styles.errorText}>{errorText}</Text>
+          </View>
         </View>
-      </ScrollView>
+      </ImageBackground>
     </SafeAreaView>
   );
 };
@@ -136,20 +165,45 @@ const styles = StyleSheet.create({
     display: "flex",
     flex: 1,
     backgroundColor: "#e26a00",
-    alignItems: "center",
-    justifyContent: "center",
     flexDirection: "row",
   },
   view: {
     width: "90%",
   },
-  buttons: {
-    color: "#fff",
-    margin: 5,
+  image: {
+    paddingTop: "20%",
+    justifyContent: "center", //Centered horizontally
+    alignItems: "center", //Centered vertically
+    flex: 1,
   },
   errorText: {
     fontWeight: "bold",
-    color: "darkred",
+    color: colors.danger,
     alignItems: "center",
+  },
+  formControl: {
+    borderRadius: 25,
+    borderColor: colors.white,
+  },
+
+  appbar: {
+    borderRadius: 25,
+    backgroundColor: colors.secondary,
+    color: colors.white,
+  },
+
+  header: {
+    flexDirection: "row",
+  },
+  logo: {
+    width: 40,
+    height: 40,
+    margin: 15,
+    marginLeft: 20,
+  },
+  image: {
+    justifyContent: "center", //Centered horizontally
+    alignItems: "center", //Centered vertically
+    flex: 1,
   },
 });

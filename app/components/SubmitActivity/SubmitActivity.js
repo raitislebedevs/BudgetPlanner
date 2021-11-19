@@ -32,11 +32,8 @@ const SubmitActivity = (props) => {
   const [items, setItems] = useState([]);
 
   const handleOnChange = (event) => {
-    console.log(event);
     const value = event?.target?.value ?? event?.value ?? event;
     const id = event?.target?.id ?? event?.id;
-
-    console.log(value, id);
     setInputValues({ ...inputValues, [id]: value });
   };
 
@@ -63,7 +60,6 @@ const SubmitActivity = (props) => {
   };
 
   const submitEntry = async () => {
-    console.log(inputValues);
     try {
       setIsSubmiting(true);
       if (!showInput) {
@@ -95,13 +91,11 @@ const SubmitActivity = (props) => {
         icon: inputValues.icon,
         user: user?.userId,
       };
-      console.log(payload);
       const { data } = await budgetJournal.CREATE(payload);
       setIsSubmiting(false);
       setShowInput(!showInput);
       setInputValues({});
       refreshData(period);
-      console.log(data);
       return data;
     } catch (error) {
       console.log(error);

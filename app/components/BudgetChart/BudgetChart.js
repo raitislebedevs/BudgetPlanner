@@ -10,10 +10,7 @@ function BudgetChart(props) {
   const [guru, setGuru] = useState(0.3);
 
   useEffect(() => {
-    console.log("Shoukd this change?");
     if (budget?.budgetPlanningData) {
-      console.log("We have budget");
-      console.log(budget?.budgetPlanningData);
       spentProgress();
       planningProgress();
       savedProgress();

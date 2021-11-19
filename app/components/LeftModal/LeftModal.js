@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from "react";
 import {
-  StyleSheet,
   Text,
-  TouchableHighlight,
   View,
+  StyleSheet,
+  TouchableHighlight,
   ActivityIndicator,
 } from "react-native";
-
 import { Picker } from "@react-native-picker/picker";
 import Modal from "react-native-modal";
-import { TextInput, Button, Switch } from "react-native-paper";
+import { TextInput, Button } from "react-native-paper";
 import { handleGetCurrencies } from "../../utils/currencyData";
 import userInfoServices from "../../services/userInfoServices";
 import userServices from "../../services/userServices";
@@ -34,6 +33,7 @@ const LeftModal = (props) => {
       let payload = {
         currency: event.value,
       };
+      setCurrency(event.value);
       await userInfoServices.UPDATE(user?.id, payload);
     } catch (error) {
       console.log(error);
@@ -133,7 +133,7 @@ const LeftModal = (props) => {
       deviceHeight={1800}
       style={styles.modalStyle}
       swipeDirection="left"
-      backdropColor={"black"}
+      backdropColor={"darkgreen"}
       backdropOpacity={0.9}
       backdropTransitionInTiming={1}
       backdropTransitionOutTiming={1}
@@ -218,7 +218,11 @@ const LeftModal = (props) => {
         </View>
         {!isInviting ? (
           <>
-            <Button mode="contained" onPress={() => sendInvatation()}>
+            <Button
+              style={styles.submitButton}
+              mode="contained"
+              onPress={() => sendInvatation()}
+            >
               Send
             </Button>
           </>
@@ -230,7 +234,7 @@ const LeftModal = (props) => {
           />
         )}
       </View>
-      <View style={styles.marginTop}>
+      {/* <View style={styles.marginTop}>
         <Text style={styles.subText}>Settings</Text>
       </View>
       <View style={styles.public}>
@@ -242,7 +246,7 @@ const LeftModal = (props) => {
           onValueChange={toggleSwitch}
           value={isEnabled}
         />
-      </View>
+      </View> */}
     </Modal>
   );
 };
@@ -268,6 +272,9 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     borderWidth: 1,
     borderColor: "#fff",
+  },
+  submitButton: {
+    marginTop: 10,
   },
   submitText: {
     color: "black",
@@ -301,9 +308,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
   },
-  dropDown: {
-    zIndex: 999999999,
-  },
 
   pickerContainer: {
     marginTop: 10,
@@ -314,10 +318,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#e7e7e7",
     borderRadius: 5,
   },
-  pickerItemContainer: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
+
+  modalStyle: {
+    // backgroundColor: "black",
   },
 });
 export default LeftModal;

@@ -39,8 +39,10 @@ const Header = (props) => {
             }
           >
             {`${
-              formatNumber(budget?.savedAmount, currencySymbol) ||
-              parseFloat(0).toFixed(2)
+              formatNumber(
+                parseFloat(budget?.savedAmount).toFixed(2),
+                currencySymbol
+              ) || parseFloat(0).toFixed(2)
             }`}
           </Text>
         </View>
@@ -53,8 +55,10 @@ const Header = (props) => {
           <Text style={styles.label}>Spent</Text>
           <Text style={styles.negativeAmount}>
             {`${
-              formatNumber(budget?.spentAmount, currencySymbol) ||
-              parseFloat(0).toFixed(2)
+              formatNumber(
+                parseFloat(budget?.spentAmount).toFixed(2),
+                currencySymbol
+              ) || parseFloat(0).toFixed(2)
             }`}
           </Text>
         </View>

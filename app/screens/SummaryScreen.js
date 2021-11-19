@@ -38,7 +38,7 @@ const SummaryScreen = (props) => {
               }}
               width={Dimensions.get("window").width} // from react-native
               height={242}
-              yAxisLabel="$ "
+              yAxisLabel={`${budget?.currency || "$"} `}
               title="Summary"
               yAxisInterval={1} // optional, defaults to 1
               chartConfig={{

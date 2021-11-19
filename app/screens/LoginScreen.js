@@ -1,8 +1,21 @@
 import React, { useState } from "react";
-import { SafeAreaView, StyleSheet, View, Text } from "react-native";
-import { TextInput, Card, Button } from "react-native-paper";
+import {
+  SafeAreaView,
+  StyleSheet,
+  View,
+  Text,
+  Image,
+  ImageBackground,
+  TextInput,
+} from "react-native";
+// import { Button } from "react-native-paper";
+import AppButton from "../components/AppButton/AppButton";
+import AppTextInput from "../components/AppTextInput/AppTextInput";
+import { colors } from "../config/colors";
 import { ConnectionServices } from "../services";
 import { save } from "../utils/expoSecure";
+
+const image = require("../assets/Light.jpg");
 
 const LoginScreen = (props) => {
   const { setLoginScreen, setUserSecret } = props;
@@ -41,47 +54,54 @@ const LoginScreen = (props) => {
 
   return (
     <SafeAreaView style={styles.content}>
-      <View style={styles.view}>
-        <Card backgroundColor="brown">
-          <Card.Title title="Placifull Budget Planner"></Card.Title>
-          <Card.Content>
-            <TextInput
-              underlineColor="brown"
-              label="Email"
-              keyboardType="email-address"
-              onChangeText={(e) =>
-                handleOnChange({ target: { value: e, id: "email" } })
-              }
-            ></TextInput>
-            <TextInput
-              underlineColor="brown"
-              label="Password"
-              secureTextEntry={true}
-              onChangeText={(e) =>
-                handleOnChange({ target: { value: e, id: "password" } })
-              }
-            ></TextInput>
-            <View style={styles.buttons}>
-              <Button
-                onPress={() => handleSignin()}
-                style={styles.buttons}
-                mode="contained"
-              >
-                Login
-              </Button>
-              <Button
-                style={styles.buttons}
-                onPress={() => setLoginScreen(false)}
-              >
-                Register
-              </Button>
+      <ImageBackground
+        source={image}
+        blurRadius={5}
+        resizeMode="cover"
+        style={styles.image}
+      >
+        <View style={styles.view}>
+          <View style={styles.formControl}>
+            <View style={styles.header}>
+              <Image
+                style={styles.logo}
+                source={require("../assets/favicon.png")}
+              />
+              <Text style={styles.logoText}>Placifull Budget Planner</Text>
             </View>
-            <View style={styles.errorText}>
-              <Text style={styles.errorText}>{errorText}</Text>
+            <View style={styles.frameMargin}>
+              <AppTextInput
+                icon="email"
+                placeholder="Email"
+                keyboardType="email-address"
+                onChangeText={(e) =>
+                  handleOnChange({ target: { value: e, id: "email" } })
+                }
+              />
+              <AppTextInput
+                icon="key"
+                underlineColor="brown"
+                placeholder="Password"
+                secureTextEntry={true}
+                onChangeText={(e) =>
+                  handleOnChange({ target: { value: e, id: "password" } })
+                }
+              />
+              <View style={styles.frameMargin}>
+                <AppButton title={"Login"} onPress={() => handleSignin()} />
+                <AppButton
+                  title={"Register"}
+                  color={"secondary"}
+                  onPress={() => setLoginScreen(false)}
+                />
+              </View>
+              <View style={styles.errorText}>
+                <Text style={styles.errorText}>{errorText}</Text>
+              </View>
             </View>
-          </Card.Content>
-        </Card>
-      </View>
+          </View>
+        </View>
+      </ImageBackground>
     </SafeAreaView>
   );
 };
@@ -92,20 +112,44 @@ const styles = StyleSheet.create({
   content: {
     display: "flex",
     flex: 1,
-    backgroundColor: "#e26a00",
-    alignItems: "center",
-    justifyContent: "center",
-    flexDirection: "row",
   },
   view: {
     width: "90%",
+    borderRadius: 25,
   },
-  buttons: {
+  header: {
+    flexDirection: "row",
+  },
+  logo: {
+    width: 40,
+    height: 40,
+    margin: 15,
+    marginLeft: 20,
+  },
+  logoText: {
+    color: colors.black,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingTop: 20,
+    fontSize: 20,
+    fontWeight: "500",
+  },
+  frameMargin: {
     margin: 5,
+  },
+  image: {
+    justifyContent: "center", //Centered horizontally
+    alignItems: "center", //Centered vertically
+    flex: 1,
   },
   errorText: {
     fontWeight: "bold",
-    color: "darkred",
+    color: "#fff",
     alignItems: "center",
+  },
+  formControl: {
+    backgroundColor: colors.lightTheme,
+    borderRadius: 25,
+    borderColor: colors.white,
   },
 });

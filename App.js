@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet } from "react-native";
+import { ImageBackground, StyleSheet } from "react-native";
 import NavigationMainContainer from "./app/components/Navigation/NavigationMainContainer";
 import LoginScreen from "./app/screens/LoginScreen";
 import { Provider as PaperProvider } from "react-native-paper";
@@ -24,27 +24,28 @@ export default function App() {
   if (userSecret)
     return (
       <>
-        {/* <Toast config={toastConfig} topOffset={80} /> */}
         <NavigationMainContainer />
       </>
     );
 
   if (!userSecret)
     return (
-      <PaperProvider>
-        {login && (
-          <LoginScreen
-            setUserSecret={setUserSecret}
-            setLoginScreen={setLoginScreen}
-          />
-        )}
-        {!login && (
-          <RegisterScreen
-            setLoginScreen={setLoginScreen}
-            setUserSecret={setUserSecret}
-          />
-        )}
-      </PaperProvider>
+      <>
+        <PaperProvider>
+          {login && (
+            <LoginScreen
+              setUserSecret={setUserSecret}
+              setLoginScreen={setLoginScreen}
+            />
+          )}
+          {!login && (
+            <RegisterScreen
+              setLoginScreen={setLoginScreen}
+              setUserSecret={setUserSecret}
+            />
+          )}
+        </PaperProvider>
+      </>
     );
 }
 

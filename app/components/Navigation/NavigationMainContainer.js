@@ -13,6 +13,7 @@ import Period from "../Period/Period";
 //Utils
 import { useState } from "react";
 import { initilizeData } from "../../utils/budgetFunctions";
+import { colors } from "../../config/colors";
 
 const NavigationMainContainer = (props) => {
   //Screen Names
@@ -70,8 +71,8 @@ const NavigationMainContainer = (props) => {
 
             return <Ionicons name={iconName} size={size} color={color} />;
           },
-          tabBarActiveTintColor: "brown",
-          tabBarInactiveTintColor: "lightgrey",
+          tabBarActiveTintColor: colors.primary,
+          tabBarInactiveTintColor: colors.mediumGray,
           tabBarLabelStyle: {
             paddingBottom: 3,
             fontSize: 10,
