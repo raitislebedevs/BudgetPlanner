@@ -309,32 +309,6 @@ const LeftModal = (props) => {
             />
           )}
         </View>
-        {/*        
-
-
-        <View style={styles.marginTop}>
-          <TextInput
-            label={"Link User By Email"}
-            onChangeText={(value) => setInvitePerson(value)}
-          ></TextInput>
-        </View>
-        {!isInviting ? (
-          <>
-            <Button
-              style={styles.submitButton}
-              mode="contained"
-              onPress={() => sendInvatation()}
-            >
-              Send
-            </Button>
-          </>
-        ) : (
-          <ActivityIndicator
-            style={styles.loader}
-            size="large"
-            color="orange"
-          />
-        )}*/}
       </ScrollView>
     </Modal>
   );
