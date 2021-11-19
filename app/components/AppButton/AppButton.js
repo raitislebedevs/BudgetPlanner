@@ -6,8 +6,6 @@ import { colors } from "../../config/colors";
 function AppButton({ title, onPress, color = "primary", mode = "contained" }) {
   useEffect(() => {
     console.log(mode);
-
-    // console.log(styles[mode]);
   });
   return (
     <TouchableOpacity

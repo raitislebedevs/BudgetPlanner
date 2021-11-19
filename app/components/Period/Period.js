@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
 import { StyleSheet, View } from "react-native";
-import { Button } from "react-native-paper";
 import AppButton from "../AppButton/AppButton";
 
 const Period = (props) => {

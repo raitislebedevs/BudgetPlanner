@@ -3,8 +3,9 @@ import {
   Text,
   View,
   StyleSheet,
-  TouchableHighlight,
+  TouchableOpacity,
   ActivityIndicator,
+  Switch,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import Modal from "react-native-modal";
@@ -13,22 +14,33 @@ import { handleGetCurrencies } from "../../utils/currencyData";
 import userInfoServices from "../../services/userInfoServices";
 import userServices from "../../services/userServices";
 import { getMyData } from "../../utils/userData";
+import { colors } from "../../config/colors";
+import defaultStyles from "../../config/appStyles";
+import AppButton from "../AppButton/AppButton";
+import AppTextInput from "../AppTextInput/AppTextInput";
+import { ScrollView } from "react-native-gesture-handler";
 
 const LeftModal = (props) => {
   const { isModalVisible, setModalVisible } = props;
   const [user, setUser] = useState(false);
+  const [currencyPicker, setCurrencyPicker] = useState(false);
   const [invitePerson, setInvitePerson] = useState("");
+  const [currencyLoader, setCurrencyLoader] = useState(false);
   const [currency, setCurrency] = useState("");
   const [items, setItems] = useState([]);
+  const [theme, setTheme] = useState("Light");
   const [isInviting, setIsInviting] = useState(false);
   const [isEnabled, setIsEnabled] = useState(false);
-  const toggleSwitch = async () => {
+  const toggleSwitch = () => {
+    if (theme === "Light") setTheme("Dark");
+    if (theme === "Dark") setTheme("Light");
     setIsEnabled((previousState) => !previousState);
   };
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
   const handleCurrencyChange = async (event) => {
+    setCurrencyLoader(true);
     try {
       let payload = {
         currency: event.value,
@@ -38,6 +50,8 @@ const LeftModal = (props) => {
     } catch (error) {
       console.log(error);
     }
+    setCurrencyPicker(false);
+    setCurrencyLoader(false);
   };
 
   useEffect(async () => {
@@ -129,87 +143,168 @@ const LeftModal = (props) => {
   return (
     <Modal
       isVisible={isModalVisible}
-      deviceWidth={800}
-      deviceHeight={1800}
+      // deviceWidth={800}
+      // deviceHeight={1800}
       style={styles.modalStyle}
       swipeDirection="left"
-      backdropColor={"darkgreen"}
-      backdropOpacity={0.9}
-      backdropTransitionInTiming={1}
-      backdropTransitionOutTiming={1}
+      backdropColor={colors.lightGray}
+      backdropOpacity={0.97}
+      animationIn="slideInLeft"
+      animationOut="slideOutRight"
     >
-      <View>
-        <View style={styles.mainContainer}>
-          <Text style={styles.label}>
-            {`${user.firstName} ${user.lastName}`}
-          </Text>
-          <TouchableHighlight
-            style={styles.submit}
-            onPress={() => null}
-            underlayColor="brown"
-            onPress={toggleModal}
-          >
-            <Text style={styles.submitText}>X</Text>
-          </TouchableHighlight>
+      <ScrollView>
+        <View style={styles.headingContainer}>
+          <View style={styles.heading}>
+            <Text style={[styles.label, defaultStyles.headingText]}>
+              {`${user.firstName} ${user.lastName}`}
+            </Text>
+            <TouchableOpacity
+              style={styles.close}
+              onPress={() => null}
+              underlayColor={colors.primary}
+              onPress={toggleModal}
+            >
+              <Text style={styles.closeText}>X</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-        <View style={styles.pickerContainer}>
-          <Picker
-            selectedValue={currency}
-            style={{ height: 50, width: 150 }}
-            onValueChange={(itemValue, itemIndex) => {
-              handleCurrencyChange({
-                value: itemValue,
-                id: "currency",
-              });
-            }}
+        <View style={styles.heading}>
+          <Text style={defaultStyles.appTextNormal}>{`Currency: ${
+            user?.currency?.name || "USD"
+          } - ${user?.currency?.symbol || "$"} ­`}</Text>
+          <Text
+            style={defaultStyles.appTextSecondary}
+            onPress={() => setCurrencyPicker(!currencyPicker)}
           >
-            {items.map((item) => {
-              return (
-                <Picker.Item
-                  label={item.label}
-                  value={item.value}
-                  key={item.label}
-                />
-              );
-            })}
-          </Picker>
+            Edit
+          </Text>
+        </View>
+        {currencyPicker && (
+          <View style={styles.pickerContainer}>
+            {currencyLoader ? (
+              <ActivityIndicator
+                style={styles.loader}
+                size="large"
+                color={colors.secondary}
+              />
+            ) : (
+              <Picker
+                selectedValue={currency}
+                style={{ height: 50, width: 150 }}
+                onValueChange={(itemValue, itemIndex) => {
+                  handleCurrencyChange({
+                    value: itemValue,
+                    id: "currency",
+                  });
+                }}
+              >
+                {items.map((item) => {
+                  return (
+                    <Picker.Item
+                      label={item.label}
+                      value={item.value}
+                      key={item.label}
+                    />
+                  );
+                })}
+              </Picker>
+            )}
+          </View>
+        )}
+        <View style={styles.heading}>
+          <Text
+            style={defaultStyles.appTextNormal}
+          >{`Name: ${user.firstName} ${user.lastName} ­`}</Text>
+          <Text style={defaultStyles.appTextSecondary}>Edit</Text>
+        </View>
+        <View style={styles.heading}>
+          <Text
+            style={defaultStyles.appTextNormal}
+          >{`Email: ${user?.email}  ­`}</Text>
+          <Text style={defaultStyles.appTextSecondary}>Edit</Text>
+        </View>
+        <View style={styles.heading}>
+          <Text style={defaultStyles.appTextNormal}>Theme: {`${theme}`} </Text>
+          <Switch
+            trackColor={{ false: colors.primary, true: "#fff" }}
+            thumbColor={isEnabled ? colors.primary : colors.lightGray}
+            ios_backgroundColor="#3e3e3e"
+            onValueChange={toggleSwitch}
+            value={isEnabled}
+          />
         </View>
         {user?.linkedUsers && (
           <View style={styles.marginTop}>
-            <Text style={styles.subText}>Linked Users:</Text>
+            <Text style={styles.subText}></Text>
             {user?.linkedUsers.map((person) => {
               return <Text style={styles.person}>{`${person.email}`}</Text>;
             })}
           </View>
         )}
-
+        {user?.linkedUsers?.length > 0 && (
+          <>
+            <View style={styles.headingContainer}>
+              <View style={styles.heading}>
+                <Text style={[styles.label, defaultStyles.headingText]}>
+                  Linked Users
+                </Text>
+              </View>
+            </View>
+            <View style={styles.marginTop}>
+              {user?.linkedUsers.map((person) => {
+                return <Text style={styles.person}>{`${person.email}`}</Text>;
+              })}
+            </View>
+          </>
+        )}
         {user?.invites?.length > 0 && (
-          <View style={styles.marginTop}>
-            <Text style={styles.subText}>Invitations</Text>
-
+          <>
+            <View style={styles.headingContainer}>
+              <View style={styles.heading}>
+                <Text style={[styles.label, defaultStyles.headingText]}>
+                  User Invites
+                </Text>
+              </View>
+            </View>
             {user?.invites.map((person) => {
               return (
                 <View style={styles.invites}>
                   <Text
-                    style={styles.person}
+                    style={[defaultStyles.text, styles.allignment]}
                   >{`${person.firstName} ${person.lastName}`}</Text>
-                  <Button
+                  <AppButton
                     mode="contained"
+                    title={"Yes"}
                     onPress={() => acceptInvite(person.userId, person.id)}
-                  >
-                    Yes
-                  </Button>
-                  <Button
-                    mode="contained"
+                  />
+                  <AppButton
+                    title={"No"}
                     onPress={() => removeInvite(person.id)}
-                  >
-                    No
-                  </Button>
+                    mode="outlined"
+                    color={"white"}
+                  />
                 </View>
               );
             })}
-          </View>
+          </>
         )}
+        <View style={styles.headingContainer}>
+          <View style={styles.heading}>
+            <Text style={[styles.label, defaultStyles.headingText]}>
+              Invite User
+            </Text>
+          </View>
+        </View>
+        <View style={styles.marginTop}>
+          <AppTextInput
+            icon={"email"}
+            placeholder={"Invite user by email address"}
+            onChangeText={(value) => setInvitePerson(value)}
+          ></AppTextInput>
+        </View>
+        {/*        
+
+
         <View style={styles.marginTop}>
           <TextInput
             label={"Link User By Email"}
@@ -232,61 +327,47 @@ const LeftModal = (props) => {
             size="large"
             color="orange"
           />
-        )}
-      </View>
-      {/* <View style={styles.marginTop}>
-        <Text style={styles.subText}>Settings</Text>
-      </View>
-      <View style={styles.public}>
-        <Text style={styles.subText}>Public</Text>
-        <Switch
-          trackColor={{ false: "#767577", true: "#fff" }}
-          thumbColor={isEnabled ? "green" : "red"}
-          ios_backgroundColor="#3e3e3e"
-          onValueChange={toggleSwitch}
-          value={isEnabled}
-        />
-      </View> */}
+        )}*/}
+      </ScrollView>
     </Modal>
   );
 };
 
 const styles = StyleSheet.create({
   label: {
-    color: "snow",
-    fontSize: 28,
-    fontWeight: "bold",
     alignSelf: "center",
   },
+  allignment: {
+    marginTop: 7,
+  },
 
-  mainContainer: {
+  heading: {
+    marginTop: 5,
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "flex-start",
+    marginBottom: 5,
   },
-  submit: {
-    width: 25,
-    height: 22,
+  headingContainer: {
+    borderBottomColor: colors.primary,
+    borderBottomWidth: 1,
+  },
+  close: {
+    width: 28,
+    height: 25,
     marginTop: 10,
-    backgroundColor: "lightgray",
+    backgroundColor: colors.primary,
     borderRadius: 5,
     borderWidth: 1,
-    borderColor: "#fff",
+    borderColor: colors.white,
   },
   submitButton: {
     marginTop: 10,
   },
-  submitText: {
-    color: "black",
+  closeText: {
+    color: colors.white,
     textAlign: "center",
   },
-  subText: {
-    color: "snow",
-    marginTop: 5,
-    fontSize: 20,
-    fontWeight: "bold",
-    alignSelf: "flex-start",
-  },
+
   invites: {
     marginTop: 5,
     display: "flex",
@@ -300,9 +381,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     alignSelf: "flex-start",
   },
-  marginTop: {
-    marginTop: 20,
-  },
+
   public: {
     marginTop: 5,
     flexDirection: "row",
@@ -312,15 +391,17 @@ const styles = StyleSheet.create({
   pickerContainer: {
     marginTop: 10,
     alignItems: "center",
-    borderBottomColor: "brown",
-    borderBottomWidth: 1,
-    width: "50%",
-    backgroundColor: "#e7e7e7",
+    justifyContent: "center",
+    borderColor: colors.primary,
+    borderWidth: 1,
+    backgroundColor: colors.lightGray,
     borderRadius: 5,
   },
 
   modalStyle: {
-    // backgroundColor: "black",
+    justifyContent: "flex-start",
+    // borderColor: colors.primary,
+    // borderWidth: 6,
   },
 });
 export default LeftModal;

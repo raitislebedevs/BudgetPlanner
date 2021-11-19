@@ -4,9 +4,9 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { colors } from "../../config/colors";
 import defaultStyles from "../../config/appStyles";
 
-function AppTextInput({ icon, rightIcon, ...otherProps }) {
+function AppTextInput({ icon, frameColor, rightIcon, ...otherProps }) {
   return (
-    <View style={styles.container}>
+    <View style={[styles.container]}>
       {icon && (
         <MaterialCommunityIcons
           name={icon}
