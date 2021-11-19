@@ -9,7 +9,6 @@ import {
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import Modal from "react-native-modal";
-import { TextInput, Button } from "react-native-paper";
 import { handleGetCurrencies } from "../../utils/currencyData";
 import userInfoServices from "../../services/userInfoServices";
 import userServices from "../../services/userServices";
@@ -233,14 +232,7 @@ const LeftModal = (props) => {
             value={isEnabled}
           />
         </View>
-        {user?.linkedUsers && (
-          <View style={styles.marginTop}>
-            <Text style={styles.subText}></Text>
-            {user?.linkedUsers.map((person) => {
-              return <Text style={styles.person}>{`${person.email}`}</Text>;
-            })}
-          </View>
-        )}
+
         {user?.linkedUsers?.length > 0 && (
           <>
             <View style={styles.headingContainer}>
@@ -390,11 +382,13 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   person: {
-    color: "snow",
     marginTop: 10,
     fontSize: 17,
     fontWeight: "bold",
     alignSelf: "flex-start",
+    color: colors.mediumGray,
+    fontSize: 17,
+    fontFamily: Platform.OS === "android" ? "Roboto" : "Avenir",
   },
 
   public: {
