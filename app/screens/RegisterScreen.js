@@ -17,7 +17,7 @@ import { save } from "../utils/expoSecure";
 const image = require("../assets/Light.jpg");
 
 const RegisterScreen = (props) => {
-  const { setLoginScreen } = props;
+  const { setLoginScreen, navigation } = props;
   const [inputValues, setInputValues] = useState({});
   const [errorText, setErrorText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -65,7 +65,6 @@ const RegisterScreen = (props) => {
       if (data) {
         await save("access_token", data?.jwt);
         await save("user_data", JSON.stringify(data?.user));
-        setLoginScreen(true);
       }
       if (error) {
         setErrorText(error);
@@ -88,7 +87,7 @@ const RegisterScreen = (props) => {
           <Appbar style={styles.appbar}>
             <Appbar.BackAction
               color={colors.white}
-              onPress={() => setLoginScreen(true)}
+              onPress={() => navigation.navigate("Login")}
             />
 
             <Appbar.Content title="Login" color={colors.white} />

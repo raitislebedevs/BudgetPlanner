@@ -51,7 +51,7 @@ const Header = (props) => {
       )}
 
       {!isLoading ? (
-        <View>
+        <View style={{ marginRight: 35 }}>
           <Text style={styles.label}>Spent</Text>
           <Text style={styles.negativeAmount}>
             {`${

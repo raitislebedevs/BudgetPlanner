@@ -1,25 +1,24 @@
 import React, { useEffect, useState } from "react";
-import { ImageBackground, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import NavigationMainContainer from "./app/components/Navigation/NavigationMainContainer";
 import LoginScreen from "./app/screens/LoginScreen";
-import { Provider as PaperProvider } from "react-native-paper";
 import RegisterScreen from "./app/screens/RegisterScreen";
 import { getValueFor } from "./app/utils/expoSecure";
 import { getMyData } from "./app/utils/userData";
-import Toast from "react-native-toast-message";
-import { toastConfig } from "./app/components/ToastMessage/ToastConfig";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+
+const Stack = createNativeStackNavigator();
 
 export default function App() {
   const [userSecret, setUserSecret] = useState(false);
-  const [login, setLoginScreen] = useState(true);
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(async () => {
     if (await getMyData()) {
       let token = await getValueFor("access_token");
       setUserSecret(token);
     }
-  }, [login]);
+  });
 
   if (userSecret)
     return (
@@ -31,20 +30,24 @@ export default function App() {
   if (!userSecret)
     return (
       <>
-        <PaperProvider>
-          {login && (
-            <LoginScreen
-              setUserSecret={setUserSecret}
-              setLoginScreen={setLoginScreen}
+        <NavigationContainer>
+          <Stack.Navigator initialRouteName="Login">
+            <Stack.Screen
+              screenOptions={{
+                headerShown: false,
+              }}
+              name="Login"
+              component={LoginScreen}
             />
-          )}
-          {!login && (
-            <RegisterScreen
-              setLoginScreen={setLoginScreen}
-              setUserSecret={setUserSecret}
+            <Stack.Screen
+              screenOptions={{
+                headerShown: false,
+              }}
+              name="Register"
+              component={RegisterScreen}
             />
-          )}
-        </PaperProvider>
+          </Stack.Navigator>
+        </NavigationContainer>
       </>
     );
 }

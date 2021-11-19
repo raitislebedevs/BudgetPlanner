@@ -18,7 +18,7 @@ import { save } from "../utils/expoSecure";
 const image = require("../assets/Light.jpg");
 
 const LoginScreen = (props) => {
-  const { setLoginScreen, setUserSecret } = props;
+  const { setUserSecret, navigation } = props;
 
   const [errorText, setErrorText] = useState("");
   const [inputValues, setInputValues] = useState({});
@@ -92,7 +92,7 @@ const LoginScreen = (props) => {
                 <AppButton
                   title={"Register"}
                   color={"secondary"}
-                  onPress={() => setLoginScreen(false)}
+                  onPress={() => navigation.navigate("Register")}
                 />
               </View>
               <View style={styles.errorText}>
