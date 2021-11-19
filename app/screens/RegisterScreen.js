@@ -71,7 +71,7 @@ const RegisterScreen = (props) => {
         setIsLoading(false);
         return;
       }
-      navigation.navigate("Login");
+      navigation.navigate("MainScreen");
     } catch (error) {
       setErrorText(error);
     }
