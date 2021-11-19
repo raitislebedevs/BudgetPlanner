@@ -17,7 +17,7 @@ import { save } from "../utils/expoSecure";
 const image = require("../assets/Light.jpg");
 
 const RegisterScreen = (props) => {
-  const { setLoginScreen, navigation } = props;
+  const { navigation } = props;
   const [inputValues, setInputValues] = useState({});
   const [errorText, setErrorText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -68,7 +68,10 @@ const RegisterScreen = (props) => {
       }
       if (error) {
         setErrorText(error);
+        setIsLoading(false);
+        return;
       }
+      navigation.navigate("Login");
     } catch (error) {
       setErrorText(error);
     }
@@ -103,7 +106,6 @@ const RegisterScreen = (props) => {
           <AppTextInput
             icon="email"
             placeholder="First Name"
-            keyboardType="text"
             onChangeText={(e) =>
               handleOnChange({ target: { value: e, id: "firstName" } })
             }
@@ -111,7 +113,6 @@ const RegisterScreen = (props) => {
           <AppTextInput
             icon="email"
             placeholder="Last Name"
-            keyboardType="text"
             onChangeText={(e) =>
               handleOnChange({ target: { value: e, id: "lastName" } })
             }
@@ -128,7 +129,7 @@ const RegisterScreen = (props) => {
             icon="key"
             placeholder="Password"
             rightIcon={"eye"}
-            keyboardType="email-address"
+            secureTextEntry={true}
             onChangeText={(e) =>
               handleOnChange({ target: { value: e, id: "password" } })
             }
@@ -136,7 +137,7 @@ const RegisterScreen = (props) => {
           <AppTextInput
             icon="key"
             placeholder="Confirm Password"
-            keyboardType="email-address"
+            secureTextEntry={true}
             onChangeText={(e) =>
               handleOnChange({ target: { value: e, id: "confirmPassword" } })
             }

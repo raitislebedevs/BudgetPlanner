@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   SafeAreaView,
   StyleSheet,
@@ -6,7 +6,6 @@ import {
   Text,
   Image,
   ImageBackground,
-  TextInput,
 } from "react-native";
 // import { Button } from "react-native-paper";
 import AppButton from "../components/AppButton/AppButton";
@@ -14,11 +13,12 @@ import AppTextInput from "../components/AppTextInput/AppTextInput";
 import { colors } from "../config/colors";
 import { ConnectionServices } from "../services";
 import { save } from "../utils/expoSecure";
+import { getMyData } from "../utils/userData";
 
 const image = require("../assets/Light.jpg");
 
 const LoginScreen = (props) => {
-  const { setUserSecret, navigation } = props;
+  const { navigation, userToken } = props;
 
   const [errorText, setErrorText] = useState("");
   const [inputValues, setInputValues] = useState({});
@@ -41,7 +41,6 @@ const LoginScreen = (props) => {
       if (data) {
         save("access_token", data?.jwt);
         save("user_data", JSON.stringify(data?.user));
-        setUserSecret(data?.jwt);
       }
 
       if (error) {
@@ -51,6 +50,12 @@ const LoginScreen = (props) => {
       setErrorText(error);
     }
   };
+
+  useEffect(async () => {
+    if (await getMyData()) {
+      navigation.navigate("MainScreen");
+    }
+  }, [userToken]);
 
   return (
     <SafeAreaView style={styles.content}>
@@ -144,7 +149,7 @@ const styles = StyleSheet.create({
   },
   errorText: {
     fontWeight: "bold",
-    color: "#fff",
+    color: colors.danger,
     alignItems: "center",
   },
   formControl: {

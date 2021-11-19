@@ -11,45 +11,29 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-  const [userSecret, setUserSecret] = useState(false);
-
-  useEffect(async () => {
-    if (await getMyData()) {
-      let token = await getValueFor("access_token");
-      setUserSecret(token);
-    }
-  });
-
-  if (userSecret)
-    return (
-      <>
-        <NavigationMainContainer />
-      </>
-    );
-
-  if (!userSecret)
-    return (
-      <>
-        <NavigationContainer>
-          <Stack.Navigator initialRouteName="Login">
-            <Stack.Screen
-              screenOptions={{
-                headerShown: false,
-              }}
-              name="Login"
-              component={LoginScreen}
-            />
-            <Stack.Screen
-              screenOptions={{
-                headerShown: false,
-              }}
-              name="Register"
-              component={RegisterScreen}
-            />
-          </Stack.Navigator>
-        </NavigationContainer>
-      </>
-    );
+  return (
+    <>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName={"Login"}>
+          <Stack.Screen
+            options={{ headerShown: false }}
+            name="Login"
+            component={LoginScreen}
+          />
+          <Stack.Screen
+            options={{ headerShown: false }}
+            name="Register"
+            component={RegisterScreen}
+          />
+          <Stack.Screen
+            options={{ headerShown: false }}
+            name="MainScreen"
+            component={NavigationMainContainer}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </>
+  );
 }
 
 const styles = StyleSheet.create({

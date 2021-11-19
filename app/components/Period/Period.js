@@ -1,5 +1,6 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
+import { colors } from "../../config/colors";
 import AppButton from "../AppButton/AppButton";
 
 const Period = (props) => {
@@ -33,30 +34,6 @@ const Period = (props) => {
         mode={period === "all" ? "contained" : "outlined"}
         color={period === "all" ? "primary" : "white"}
       />
-      {/* <Button
-        onPress={(e) => changeActivePeriod({ id: "week" })}
-        mode={period === "week" ? "contained" : "outlined"}
-      >
-        Week
-      </Button> */}
-      {/* <Button
-        onPress={(e) => changeActivePeriod({ id: "month" })}
-        mode={period === "month" ? "contained" : "outlined"}
-      >
-        Month
-      </Button>
-      <Button
-        onPress={(e) => changeActivePeriod({ id: "year" })}
-        mode={period === "year" ? "contained" : "outlined"}
-      >
-        Year
-      </Button>
-      <Button
-        onPress={(e) => changeActivePeriod({ id: "all" })}
-        mode={period === "all" ? "contained" : "outlined"}
-      >
-        All
-      </Button> */}
     </View>
   );
 };
@@ -64,11 +41,11 @@ const Period = (props) => {
 const styles = StyleSheet.create({
   inlineButtons: {
     display: "flex",
-    marginTop: 10,
+    paddingTop: 5,
     marginBottom: 10,
-    padding: 5,
     flexDirection: "row",
     justifyContent: "space-evenly",
+    backgroundColor: colors.white,
   },
 });
 export default Period;

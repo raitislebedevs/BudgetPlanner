@@ -301,6 +301,21 @@ const LeftModal = (props) => {
             placeholder={"Invite user by email address"}
             onChangeText={(value) => setInvitePerson(value)}
           ></AppTextInput>
+          {!isInviting ? (
+            <>
+              <AppButton
+                mode="contained"
+                title={"Send"}
+                onPress={() => sendInvatation()}
+              />
+            </>
+          ) : (
+            <ActivityIndicator
+              style={styles.loader}
+              size="large"
+              color="orange"
+            />
+          )}
         </View>
         {/*        
 

@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import { StyleSheet } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -15,7 +14,7 @@ import { useState } from "react";
 import { initilizeData } from "../../utils/budgetFunctions";
 import { colors } from "../../config/colors";
 
-const NavigationMainContainer = (props) => {
+const NavigationMainContainer = ({ navigation }) => {
   //Screen Names
   const summarryScren = "Summary";
   const incomeScreen = "Income";
@@ -41,7 +40,7 @@ const NavigationMainContainer = (props) => {
   }, [period]);
 
   return (
-    <NavigationContainer>
+    <>
       <Header
         budget={globalBudget}
         isLoading={isLoading}
@@ -135,15 +134,8 @@ const NavigationMainContainer = (props) => {
           options={{ headerShown: false }}
         />
       </Tab.Navigator>
-    </NavigationContainer>
+    </>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    margin: 10,
-  },
-});
 
 export default NavigationMainContainer;

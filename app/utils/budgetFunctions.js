@@ -43,7 +43,6 @@ export const initilizeData = async (period) => {
   let refObj = JSON.stringify(expenseData);
   let newExpenseData = JSON.parse(refObj);
   await updateGroupedPlannedData(budgetPlanningData, newExpenseData);
-  console.log("Budget Data", budgetPlanningData);
 
   incomeAmount = sumWithReduce(incomeData, "total");
   spentAmount = sumWithReduce(expenseData, "total");

@@ -1,12 +1,8 @@
 import React from "react";
-import { useEffect } from "react";
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 import { colors } from "../../config/colors";
 
 function AppButton({ title, onPress, color = "primary", mode = "contained" }) {
-  useEffect(() => {
-    console.log(mode);
-  });
   return (
     <TouchableOpacity
       onPress={onPress}
