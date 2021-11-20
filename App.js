@@ -1,16 +1,18 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { StyleSheet } from "react-native";
 import NavigationMainContainer from "./app/components/Navigation/NavigationMainContainer";
 import LoginScreen from "./app/screens/LoginScreen";
 import RegisterScreen from "./app/screens/RegisterScreen";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { LocaleProvider } from "react-easy-localization";
+import { languages } from "./app/locales";
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
-    <>
+    <LocaleProvider resources={languages}>
       <NavigationContainer>
         <Stack.Navigator initialRouteName={"Login"}>
           <Stack.Screen
@@ -30,7 +32,7 @@ export default function App() {
           />
         </Stack.Navigator>
       </NavigationContainer>
-    </>
+    </LocaleProvider>
   );
 }
 

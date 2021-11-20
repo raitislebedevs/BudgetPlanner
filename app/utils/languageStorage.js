@@ -1,8 +1,8 @@
-import { AsyncStorage } from "@react-native-community/async-storage";
+import * as SecureStore from "expo-secure-store";
 
 export const getDeviceLanguageFromStorage = async () => {
   try {
-    let lang = await AsyncStorage.getItem("lang");
+    let lang = await SecureStore.getItemAsync("lang");
     if (lang && lang.length > 0) return lang;
 
     return "en";
@@ -13,6 +13,6 @@ export const getDeviceLanguageFromStorage = async () => {
 
 export const updateDeviceLanguageToStorage = (lang) => {
   try {
-    AsyncStorage.setItem("lang", lang);
+    SecureStore.setItemAsync("lang", lang);
   } catch (error) {}
 };

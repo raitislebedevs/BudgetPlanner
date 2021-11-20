@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { withLocale } from "react-easy-localization";
 import {
   StatusBar,
   StyleSheet,
@@ -11,7 +12,7 @@ import { formatNumber } from "../../utils/standaloneFunctions";
 import LeftModal from "../LeftModal/LeftModal";
 
 const Header = (props) => {
-  const { isLoading, currencySymbol, budget } = props;
+  const { isLoading, currencySymbol, budget, i18n } = props;
   const [isModalVisible, setModalVisible] = useState(false);
 
   const toggleModal = () => {
@@ -30,7 +31,7 @@ const Header = (props) => {
       </View>
       {!isLoading ? (
         <View>
-          <Text style={styles.label}>Saved</Text>
+          <Text style={styles.label}>{i18n.Header.saved}</Text>
           <Text
             style={
               budget?.spentAmount > budget?.savedAmount
@@ -52,7 +53,7 @@ const Header = (props) => {
 
       {!isLoading ? (
         <View style={{ marginRight: 35 }}>
-          <Text style={styles.label}>Spent</Text>
+          <Text style={styles.label}>{i18n.Header.spent}</Text>
           <Text style={styles.negativeAmount}>
             {`${
               formatNumber(
@@ -118,4 +119,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Header;
+export default withLocale(Header);

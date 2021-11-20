@@ -12,8 +12,9 @@ import Period from "../Period/Period";
 import { useState } from "react";
 import { initilizeData } from "../../utils/budgetFunctions";
 import { colors } from "../../config/colors";
+import { withLocale } from "react-easy-localization";
 
-const NavigationMainContainer = ({ navigation }) => {
+const NavigationMainContainer = ({ navigation, i18n }) => {
   //Screen Names
   const summarryScren = "Summary";
   const incomeScreen = "Income";
@@ -33,7 +34,7 @@ const NavigationMainContainer = ({ navigation }) => {
     try {
       if (period) {
         setIsLoading(true);
-        let data = await initilizeData(period);
+        let data = await initilizeData(period, i18n);
         setGlobalBudget(data);
         setIsLoading(false);
       }
@@ -144,4 +145,4 @@ const NavigationMainContainer = ({ navigation }) => {
   );
 };
 
-export default NavigationMainContainer;
+export default withLocale(NavigationMainContainer);

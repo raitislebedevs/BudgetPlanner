@@ -22,7 +22,7 @@ let budgetPlanningData = [];
 let budgetChart = [];
 let user = {};
 
-export const initilizeData = async (period) => {
+export const initilizeData = async (period, t) => {
   user = await getMyData();
   currency = user?.currency?.symbol;
   rawIncomeData = await getBudgetData(period, "income");
@@ -34,7 +34,6 @@ export const initilizeData = async (period) => {
   // console.log("*******************************************");
 
   rawExpenseData = await getBudgetData(period, "expense");
-
   rawBudgetData = await getBudgetPlanData(period);
   await getGroupedIncomeData(currency);
   await getGroupedExpenseData(currency);
@@ -49,7 +48,7 @@ export const initilizeData = async (period) => {
   savedAmount = incomeAmount - spentAmount;
   incomeChartData = chartData(incomeData, greenColorCodes);
   spentChartData = chartData(expenseData, redColorCodes);
-  getBezierChartPeriod(period, incomeData, expenseData);
+  getBezierChartPeriod(period, incomeData, expenseData, t);
 
   // console.log("*******************************************");
   // console.log("*******************************************");
@@ -281,12 +280,12 @@ const groupDataByPeriod = (budgetData, currency) => {
   }
 };
 
-const getBudgetPeriodData = (period) => {
+const getBudgetPeriodData = (period, lang) => {
   switch (period) {
     case "week":
       return getWeekData();
     case "month":
-      return getMonthData();
+      return getMonthData(lang);
     case "year":
       return getYearData();
     case "all":
@@ -325,9 +324,9 @@ const calculateYear = () => {
   return currentMonth.diff(yearStartDate, "days"); // =1
 };
 
-const getBezierChartPeriod = (period, income, expense) => {
+const getBezierChartPeriod = (period, income, expense, lang) => {
   try {
-    let periodData = getBudgetPeriodData(period);
+    let periodData = getBudgetPeriodData(period, lang);
     const { chartLabel, chartPeriods } = periodData;
     let chartData = {
       xLabels: chartLabel,
@@ -397,7 +396,7 @@ const getWeekData = () => {
   return { chartLabel, chartPeriods };
 };
 
-const getMonthData = () => {
+const getMonthData = (lang) => {
   try {
     let chartLabel = [];
     let chartPeriods = [];
@@ -405,7 +404,7 @@ const getMonthData = () => {
     let dayPeriods = calculateMonthPeriods();
     let addDays = 0;
     for (var i = 0; i < dayPeriods.length; i++) {
-      let monthLabels = `Week ${i + 1}`;
+      let monthLabels = `${lang.Common.week} ${i + 1}`;
       chartLabel.push(monthLabels);
 
       let monthPeriod = moment()

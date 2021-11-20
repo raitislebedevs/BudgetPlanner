@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { withLocale } from "react-easy-localization";
 import {
   Dimensions,
   StyleSheet,
@@ -10,7 +11,7 @@ import { LineChart } from "react-native-chart-kit";
 import FinanceDetails from "../components/FinanseDetails/FinanceDetails";
 
 const SummaryScreen = (props) => {
-  const { budget, chartLabels, isLoading } = props;
+  const { budget, chartLabels, isLoading, i18n } = props;
 
   const highlight = (id) => {};
 
@@ -67,14 +68,15 @@ const SummaryScreen = (props) => {
           {budget?.incomeData?.length > 0 && (
             <FinanceDetails
               financeData={budget.incomeData}
-              title="Income"
+              title={i18n.IncomeScreen.label}
               highlight={highlight}
             />
           )}
+
           {budget?.expenseData?.length > 0 && (
             <FinanceDetails
               financeData={budget.expenseData}
-              title="Expenses"
+              title={i18n.ExpenseScreen.label}
               highlight={highlight}
             />
           )}
@@ -106,4 +108,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SummaryScreen;
+export default withLocale(SummaryScreen);

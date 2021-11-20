@@ -18,22 +18,33 @@ import defaultStyles from "../../config/appStyles";
 import AppButton from "../AppButton/AppButton";
 import AppTextInput from "../AppTextInput/AppTextInput";
 import { ScrollView } from "react-native-gesture-handler";
+import { withLocale } from "react-easy-localization";
 
 const LeftModal = (props) => {
-  const { isModalVisible, setModalVisible } = props;
+  const { isModalVisible, setModalVisible, i18n, changeLanguage } = props;
   const [user, setUser] = useState(false);
   const [currencyPicker, setCurrencyPicker] = useState(false);
   const [invitePerson, setInvitePerson] = useState("");
   const [currencyLoader, setCurrencyLoader] = useState(false);
   const [currency, setCurrency] = useState("");
   const [items, setItems] = useState([]);
-  const [theme, setTheme] = useState("Light");
+  const [theme, setTheme] = useState(i18n.UserDrawer.theme.light);
+  const [lang, setLang] = useState("en");
   const [isInviting, setIsInviting] = useState(false);
   const [isEnabled, setIsEnabled] = useState(false);
+  const [langPicker, setLangPicker] = useState(false);
   const toggleSwitch = () => {
-    if (theme === "Light") setTheme("Dark");
-    if (theme === "Dark") setTheme("Light");
+    if (theme === i18n.UserDrawer.theme.light)
+      setTheme(i18n.UserDrawer.theme.dark);
+
+    if (theme === i18n.UserDrawer.theme.dark)
+      setTheme(i18n.UserDrawer.theme.light);
+
     setIsEnabled((previousState) => !previousState);
+  };
+  const languageSwitch = () => {
+    setLangPicker(!langPicker);
+    return langPicker ? changeLanguage("lv") : changeLanguage("en");
   };
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
@@ -44,7 +55,6 @@ const LeftModal = (props) => {
       let payload = {
         currency: event.value,
       };
-      console.log("Currency", currency);
       setCurrency(event);
       await userInfoServices.UPDATE(user?.id, payload);
       await refreshUser();
@@ -58,6 +68,7 @@ const LeftModal = (props) => {
   useEffect(async () => {
     let currencyData = await handleGetCurrencies();
     setItems(currencyData);
+    changeLanguage("lv");
     await refreshUser();
   }, []);
 
@@ -169,14 +180,16 @@ const LeftModal = (props) => {
           </View>
         </View>
         <View style={styles.heading}>
-          <Text style={defaultStyles.appTextNormal}>{`Currency: ${
-            user?.currency?.name || "USD"
-          } - ${user?.currency?.symbol || "$"} ­`}</Text>
+          <Text style={defaultStyles.appTextNormal}>{`${
+            i18n.UserDrawer.curency
+          }: ${user?.currency?.name || "USD"} - ${
+            user?.currency?.symbol || "$"
+          } ­`}</Text>
           <Text
             style={defaultStyles.appTextSecondary}
             onPress={() => setCurrencyPicker(!currencyPicker)}
           >
-            Edit
+            {i18n.UserDrawer.edit}
           </Text>
         </View>
         {currencyPicker && (
@@ -215,17 +228,23 @@ const LeftModal = (props) => {
         <View style={styles.heading}>
           <Text
             style={defaultStyles.appTextNormal}
-          >{`Name: ${user.firstName} ${user.lastName} ­`}</Text>
-          <Text style={defaultStyles.appTextSecondary}>Edit</Text>
+          >{`${i18n.UserDrawer.name}: ${user.firstName} ${user.lastName} ­`}</Text>
+          <Text style={defaultStyles.appTextSecondary}>
+            {i18n.UserDrawer.edit}
+          </Text>
         </View>
         <View style={styles.heading}>
           <Text
             style={defaultStyles.appTextNormal}
-          >{`Email: ${user?.email}  ­`}</Text>
-          <Text style={defaultStyles.appTextSecondary}>Edit</Text>
+          >{`${i18n.UserDrawer.email}: ${user?.email}  ­`}</Text>
+          <Text style={defaultStyles.appTextSecondary}>
+            {i18n.UserDrawer.edit}
+          </Text>
         </View>
         <View style={styles.heading}>
-          <Text style={defaultStyles.appTextNormal}>Theme: {`${theme}`} </Text>
+          <Text style={defaultStyles.appTextNormal}>
+            {i18n.UserDrawer.theme.label}: {`${theme}`}
+          </Text>
           <Switch
             trackColor={{ false: colors.primary, true: "#fff" }}
             thumbColor={isEnabled ? colors.primary : colors.lightGray}
@@ -235,12 +254,26 @@ const LeftModal = (props) => {
           />
         </View>
 
+        <View style={styles.heading}>
+          <Text style={defaultStyles.appTextNormal}>
+            {i18n.UserDrawer.language.label}:{" "}
+            {`${langPicker ? "English" : "Latviešu"}`}
+          </Text>
+          <Switch
+            trackColor={{ false: colors.primary, true: "#fff" }}
+            thumbColor={langPicker ? colors.primary : colors.lightGray}
+            ios_backgroundColor="#3e3e3e"
+            onValueChange={languageSwitch}
+            value={langPicker}
+          />
+        </View>
+
         {user?.linkedUsers?.length > 0 && (
           <>
             <View style={styles.headingContainer}>
               <View style={styles.heading}>
                 <Text style={[styles.label, defaultStyles.headingText]}>
-                  Linked Users
+                  {i18n.UserDrawer.linked}
                 </Text>
               </View>
             </View>
@@ -261,7 +294,7 @@ const LeftModal = (props) => {
             <View style={styles.headingContainer}>
               <View style={styles.heading}>
                 <Text style={[styles.label, defaultStyles.headingText]}>
-                  User Invites
+                  {i18n.UserDrawer.userInvites}
                 </Text>
               </View>
             </View>
@@ -273,11 +306,11 @@ const LeftModal = (props) => {
                   >{`${person.firstName} ${person.lastName}`}</Text>
                   <AppButton
                     mode="contained"
-                    title={"Yes"}
+                    title={i18n.UserDrawer.yes}
                     onPress={() => acceptInvite(person.userId, person.id)}
                   />
                   <AppButton
-                    title={"No"}
+                    title={i18n.UserDrawer.no}
                     onPress={() => removeInvite(person.id)}
                     mode="outlined"
                     color={"white"}
@@ -290,21 +323,21 @@ const LeftModal = (props) => {
         <View style={[styles.headingContainer, styles.allignment]}>
           <View style={styles.heading}>
             <Text style={[styles.label, defaultStyles.headingText]}>
-              Invite User
+              {i18n.UserDrawer.invite}
             </Text>
           </View>
         </View>
         <View style={styles.allignment}>
           <AppTextInput
             icon={"email"}
-            placeholder={"Invite user by email address"}
+            placeholder={i18n.UserDrawer.inviteText}
             onChangeText={(value) => setInvitePerson(value)}
           ></AppTextInput>
           {!isInviting ? (
             <>
               <AppButton
                 mode="contained"
-                title={"Send"}
+                title={i18n.UserDrawer.send}
                 onPress={() => sendInvatation()}
               />
             </>
@@ -394,4 +427,4 @@ const styles = StyleSheet.create({
     // borderWidth: 6,
   },
 });
-export default LeftModal;
+export default withLocale(LeftModal);
