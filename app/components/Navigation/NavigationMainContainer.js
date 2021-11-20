@@ -16,10 +16,10 @@ import { withLocale } from "react-easy-localization";
 
 const NavigationMainContainer = ({ navigation, i18n }) => {
   //Screen Names
-  const summarryScren = "Summary";
-  const incomeScreen = "Income";
-  const expensesScreen = "Expenses";
-  const budgetScreen = "Budget";
+  const summarryScren = i18n.BottomNavigation.summary;
+  const incomeScreen = i18n.BottomNavigation.income;
+  const expensesScreen = i18n.BottomNavigation.expanse;
+  const budgetScreen = i18n.BottomNavigation.budget;
 
   const Tab = createBottomTabNavigator();
   const [period, setPeriod] = useState("month");

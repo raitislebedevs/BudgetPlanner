@@ -5,10 +5,17 @@ import AskModal from "../components/AskModal/AskModal";
 import { incomeCategory } from "../utils/categoryItems";
 import SubmitActivity from "../components/SubmitActivity/SubmitActivity";
 import BudgetPieChart from "../components/BudgetPieChart/BudgetPieChart";
+import { withLocale } from "react-easy-localization";
 
 const IncomeScreen = (props) => {
-  const { period, budget, isLoading, currencySymbol, getGlobalBudgetData } =
-    props;
+  const {
+    period,
+    budget,
+    isLoading,
+    currencySymbol,
+    getGlobalBudgetData,
+    i18n,
+  } = props;
   const categoryItems = incomeCategory();
   const [id, setId] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -31,7 +38,6 @@ const IncomeScreen = (props) => {
         setModalVisible={setModalVisible}
         id={id}
       />
-      <Text style={styles.text}>Income</Text>
       <BudgetPieChart
         isLoading={isLoading}
         chartData={budget?.incomeChartData || []}
@@ -46,7 +52,7 @@ const IncomeScreen = (props) => {
         activity={"income"}
         categoryItems={categoryItems}
         colorTheme={"darkgreen"}
-        buttonText={"Add Income"}
+        buttonText={i18n.IncomeScreen.addIncome}
         period={period}
         submitButtonStyle={styles.submit}
         getGlobalBudgetData={getGlobalBudgetData}
@@ -57,7 +63,7 @@ const IncomeScreen = (props) => {
           {userIncome?.length > 0 && (
             <FinanceDetails
               financeData={userIncome}
-              title="Income Data"
+              title={i18n.IncomeScreen.label}
               highlight={highlight}
             />
           )}
@@ -95,4 +101,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default IncomeScreen;
+export default withLocale(IncomeScreen);

@@ -12,6 +12,7 @@ import DatePickerComponent from "../DatePickerComponent/DatePickerComponent";
 import InputNumericField from "../InputNumericField/InputNumericField";
 import { getMyData } from "../../utils/userData";
 import ToastMessage from "../ToastMessage/ToastMessage";
+import { withLocale } from "react-easy-localization";
 
 const SubmitActivity = (props) => {
   const {
@@ -24,6 +25,7 @@ const SubmitActivity = (props) => {
     colorTheme,
     buttonText,
     submitButtonStyle,
+    i18n,
   } = props;
   const [showInput, setShowInput] = useState(false);
 
@@ -121,7 +123,7 @@ const SubmitActivity = (props) => {
                         });
                       }}
                     >
-                      <Picker.Item label="Category" value="" />
+                      <Picker.Item label={i18n.Common.category} value="" />
                       {categoryItems.map((item) => {
                         return (
                           <Picker.Item
@@ -143,7 +145,7 @@ const SubmitActivity = (props) => {
                         });
                       }}
                     >
-                      <Picker.Item label="Category Item" value="" />
+                      <Picker.Item label={i18n.Common.categoryItem} value="" />
                       {items.map((item) => {
                         return (
                           <Picker.Item
@@ -156,12 +158,15 @@ const SubmitActivity = (props) => {
                     </Picker>
                   </View>
                 </View>
-                <DatePickerComponent handleOnChange={handleOnChange} />
+                <DatePickerComponent
+                  i18n={i18n}
+                  handleOnChange={handleOnChange}
+                />
 
                 <InputNumericField
                   id={"ActivityAmount"}
                   handleOnChange={handleOnChange}
-                  label={"Value"}
+                  label={i18n.Common.amount}
                   currency={currencySymbol}
                 />
               </View>
@@ -187,7 +192,7 @@ const SubmitActivity = (props) => {
   );
 };
 
-export default SubmitActivity;
+export default withLocale(SubmitActivity);
 
 const styles = StyleSheet.create({
   pickerContainer: {

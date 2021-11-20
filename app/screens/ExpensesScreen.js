@@ -5,10 +5,17 @@ import { expenseCategory } from "../utils/categoryItems";
 import AskModal from "../components/AskModal/AskModal";
 import BudgetPieChart from "../components/BudgetPieChart/BudgetPieChart";
 import SubmitActivity from "../components/SubmitActivity/SubmitActivity";
+import { withLocale } from "react-easy-localization";
 
 const ExpensesScreen = (props) => {
-  const { period, budget, isLoading, currencySymbol, getGlobalBudgetData } =
-    props;
+  const {
+    period,
+    budget,
+    isLoading,
+    currencySymbol,
+    getGlobalBudgetData,
+    i18n,
+  } = props;
   const categoryItems = expenseCategory();
   const [id, setId] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -31,7 +38,6 @@ const ExpensesScreen = (props) => {
         setModalVisible={setModalVisible}
         id={id}
       />
-      <Text style={styles.text}>Expenses</Text>
       <BudgetPieChart
         isLoading={isLoading}
         chartData={budget?.spentChartData}
@@ -46,7 +52,7 @@ const ExpensesScreen = (props) => {
         activity={"expense"}
         categoryItems={categoryItems}
         colorTheme={"brown"}
-        buttonText={"Add Expense"}
+        buttonText={i18n.ExpenseScreen.addExpense}
         period={period}
         submitButtonStyle={styles.submit}
         getGlobalBudgetData={getGlobalBudgetData}
@@ -56,7 +62,7 @@ const ExpensesScreen = (props) => {
           {userExpense.length > 0 && (
             <FinanceDetails
               financeData={userExpense}
-              title="Expense Data"
+              title={i18n.ExpenseScreen.label}
               highlight={highlight}
             />
           )}
@@ -89,4 +95,4 @@ const styles = StyleSheet.create({
     borderColor: "#fff",
   },
 });
-export default ExpensesScreen;
+export default withLocale(ExpensesScreen);

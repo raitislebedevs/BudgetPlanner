@@ -3,7 +3,7 @@ import { TextInput } from "react-native-paper";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 export default DatePickerComponent = (props) => {
-  const { handleOnChange } = props;
+  const { handleOnChange, i18n } = props;
   const [date, setDate] = useState("");
   const [open, setOpen] = useState(false);
   const handleFocus = () => {
@@ -24,7 +24,7 @@ export default DatePickerComponent = (props) => {
     <>
       <TextInput
         underlineColor="brown"
-        label={"Date"}
+        label={i18n.Common.date}
         value={date && date.toDateString()}
         onFocus={() => handleFocus()}
         onChangeText={() => handleFocus()}

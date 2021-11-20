@@ -121,7 +121,6 @@ const BudgetScreen = (props) => {
         id={id}
         budget={true}
       />
-      <Text style={styles.text}>Budget Plan</Text>
       <BudgetChart budget={budget} isLoading={isLoading} />
       {inputBudget && (
         <>
