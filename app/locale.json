@@ -1,0 +1,24 @@
+{
+  "en": {
+    "LoginScreen": {},
+    "RegisterScreen": {},
+    "SummaryScreen": {},
+    "IncomeScreen": {},
+    "ExpenseScreen": {},
+    "BudgetScreen": {},
+    "UserDrawer": {},
+    "Header": {},
+    "Common": {}
+  },
+  "lv": {
+    "LoginScreen": {},
+    "RegisterScreen": {},
+    "SummaryScreen": {},
+    "IncomeScreen": {},
+    "ExpenseScreen": {},
+    "BudgetScreen": {},
+    "UserDrawer": {},
+    "Header": {},
+    "Common": {}
+  }
+}

@@ -18,7 +18,7 @@ import BudgetChart from "../components/BudgetChart/BudgetChart";
 import AskModal from "../components/AskModal/AskModal";
 
 const BudgetScreen = (props) => {
-  const { period, budget, isLoading, currencySymbol } = props;
+  const { budget, isLoading, currencySymbol, getGlobalBudgetData } = props;
   const categoryItems = expenseCategory();
   const [budgetPeriods, setBudgetPeriods] = useState([
     {
@@ -104,6 +104,7 @@ const BudgetScreen = (props) => {
       setErrorText("");
       setSuccessText("");
       setInputValues();
+      getGlobalBudgetData();
       return data;
     } catch (error) {
       console.log(error);

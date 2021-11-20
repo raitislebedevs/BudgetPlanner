@@ -7,7 +7,8 @@ import SubmitActivity from "../components/SubmitActivity/SubmitActivity";
 import BudgetPieChart from "../components/BudgetPieChart/BudgetPieChart";
 
 const IncomeScreen = (props) => {
-  const { period, budget, isLoading, currencySymbol } = props;
+  const { period, budget, isLoading, currencySymbol, getGlobalBudgetData } =
+    props;
   const categoryItems = incomeCategory();
   const [id, setId] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -48,6 +49,7 @@ const IncomeScreen = (props) => {
         buttonText={"Add Income"}
         period={period}
         submitButtonStyle={styles.submit}
+        getGlobalBudgetData={getGlobalBudgetData}
       />
 
       {!isLoading ? (

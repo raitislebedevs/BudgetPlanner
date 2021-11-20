@@ -12,18 +12,17 @@ import DatePickerComponent from "../DatePickerComponent/DatePickerComponent";
 import InputNumericField from "../InputNumericField/InputNumericField";
 import { getMyData } from "../../utils/userData";
 import ToastMessage from "../ToastMessage/ToastMessage";
-import { refreshData } from "../../utils/budgetFunctions";
 
 const SubmitActivity = (props) => {
   const {
     currencySymbol,
     inputValues,
     setInputValues,
+    getGlobalBudgetData,
     activity,
     categoryItems,
     colorTheme,
     buttonText,
-    period,
     submitButtonStyle,
   } = props;
   const [showInput, setShowInput] = useState(false);
@@ -95,7 +94,7 @@ const SubmitActivity = (props) => {
       setIsSubmiting(false);
       setShowInput(!showInput);
       setInputValues({});
-      refreshData(period);
+      getGlobalBudgetData();
       return data;
     } catch (error) {
       console.log(error);

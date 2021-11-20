@@ -44,8 +44,10 @@ const LeftModal = (props) => {
       let payload = {
         currency: event.value,
       };
-      setCurrency(event.value);
+      console.log("Currency", currency);
+      setCurrency(event);
       await userInfoServices.UPDATE(user?.id, payload);
+      await refreshUser();
     } catch (error) {
       console.log(error);
     }
@@ -94,7 +96,6 @@ const LeftModal = (props) => {
         linkedUsers,
         invites,
       };
-
       await userInfoServices.UPDATE(user?.id, payload);
       await refreshUser();
     } catch (error) {
@@ -210,6 +211,7 @@ const LeftModal = (props) => {
             )}
           </View>
         )}
+
         <View style={styles.heading}>
           <Text
             style={defaultStyles.appTextNormal}
@@ -242,9 +244,14 @@ const LeftModal = (props) => {
                 </Text>
               </View>
             </View>
-            <View style={styles.marginTop}>
+            <View style={styles.allignment}>
               {user?.linkedUsers.map((person) => {
-                return <Text style={styles.person}>{`${person.email}`}</Text>;
+                return (
+                  <Text
+                    key={person?.id || person.email}
+                    style={styles.person}
+                  >{`${person.email}`}</Text>
+                );
               })}
             </View>
           </>
@@ -260,7 +267,7 @@ const LeftModal = (props) => {
             </View>
             {user?.invites.map((person) => {
               return (
-                <View style={styles.invites}>
+                <View key={person?.id} style={styles.invites}>
                   <Text
                     style={[defaultStyles.text, styles.allignment]}
                   >{`${person.firstName} ${person.lastName}`}</Text>
@@ -280,14 +287,14 @@ const LeftModal = (props) => {
             })}
           </>
         )}
-        <View style={styles.headingContainer}>
+        <View style={[styles.headingContainer, styles.allignment]}>
           <View style={styles.heading}>
             <Text style={[styles.label, defaultStyles.headingText]}>
               Invite User
             </Text>
           </View>
         </View>
-        <View style={styles.marginTop}>
+        <View style={styles.allignment}>
           <AppTextInput
             icon={"email"}
             placeholder={"Invite user by email address"}

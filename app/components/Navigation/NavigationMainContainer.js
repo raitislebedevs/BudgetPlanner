@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Ionicons from "react-native-vector-icons/Ionicons";
 //Screens
@@ -27,6 +26,10 @@ const NavigationMainContainer = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(async () => {
+    await getGlobalBudgetData();
+  }, [period]);
+
+  const getGlobalBudgetData = async () => {
     try {
       if (period) {
         setIsLoading(true);
@@ -37,7 +40,7 @@ const NavigationMainContainer = ({ navigation }) => {
     } catch (error) {
       console.log(error);
     }
-  }, [period]);
+  };
 
   return (
     <>
@@ -104,6 +107,7 @@ const NavigationMainContainer = ({ navigation }) => {
               budget={globalBudget}
               isLoading={isLoading}
               currencySymbol={globalBudget.currency}
+              getGlobalBudgetData={getGlobalBudgetData}
             />
           )}
           name={incomeScreen}
@@ -116,6 +120,7 @@ const NavigationMainContainer = ({ navigation }) => {
               budget={globalBudget}
               isLoading={isLoading}
               currencySymbol={globalBudget.currency}
+              getGlobalBudgetData={getGlobalBudgetData}
             />
           )}
           name={expensesScreen}
@@ -128,6 +133,7 @@ const NavigationMainContainer = ({ navigation }) => {
               budget={globalBudget}
               isLoading={isLoading}
               currencySymbol={globalBudget.currency}
+              getGlobalBudgetData={getGlobalBudgetData}
             />
           )}
           name={budgetScreen}
