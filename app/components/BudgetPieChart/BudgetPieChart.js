@@ -1,6 +1,7 @@
 import React from "react";
 import { ActivityIndicator, Dimensions, StyleSheet } from "react-native";
 import { PieChart } from "react-native-chart-kit";
+import { colors } from "../../config/colors";
 
 function BudgetPieChart(props) {
   const { isLoading, chartData, color } = props;
@@ -35,7 +36,11 @@ function BudgetPieChart(props) {
           )}
         </>
       ) : (
-        <ActivityIndicator style={styles.loader} size="large" color={color} />
+        <ActivityIndicator
+          style={styles.loader}
+          size="large"
+          color={colors.secondary}
+        />
       )}
     </>
   );

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, Dimensions } from "react-native";
 import { ProgressChart } from "react-native-chart-kit";
+import { colors } from "../../config/colors";
 
 function BudgetChart(props) {
   const { budget, isLoading } = props;
@@ -95,11 +96,7 @@ function BudgetChart(props) {
           />
         </>
       ) : (
-        <ActivityIndicator
-          //style={styles.loader}
-          size="large"
-          color="darkblue"
-        />
+        <ActivityIndicator size="large" color={colors.secondary} />
       )}
     </>
   );

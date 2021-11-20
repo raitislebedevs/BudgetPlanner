@@ -256,13 +256,14 @@ const groupDataByPeriod = (budgetData, currency) => {
         categoryItemSummery.items = itemData;
         groupedItemData.push(categoryItemSummery);
       });
-
+      //This value here does not Parses great
+      let totalValue = group[el].reduce(
+        (a, b) => a + (parseFloat(b["activityAmount"]) || 0),
+        0
+      );
       let categorySummary = {
         label: el,
-        total: group[el].reduce(
-          (a, b) => a + (parseFloat(b["activityAmount"]) || 0),
-          0
-        ),
+        total: totalValue,
         icon,
         currency: currency,
         style: {

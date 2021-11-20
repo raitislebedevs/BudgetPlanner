@@ -16,9 +16,13 @@ import { getMyData } from "../utils/userData";
 import { expenseCategory } from "../utils/categoryItems";
 import BudgetChart from "../components/BudgetChart/BudgetChart";
 import AskModal from "../components/AskModal/AskModal";
+import { colors } from "../config/colors";
+import AppButton from "../components/AppButton/AppButton";
+import { withLocale } from "react-easy-localization";
 
 const BudgetScreen = (props) => {
-  const { budget, isLoading, currencySymbol, getGlobalBudgetData } = props;
+  const { budget, isLoading, currencySymbol, getGlobalBudgetData, i18n } =
+    props;
   const categoryItems = expenseCategory();
   const [budgetPeriods, setBudgetPeriods] = useState([
     {
@@ -220,19 +224,20 @@ const BudgetScreen = (props) => {
           )}
         </>
       )}
-      <TouchableHighlight
-        style={styles.submit}
-        onPress={() => addBudget()}
-        underlayColor="purple"
-      >
-        <Text style={styles.submitText}>Add to budget</Text>
-      </TouchableHighlight>
+
+      <View style={styles.buttonStyle}>
+        <AppButton
+          title={i18n.BudgetScreen.addBudget}
+          onPress={() => addBudget()}
+          color={"primary"}
+        />
+      </View>
 
       {!isLoading ? (
         <>
           <FinanceDetails
             financeData={budget?.budgetPlanningData || []}
-            title="Budget"
+            title={i18n.BudgetScreen.label}
             highlight={highlight}
             budget={budget}
           />
@@ -241,7 +246,7 @@ const BudgetScreen = (props) => {
         <ActivityIndicator
           style={styles.loader}
           size="large"
-          color="darkgreen"
+          color={colors.secondary}
         />
       )}
     </ScrollView>
@@ -270,6 +275,9 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 10,
     borderRadius: 10,
+    // alignItems: "center",
+    marginLeft: "5%",
+    marginRight: "5%",
   },
   dropDown: {
     backgroundColor: "lightgray",
@@ -331,4 +339,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default BudgetScreen;
+export default withLocale(BudgetScreen);

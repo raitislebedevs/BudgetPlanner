@@ -164,7 +164,6 @@ const styles = StyleSheet.create({
   content: {
     display: "flex",
     flex: 1,
-    backgroundColor: "#e26a00",
     flexDirection: "row",
   },
   view: {

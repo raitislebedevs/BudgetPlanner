@@ -5,7 +5,7 @@ export const languages = {
     SummaryScreen: {},
     IncomeScreen: { label: "Income", addIncome: "Add income" },
     ExpenseScreen: { label: "Expense", addExpense: "Add expense" },
-    BudgetScreen: {},
+    BudgetScreen: { label: "Budget limits", addBudget: "Add limit" },
     UserDrawer: {
       curency: "Currency",
       edit: "Edit",
@@ -49,7 +49,7 @@ export const languages = {
     SummaryScreen: {},
     IncomeScreen: { label: "Ienākumi", addIncome: "Pievienot ienākumu" },
     ExpenseScreen: { label: "Izdevumi", addExpense: "Pievienot izdevumu" },
-    BudgetScreen: {},
+    BudgetScreen: { label: "Budžeta limiti", addBudget: "Pievienot limitu" },
     UserDrawer: {
       curency: "Valūta",
       edit: "Labot",
