@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { withLocale } from "react-easy-localization";
 import {
   StatusBar,
@@ -34,7 +34,7 @@ const Header = (props) => {
           <Text style={styles.label}>{i18n.Header.saved}</Text>
           <Text
             style={
-              budget?.spentAmount > budget?.savedAmount
+              budget?.spentAmount > budget?.incomeAmount
                 ? styles.overspentAmount
                 : styles.positiveAmount
             }
@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
   topNavigation: {
     flex: 0.075,
     paddingTop: StatusBar.currentHeight + 5,
-    paddingBottom: 5,
+    paddingBottom: 9,
     backgroundColor: "#fff",
     justifyContent: "space-between",
     alignItems: "center",
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   label: {
-    color: "#480048",
+    color: "black",
     fontSize: 17,
     fontWeight: "bold",
     alignSelf: "center",

@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { LineChart } from "react-native-chart-kit";
 import FinanceDetails from "../components/FinanseDetails/FinanceDetails";
+import { colors } from "../config/colors";
 
 const SummaryScreen = (props) => {
   const { budget, chartLabels, isLoading, i18n } = props;
@@ -27,13 +28,13 @@ const SummaryScreen = (props) => {
                   {
                     data: chartLabels?.incomeChartData || [0, 0, 0, 0, 0],
                     strokeWidth: 1,
-                    color: (opacity = 1) => "lightgreen",
+                    color: (opacity = 1) => colors.tertiary,
                     // optional
                   },
                   {
                     data: chartLabels?.expenseChartData || [0, 0, 0, 0, 0, 0],
                     strokeWidth: 1,
-                    color: (opacity = 1) => "red", // optional
+                    color: (opacity = 1) => colors.secondary, // optional
                   },
                 ],
               }}
@@ -43,19 +44,19 @@ const SummaryScreen = (props) => {
               title="Summary"
               yAxisInterval={1} // optional, defaults to 1
               chartConfig={{
-                backgroundColor: "#e26a00",
-                backgroundGradientFrom: "#C04848",
-                backgroundGradientTo: "#480048",
+                // backgroundGradientFrom: "#C04848",
+                // backgroundGradientTo: "#480048",
+                backgroundGradientFrom: "#F2F2F2",
+                backgroundGradientTo: "#F2F2F2",
                 decimalPlaces: 0, // optional, defaults to 2dp
-                color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
                 style: {
                   borderRadius: 16,
                 },
                 propsForDots: {
-                  r: "6",
-                  strokeWidth: "1",
-                  stroke: "#ffa726",
+                  r: "4",
+                  strokeWidth: "0",
                 },
               }}
               bezier

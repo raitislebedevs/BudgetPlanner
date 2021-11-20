@@ -13,6 +13,7 @@ import InputNumericField from "../InputNumericField/InputNumericField";
 import { getMyData } from "../../utils/userData";
 import ToastMessage from "../ToastMessage/ToastMessage";
 import { withLocale } from "react-easy-localization";
+import AppButton from "../AppButton/AppButton";
 
 const SubmitActivity = (props) => {
   const {
@@ -24,7 +25,7 @@ const SubmitActivity = (props) => {
     categoryItems,
     colorTheme,
     buttonText,
-    submitButtonStyle,
+    buttonColor,
     i18n,
   } = props;
   const [showInput, setShowInput] = useState(false);
@@ -111,7 +112,7 @@ const SubmitActivity = (props) => {
         <>
           {!isSubmiting ? (
             <>
-              <View>
+              <View style={styles.submitContainer}>
                 <View style={styles.pickerItemContainer}>
                   <View style={styles.pickerContainer}>
                     <Picker
@@ -180,14 +181,21 @@ const SubmitActivity = (props) => {
           )}
         </>
       )}
-      <TouchableHighlight
+      <View style={styles.submitButton}>
+        <AppButton
+          title={buttonText}
+          onPress={() => submitEntry()}
+          color={buttonColor}
+        />
+      </View>
+      {/* <TouchableHighlight
         style={submitButtonStyle}
         onPress={() => null}
         underlayColor={"gold"}
         onPress={() => submitEntry()}
       >
         <Text style={styles.submitText}>{buttonText}</Text>
-      </TouchableHighlight>
+      </TouchableHighlight> */}
     </>
   );
 };
@@ -217,5 +225,14 @@ const styles = StyleSheet.create({
   },
   loader: {
     marginTop: 25,
+  },
+  submitButton: {
+    marginLeft: "5%",
+    marginRight: "5%",
+  },
+  submitContainer: {
+    marginBottom: 15,
+    marginLeft: "2.5%",
+    marginRight: "2.5%",
   },
 });

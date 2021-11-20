@@ -2,7 +2,12 @@ import React from "react";
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 import { colors } from "../../config/colors";
 
-function AppButton({ title, onPress, color = "primary", mode = "contained" }) {
+function PeriodButton({
+  title,
+  onPress,
+  color = "primary",
+  mode = "contained",
+}) {
   return (
     <TouchableOpacity
       onPress={onPress}
@@ -24,7 +29,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary,
     borderRadius: 20,
     minWidth: 90,
-    padding: 17,
+    padding: 8,
     marginBottom: 15,
     justifyContent: "center",
     alignItems: "center",
@@ -32,12 +37,11 @@ const styles = StyleSheet.create({
   outlined: {
     backgroundColor: colors.white,
     borderColor: colors.primary,
-    borderWidth: 2,
+    borderWidth: 0,
     minWidth: 90,
     borderRadius: 20,
     justifyContent: "center",
     alignItems: "center",
-    padding: 10,
     marginBottom: 15,
   },
   text: {
@@ -47,4 +51,4 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 });
-export default AppButton;
+export default PeriodButton;

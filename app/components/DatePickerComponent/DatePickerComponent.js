@@ -32,6 +32,7 @@ export default DatePickerComponent = (props) => {
       <DateTimePickerModal
         isVisible={open}
         mode="date"
+        backgroundColor={"#fff"}
         onConfirm={handleConfirm}
         onCancel={hideDatePicker}
       />

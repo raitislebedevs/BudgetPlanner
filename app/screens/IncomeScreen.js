@@ -42,7 +42,7 @@ const IncomeScreen = (props) => {
       <BudgetPieChart
         isLoading={isLoading}
         chartData={budget?.incomeChartData || []}
-        color={"darkgreen"}
+        color={"primary"}
       />
 
       <SubmitActivity
@@ -52,7 +52,8 @@ const IncomeScreen = (props) => {
         setInputValues={setInputValues}
         activity={"income"}
         categoryItems={categoryItems}
-        colorTheme={"darkgreen"}
+        colorTheme={"primary"}
+        buttonColor={"tertiary"}
         buttonText={i18n.IncomeScreen.addIncome}
         period={period}
         submitButtonStyle={styles.submit}
@@ -89,9 +90,9 @@ const styles = StyleSheet.create({
   submit: {
     marginRight: 40,
     marginLeft: 40,
-    marginTop: 10,
-    paddingTop: 12,
-    paddingBottom: 12,
+    marginTop: 20,
+    paddingTop: 15,
+    paddingBottom: 15,
     backgroundColor: "darkgreen",
     borderRadius: 10,
     borderWidth: 1,

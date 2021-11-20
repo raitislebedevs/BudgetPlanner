@@ -55,6 +55,7 @@ const ExpensesScreen = (props) => {
         colorTheme={"brown"}
         buttonText={i18n.ExpenseScreen.addExpense}
         period={period}
+        buttonColor={"secondary"}
         submitButtonStyle={styles.submit}
         getGlobalBudgetData={getGlobalBudgetData}
       />
