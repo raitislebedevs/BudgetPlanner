@@ -5,8 +5,8 @@ import { getValueFor } from "../utils/expoSecure";
 class CoreServices {
   constructor(service) {
     this.service = service;
-    // this.apiEnpoint = `${"https://placifull-budget-planner-api.herokuapp.com"}`;
-    this.apiEnpoint = `${"http://192.168.1.107:1337"}`;
+    this.apiEnpoint = `${"https://placifull-budget-planner-api.herokuapp.com"}`;
+    // this.apiEnpoint = `${"http://192.168.1.107:1337"}`;
   }
 
   headers(token) {

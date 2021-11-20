@@ -37,6 +37,7 @@ const ExpensesScreen = (props) => {
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
         id={id}
+        getGlobalBudgetData={getGlobalBudgetData}
       />
       <BudgetPieChart
         isLoading={isLoading}

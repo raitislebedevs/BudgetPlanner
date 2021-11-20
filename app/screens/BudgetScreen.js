@@ -120,6 +120,7 @@ const BudgetScreen = (props) => {
         setModalVisible={setModalVisible}
         id={id}
         budget={true}
+        getGlobalBudgetData={getGlobalBudgetData}
       />
       <BudgetChart budget={budget} isLoading={isLoading} />
       {inputBudget && (

@@ -37,6 +37,7 @@ const IncomeScreen = (props) => {
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
         id={id}
+        getGlobalBudgetData={getGlobalBudgetData}
       />
       <BudgetPieChart
         isLoading={isLoading}

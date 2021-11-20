@@ -11,7 +11,8 @@ import budgetJournal from "../../services/budgetJournal";
 import userBudget from "../../services/userBudget";
 
 const AskModal = (props) => {
-  const { modalVisible, setModalVisible, id, budget } = props;
+  const { modalVisible, setModalVisible, id, budget, getGlobalBudgetData } =
+    props;
   const [isDeleting, setIsDeleting] = useState(false);
 
   const deleteRecord = async () => {
@@ -24,7 +25,7 @@ const AskModal = (props) => {
         await budgetJournal.DELETE(id);
       }
 
-      // await reloadBudgetData();
+      getGlobalBudgetData();
     } catch (error) {
       console.log(error);
     }
