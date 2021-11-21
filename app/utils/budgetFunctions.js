@@ -35,13 +35,14 @@ export const initilizeData = async (period, t) => {
 
   rawExpenseData = await getBudgetData(period, "expense");
   rawBudgetData = await getBudgetPlanData(period);
-  await getGroupedIncomeData(currency);
-  await getGroupedExpenseData(currency);
-  await getGroupedPlannedData(currency);
+  getGroupedIncomeData(currency);
+  getGroupedExpenseData(currency);
+  getGroupedPlannedData(currency);
 
   let refObj = JSON.stringify(expenseData);
   let newExpenseData = JSON.parse(refObj);
-  await updateGroupedPlannedData(budgetPlanningData, newExpenseData);
+  updateGroupedPlannedData(budgetPlanningData, newExpenseData);
+  updateAnyBudget(budgetPlanningData);
 
   incomeAmount = sumWithReduce(incomeData, "total");
   spentAmount = sumWithReduce(expenseData, "total");
@@ -219,6 +220,31 @@ const updateGroupedPlannedData = (budgetEntries, spentEntries) => {
   } catch (error) {
     console.log(error);
   }
+};
+const updateAnyBudget = (budgetData) => {
+  budgetData.forEach((category) => {
+    let anyPlan = category?.data.filter((item) => item.title == "ANY")[0];
+
+    category?.data.sort((a, b) =>
+      a.title > b.title ? 1 : b.title > a.title ? -1 : 0
+    );
+
+    if (!anyPlan || category?.data.length < 2) return;
+
+    let overSpent = category?.data.filter(
+      (item) => item.title != "ANY" && item.amountSpent - item.amount > 0
+    );
+    overSpent.forEach((transferable) => {
+      let difference = transferable.amountSpent - transferable.amount;
+      if (difference > anyPlan.amount) {
+        transferable.amount = anyPlan.amount;
+        anyPlan.amount = 0;
+        return;
+      }
+      transferable.amount = transferable.amountSpent;
+      anyPlan.amount -= transferable.amountSpent;
+    });
+  });
 };
 const groupDataByPeriod = (budgetData, currency) => {
   try {

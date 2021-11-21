@@ -4,7 +4,6 @@ import {
   Text,
   ScrollView,
   View,
-  TouchableHighlight,
   ActivityIndicator,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";

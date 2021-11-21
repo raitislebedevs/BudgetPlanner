@@ -23,6 +23,12 @@ export default {
     fontSize: 17,
     fontFamily: Platform.OS === "android" ? "Roboto" : "Avenir",
   },
+  appTextTertiary: {
+    color: colors.tertiary,
+    fontWeight: "bold",
+    fontSize: 17,
+    fontFamily: Platform.OS === "android" ? "Roboto" : "Avenir",
+  },
   headingText: {
     color: colors.darkGray,
     fontSize: 20,

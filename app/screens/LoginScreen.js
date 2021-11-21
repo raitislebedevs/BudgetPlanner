@@ -18,7 +18,7 @@ import { getMyData } from "../utils/userData";
 const image = require("../assets/Light.jpg");
 
 const LoginScreen = (props) => {
-  const { navigation, userToken } = props;
+  const { navigation } = props;
 
   const [errorText, setErrorText] = useState("");
   const [inputValues, setInputValues] = useState({});
@@ -30,6 +30,7 @@ const LoginScreen = (props) => {
   };
 
   const handleSignin = async () => {
+    console.log("Test");
     setErrorText("");
     try {
       let payload = {
@@ -41,6 +42,7 @@ const LoginScreen = (props) => {
       if (data) {
         save("access_token", data?.jwt);
         save("user_data", JSON.stringify(data?.user));
+        navigation.navigate("MainScreen");
       }
 
       if (error) {
@@ -55,7 +57,7 @@ const LoginScreen = (props) => {
     if (await getMyData()) {
       navigation.navigate("MainScreen");
     }
-  }, [userToken]);
+  }, []);
 
   return (
     <SafeAreaView style={styles.content}>

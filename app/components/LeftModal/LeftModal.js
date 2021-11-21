@@ -186,7 +186,7 @@ const LeftModal = (props) => {
             user?.currency?.symbol || "$"
           } ­`}</Text>
           <Text
-            style={defaultStyles.appTextSecondary}
+            style={defaultStyles.appTextTertiary}
             onPress={() => setCurrencyPicker(!currencyPicker)}
           >
             {i18n.UserDrawer.edit}
@@ -229,7 +229,7 @@ const LeftModal = (props) => {
           <Text
             style={defaultStyles.appTextNormal}
           >{`${i18n.UserDrawer.name}: ${user.firstName} ${user.lastName} ­`}</Text>
-          <Text style={defaultStyles.appTextSecondary}>
+          <Text style={defaultStyles.appTextTertiary}>
             {i18n.UserDrawer.edit}
           </Text>
         </View>
@@ -237,7 +237,7 @@ const LeftModal = (props) => {
           <Text
             style={defaultStyles.appTextNormal}
           >{`${i18n.UserDrawer.email}: ${user?.email}  ­`}</Text>
-          <Text style={defaultStyles.appTextSecondary}>
+          <Text style={defaultStyles.appTextTertiary}>
             {i18n.UserDrawer.edit}
           </Text>
         </View>
@@ -363,7 +363,7 @@ const styles = StyleSheet.create({
   },
 
   heading: {
-    marginTop: 5,
+    marginTop: 12,
     flexDirection: "row",
     justifyContent: "space-between",
     marginBottom: 5,
@@ -373,22 +373,23 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
   },
   close: {
-    width: 28,
-    height: 25,
+    width: 48,
+    height: 30,
     marginTop: 10,
     backgroundColor: colors.primary,
     borderRadius: 5,
     borderWidth: 1,
     borderColor: colors.white,
   },
+  closeText: {
+    marginTop: 5,
+    color: colors.white,
+    textAlign: "center",
+    justifyContent: "center",
+  },
   submitButton: {
     marginTop: 10,
   },
-  closeText: {
-    color: colors.white,
-    textAlign: "center",
-  },
-
   invites: {
     marginTop: 5,
     display: "flex",
