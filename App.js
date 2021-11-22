@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { StyleSheet } from "react-native";
 import NavigationMainContainer from "./app/components/Navigation/NavigationMainContainer";
 import LoginScreen from "./app/screens/LoginScreen";
@@ -7,6 +7,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { LocaleProvider } from "react-easy-localization";
 import { languages } from "./app/locales";
+import CategorySetUpScreen from "./app/screens/CategorySetUpScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -29,6 +30,11 @@ export default function App() {
             options={{ headerShown: false }}
             name="MainScreen"
             component={NavigationMainContainer}
+          />
+          <Stack.Screen
+            options={{ headerShown: false }}
+            name="Category"
+            component={CategorySetUpScreen}
           />
         </Stack.Navigator>
       </NavigationContainer>

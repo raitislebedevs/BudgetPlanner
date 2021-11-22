@@ -1,8 +1,9 @@
 import React from "react";
-import { TextInput } from "react-native-paper";
+import { View } from "react-native";
+import AppTextInput from "../AppTextInput/AppTextInput";
 
 const InputNumericField = (props) => {
-  const { handleOnChange, id, label, currency } = props;
+  const { handleOnChange, id, label, icon, currency } = props;
 
   const handleOnChangeNumber = (event) => {
     let value = event?.target?.value ?? event?.value ?? event;
@@ -13,13 +14,15 @@ const InputNumericField = (props) => {
     });
   };
   return (
-    <TextInput
-      underlineColor="brown"
-      label={label}
-      // value={numericValue}
-      keyboardType="numeric"
-      onChangeText={(e) => handleOnChangeNumber({ target: { value: e, id } })}
-    ></TextInput>
+    <View style={{ width: "50%" }}>
+      <AppTextInput
+        icon={icon}
+        placeholder={label}
+        label={label}
+        keyboardType="numeric"
+        onChangeText={(e) => handleOnChangeNumber({ target: { value: e, id } })}
+      />
+    </View>
   );
 };
 

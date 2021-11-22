@@ -8,84 +8,102 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { LineChart } from "react-native-chart-kit";
+import AskModal from "../components/AskModal/AskModal";
 import FinanceDetails from "../components/FinanseDetails/FinanceDetails";
 import { colors } from "../config/colors";
 
 const SummaryScreen = (props) => {
-  const { budget, chartLabels, isLoading, i18n } = props;
+  const { budget, chartLabels, isLoading, i18n, getGlobalBudgetData } = props;
+  const [modalVisible, setModalVisible] = useState(false);
+  const [id, setId] = useState("");
 
-  const highlight = (id) => {};
+  const highlight = (id) => {
+    setId(id);
+    setModalVisible(true);
+  };
 
   return (
-    <ScrollView>
-      {!isLoading ? (
-        <>
-          <View>
-            <LineChart
-              data={{
-                labels: chartLabels?.xLabels,
-                datasets: [
-                  {
-                    data: chartLabels?.incomeChartData || [0, 0, 0, 0, 0],
-                    strokeWidth: 1,
-                    color: (opacity = 1) => colors.tertiary,
-                    // optional
+    <>
+      <AskModal
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+        id={id}
+        getGlobalBudgetData={getGlobalBudgetData}
+      />
+      <ScrollView>
+        {!isLoading ? (
+          <>
+            <View>
+              <LineChart
+                data={{
+                  labels: chartLabels?.xLabels,
+                  datasets: [
+                    {
+                      data: chartLabels?.incomeChartData || [0, 0, 0, 0, 0],
+                      strokeWidth: 1,
+                      color: (opacity = 1) => colors.tertiary,
+                      // optional
+                    },
+                    {
+                      data: chartLabels?.expenseChartData || [0, 0, 0, 0, 0, 0],
+                      strokeWidth: 1,
+                      color: (opacity = 1) => colors.secondary, // optional
+                    },
+                  ],
+                }}
+                width={Dimensions.get("window").width} // from react-native
+                height={242}
+                yAxisLabel={`${budget?.currency || "$"} `}
+                title="Summary"
+                yAxisInterval={1} // optional, defaults to 1
+                chartConfig={{
+                  // backgroundGradientFrom: "#C04848",
+                  // backgroundGradientTo: "#480048",
+                  backgroundGradientFrom: "#F2F2F2",
+                  backgroundGradientTo: "#F2F2F2",
+                  decimalPlaces: 0, // optional, defaults to 2dp
+                  color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                  labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                  style: {
+                    borderRadius: 16,
                   },
-                  {
-                    data: chartLabels?.expenseChartData || [0, 0, 0, 0, 0, 0],
-                    strokeWidth: 1,
-                    color: (opacity = 1) => colors.secondary, // optional
+                  propsForDots: {
+                    r: "4",
+                    strokeWidth: "0",
                   },
-                ],
-              }}
-              width={Dimensions.get("window").width} // from react-native
-              height={242}
-              yAxisLabel={`${budget?.currency || "$"} `}
-              title="Summary"
-              yAxisInterval={1} // optional, defaults to 1
-              chartConfig={{
-                // backgroundGradientFrom: "#C04848",
-                // backgroundGradientTo: "#480048",
-                backgroundGradientFrom: "#F2F2F2",
-                backgroundGradientTo: "#F2F2F2",
-                decimalPlaces: 0, // optional, defaults to 2dp
-                color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                style: {
-                  borderRadius: 16,
-                },
-                propsForDots: {
-                  r: "4",
-                  strokeWidth: "0",
-                },
-              }}
-              bezier
-              style={{
-                marginVertical: 0,
-                borderRadius: 8,
-              }}
-            />
-          </View>
-          {budget?.incomeData?.length > 0 && (
-            <FinanceDetails
-              financeData={budget.incomeData}
-              title={i18n.IncomeScreen.label}
-              highlight={highlight}
-            />
-          )}
+                }}
+                bezier
+                style={{
+                  marginVertical: 0,
+                  borderRadius: 8,
+                }}
+              />
+            </View>
+            {budget?.incomeData?.length > 0 && (
+              <FinanceDetails
+                financeData={budget.incomeData}
+                title={i18n.IncomeScreen.label}
+                highlight={highlight}
+              />
+            )}
 
-          {budget?.expenseData?.length > 0 && (
-            <FinanceDetails
-              financeData={budget.expenseData}
-              title={i18n.ExpenseScreen.label}
-              highlight={highlight}
-            />
-          )}
-        </>
-      ) : (
-        <ActivityIndicator style={styles.loader} size="large" color="#e26a00" />
-      )}
-    </ScrollView>
+            {budget?.expenseData?.length > 0 && (
+              <FinanceDetails
+                financeData={budget.expenseData}
+                title={i18n.ExpenseScreen.label}
+                highlight={highlight}
+              />
+            )}
+          </>
+        ) : (
+          <ActivityIndicator
+            style={styles.loader}
+            size="large"
+            color="#e26a00"
+          />
+        )}
+      </ScrollView>
+    </>
   );
 };
 

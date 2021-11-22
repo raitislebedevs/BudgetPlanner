@@ -5,10 +5,14 @@ export const incomeCategory = () => {
       value: "Income",
       icon: "wallet",
       items: [
-        { label: "Salary", value: "Salary" },
-        { label: "Gifts", value: "Gifts" },
-        { label: "Scholarships", value: "Scholarships" },
-        { label: "Others", value: "Others" },
+        { label: "Salary", value: "Salary", icon: "wallet" },
+        { label: "Gifts", value: "Gifts", icon: "gift-outline" },
+        {
+          label: "Scholarships",
+          value: "Scholarships",
+          icon: "school-outline",
+        },
+        { label: "Others", value: "Others", icon: "alien" },
       ],
     },
     {

@@ -2,8 +2,8 @@ import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { List } from "react-native-paper";
 import { formatNumber } from "../../utils/standaloneFunctions";
-import Swipeable from "react-native-gesture-handler/Swipeable";
-import RightActions from "../RightActions/RightActions";
+import { colors } from "../../config/colors";
+import RemoveSwipable from "../RemoveSwipable/RemoveSwipable";
 
 const FinanceDetails = (props) => {
   const { financeData, title, highlight, budget } = props;
@@ -15,6 +15,7 @@ const FinanceDetails = (props) => {
           <List.Accordion
             title={items.label}
             description={items.description}
+            style={styles.mainLabel}
             left={(props) => <List.Icon {...props} icon={items?.icon} />}
             right={(props) => (
               <View style={styles.budgetMarkings}>
@@ -94,23 +95,29 @@ const FinanceDetails = (props) => {
                   {item?.items &&
                     item?.items.map((singleEntry) => {
                       return (
-                        <List.Item
-                          title={singleEntry?.date}
-                          onPress={() => highlight(singleEntry?.id)}
+                        <RemoveSwipable
                           key={`${singleEntry?.id}`}
-                          right={(props) => (
-                            <View
-                              style={[styles.budgetMarkings, styles.itemWidth]}
-                            >
-                              <Text style={items.style}>
-                                {`${formatNumber(
-                                  singleEntry?.amount,
-                                  items?.currency
-                                )}`}
-                              </Text>
-                            </View>
-                          )}
-                        />
+                          onPress={() => highlight(singleEntry?.id)}
+                        >
+                          <List.Item
+                            title={singleEntry?.date}
+                            right={(props) => (
+                              <View
+                                style={[
+                                  styles.budgetMarkings,
+                                  styles.itemWidth,
+                                ]}
+                              >
+                                <Text style={items.style}>
+                                  {`${formatNumber(
+                                    singleEntry?.amount,
+                                    items?.currency
+                                  )}`}
+                                </Text>
+                              </View>
+                            )}
+                          />
+                        </RemoveSwipable>
                       );
                     })}
                 </List.Accordion>
@@ -138,17 +145,20 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
   },
   listIem: {
-    backgroundColor: "#E8E8E8",
+    backgroundColor: colors.gray,
   },
   itemWidth: {
     alignSelf: "flex-start",
     minWidth: 100,
   },
   budgetNotDefined: {
-    color: "darkblue",
+    color: colors.primaryBudget,
     alignSelf: "flex-start",
     minWidth: 100,
     fontWeight: "bold",
+  },
+  mainLabel: {
+    color: colors.tertiary,
   },
 });
 export default FinanceDetails;

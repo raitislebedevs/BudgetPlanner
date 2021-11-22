@@ -32,52 +32,54 @@ const IncomeScreen = (props) => {
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <AskModal
-        modalVisible={modalVisible}
-        setModalVisible={setModalVisible}
-        id={id}
-        getGlobalBudgetData={getGlobalBudgetData}
-      />
-      <BudgetPieChart
-        isLoading={isLoading}
-        chartData={budget?.incomeChartData || []}
-        color={"primary"}
-      />
-
-      <SubmitActivity
-        isLoading={isLoading}
-        currencySymbol={currencySymbol}
-        inputValues={inputValues}
-        setInputValues={setInputValues}
-        activity={"income"}
-        categoryItems={categoryItems}
-        colorTheme={"primary"}
-        buttonColor={"tertiary"}
-        buttonText={i18n.IncomeScreen.addIncome}
-        period={period}
-        submitButtonStyle={styles.submit}
-        getGlobalBudgetData={getGlobalBudgetData}
-      />
-
-      {!isLoading ? (
-        <>
-          {userIncome?.length > 0 && (
-            <FinanceDetails
-              financeData={userIncome}
-              title={i18n.IncomeScreen.label}
-              highlight={highlight}
-            />
-          )}
-        </>
-      ) : (
-        <ActivityIndicator
-          style={styles.loader}
-          size="large"
-          color="darkgreen"
+    <>
+      <ScrollView style={styles.container}>
+        <BudgetPieChart
+          isLoading={isLoading}
+          chartData={budget?.incomeChartData || []}
+          color={"primary"}
         />
-      )}
-    </ScrollView>
+
+        <SubmitActivity
+          isLoading={isLoading}
+          currencySymbol={currencySymbol}
+          inputValues={inputValues}
+          setInputValues={setInputValues}
+          activity={"income"}
+          categoryItems={categoryItems}
+          colorTheme={"primary"}
+          buttonColor={"tertiary"}
+          buttonText={i18n.IncomeScreen.addIncome}
+          period={period}
+          submitButtonStyle={styles.submit}
+          getGlobalBudgetData={getGlobalBudgetData}
+        />
+
+        {!isLoading ? (
+          <>
+            {userIncome?.length > 0 && (
+              <FinanceDetails
+                financeData={userIncome}
+                title={i18n.IncomeScreen.label}
+                highlight={highlight}
+              />
+            )}
+          </>
+        ) : (
+          <ActivityIndicator
+            style={styles.loader}
+            size="large"
+            color="darkgreen"
+          />
+        )}
+        <AskModal
+          modalVisible={modalVisible}
+          setModalVisible={setModalVisible}
+          id={id}
+          getGlobalBudgetData={getGlobalBudgetData}
+        />
+      </ScrollView>
+    </>
   );
 };
 

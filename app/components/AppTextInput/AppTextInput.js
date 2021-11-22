@@ -10,7 +10,7 @@ function AppTextInput({ icon, frameColor, rightIcon, ...otherProps }) {
       {icon && (
         <MaterialCommunityIcons
           name={icon}
-          size={20}
+          size={25}
           color={colors.mediumGray}
           style={styles.icon}
         />
@@ -37,7 +37,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     width: "100%",
     padding: 15,
-    marginVertical: 5,
   },
   icon: {
     marginRight: 10,

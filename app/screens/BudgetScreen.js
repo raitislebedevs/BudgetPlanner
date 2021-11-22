@@ -18,6 +18,7 @@ import AskModal from "../components/AskModal/AskModal";
 import { colors } from "../config/colors";
 import AppButton from "../components/AppButton/AppButton";
 import { withLocale } from "react-easy-localization";
+import AppPicker from "../components/AppPicker/AppPicker";
 
 const BudgetScreen = (props) => {
   const { budget, isLoading, currencySymbol, getGlobalBudgetData, i18n } =
@@ -45,6 +46,7 @@ const BudgetScreen = (props) => {
   const [inputingBudget, setInputingBudget] = useState(false);
   const [errorText, setErrorText] = useState("");
   const [successText, setSuccessText] = useState("");
+  const [categoryIcon, setCategoryIcon] = useState("apps");
 
   const [id, setId] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -130,53 +132,36 @@ const BudgetScreen = (props) => {
         <>
           {!inputingBudget ? (
             <>
-              <View>
+              <View style={styles.submitContainer}>
                 <View style={styles.pickerItemContainer}>
-                  <View style={styles.pickerContainer}>
-                    <Picker
-                      selectedValue={inputValues?.category}
-                      style={{ height: 50, width: 150 }}
-                      onValueChange={(itemValue, itemIndex) => {
-                        handleOnChangeCategory({
-                          target: { value: itemValue, id: "category" },
-                        });
-                      }}
-                    >
-                      <Picker.Item label="Category" value="" />
-                      {categoryItems.map((item) => {
-                        return (
-                          <Picker.Item
-                            label={item.label}
-                            value={item.value}
-                            key={item.label}
-                          />
-                        );
-                      })}
-                    </Picker>
-                  </View>
-                  <View style={styles.pickerContainer}>
-                    <Picker
-                      selectedValue={inputValues?.categoryItem}
-                      style={{ height: 50, width: 150 }}
-                      onValueChange={(itemValue, itemIndex) => {
-                        handleOnChange({
-                          target: { value: itemValue, id: "categoryItem" },
-                        });
-                      }}
-                    >
-                      <Picker.Item label="Category Item" value="" />
-                      {items.map((item) => {
-                        return (
-                          <Picker.Item
-                            label={item.label}
-                            value={item.value}
-                            key={item.label}
-                          />
-                        );
-                      })}
-                    </Picker>
-                  </View>
+                  <AppPicker
+                    icon={categoryIcon}
+                    underlineColor="brown"
+                    placeholder="Category"
+                    items={categoryItems}
+                    onSelectItem={(itemValue) => {
+                      console.log("On Selected item", itemValue);
+                      handleOnChangeCategory({
+                        target: { value: itemValue, id: "Category" },
+                      });
+                    }}
+                    selectedItem={inputValues?.Category}
+                  />
+                  <AppPicker
+                    icon="apps"
+                    underlineColor="brown"
+                    placeholder="Category Item"
+                    items={items}
+                    onSelectItem={(value) => {
+                      console.log("On Selected item", value);
+                      handleOnChange({
+                        target: { value, id: "CategoryItem" },
+                      });
+                    }}
+                    selectedItem={inputValues?.CategoryItem}
+                  />
                 </View>
+
                 <View style={styles.pickerItemContainer}>
                   <View style={styles.pickerPeriodContainer}>
                     <Picker
@@ -200,13 +185,16 @@ const BudgetScreen = (props) => {
                       })}
                     </Picker>
                   </View>
+                  <View style={styles.numericValue}>
+                    <InputNumericField
+                      icon={"cash"}
+                      id={"ActivityAmount"}
+                      handleOnChange={handleOnChange}
+                      label={i18n.Common.amount}
+                      currency={currencySymbol}
+                    />
+                  </View>
                 </View>
-                <InputNumericField
-                  id={"ActivityAmount"}
-                  handleOnChange={handleOnChange}
-                  label={"Value"}
-                  currency={currencySymbol}
-                />
               </View>
               <View style={errorText ? styles.errorText : styles.successText}>
                 <Text style={errorText ? styles.errorText : styles.successText}>
@@ -253,78 +241,35 @@ const BudgetScreen = (props) => {
 };
 
 const styles = StyleSheet.create({
-  text: {
-    fontSize: 22,
-    fontWeight: "bold",
-    alignSelf: "center",
-  },
-  container: {
-    flex: 1,
-  },
-  input: {
-    height: 45,
-    borderWidth: 1,
-    borderRadius: 10,
-    padding: 10,
-    marginTop: 10,
-    marginBottom: 10,
-    backgroundColor: "#fff",
-  },
   buttonStyle: {
     marginTop: 10,
-    marginBottom: 10,
     borderRadius: 10,
-    // alignItems: "center",
     marginLeft: "5%",
     marginRight: "5%",
   },
-  dropDown: {
-    backgroundColor: "lightgray",
-    marginTop: 10,
-    borderRadius: 10,
-    padding: 10,
-    backgroundColor: "#fff",
-    zIndex: 10,
-  },
-  submit: {
-    marginRight: 45,
-    marginLeft: 45,
-    marginTop: 10,
-    paddingTop: 12,
-    paddingBottom: 12,
-    backgroundColor: "darkblue",
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: "#fff",
-  },
-  submitText: {
-    color: "#fff",
-    textAlign: "center",
-  },
-  pickerContainer: {
-    paddingTop: 10,
-    alignItems: "center",
-    borderBottomColor: "brown",
-    borderBottomWidth: 1,
-    width: "50%",
-    backgroundColor: "#e7e7e7",
-    borderTopLeftRadius: 25,
-    borderTopRightRadius: 25,
-  },
-  pickerPeriodContainer: {
-    paddingTop: 10,
-    alignItems: "center",
-    borderBottomColor: "brown",
-    borderBottomWidth: 1,
-    width: "100%",
-    backgroundColor: "#e7e7e7",
-    borderTopLeftRadius: 25,
-    borderTopRightRadius: 25,
-  },
+
   pickerItemContainer: {
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
+  },
+  pickerPeriodContainer: {
+    backgroundColor: colors.lightGray,
+    alignItems: "center",
+    justifyContent: "center",
+    width: "50%",
+    borderRadius: 25,
+    maxHeight: 60,
+  },
+
+  numericValue: {
+    display: "flex",
+    width: "100%",
+  },
+
+  submitContainer: {
+    marginLeft: "2.5%",
+    marginRight: "2.5%",
   },
   errorText: {
     fontWeight: "bold",

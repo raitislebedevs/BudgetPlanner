@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Switch,
+  ScrollView,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import Modal from "react-native-modal";
@@ -17,11 +18,11 @@ import { colors } from "../../config/colors";
 import defaultStyles from "../../config/appStyles";
 import AppButton from "../AppButton/AppButton";
 import AppTextInput from "../AppTextInput/AppTextInput";
-import { ScrollView } from "react-native-gesture-handler";
 import { withLocale } from "react-easy-localization";
 
 const LeftModal = (props) => {
-  const { isModalVisible, setModalVisible, i18n, changeLanguage } = props;
+  const { isModalVisible, setModalVisible, i18n, changeLanguage, navigation } =
+    props;
   const [user, setUser] = useState(false);
   const [currencyPicker, setCurrencyPicker] = useState(false);
   const [invitePerson, setInvitePerson] = useState("");
@@ -267,6 +268,17 @@ const LeftModal = (props) => {
             value={langPicker}
           />
         </View>
+
+        <TouchableOpacity>
+          <AppButton
+            onPress={() => {
+              console.log("Navigating?");
+              setModalVisible(false);
+              navigation.navigate("Category");
+            }}
+            title={"Edit Categories"}
+          />
+        </TouchableOpacity>
 
         {user?.linkedUsers?.length > 0 && (
           <>

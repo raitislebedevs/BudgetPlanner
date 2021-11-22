@@ -1,4 +1,4 @@
-import { Platform } from "react-native";
+import { Platform, StatusBar } from "react-native";
 import { colors } from "./colors";
 
 export default {
@@ -34,5 +34,9 @@ export default {
     fontSize: 20,
     fontFamily: Platform.OS === "android" ? "Roboto" : "Avenir",
     fontWeight: "bold",
+  },
+  statusbar: {
+    backgroundColor: colors.primary,
+    paddingTop: StatusBar.currentHeight + 10,
   },
 };

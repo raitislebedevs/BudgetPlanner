@@ -1,54 +1,69 @@
 import React, { useState } from "react";
-import { TextInput } from "react-native-paper";
-import DateTimePickerModal from "react-native-modal-datetime-picker";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import { StyleSheet, Text, TouchableWithoutFeedback, View } from "react-native";
+import { colors } from "../../config/colors";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import moment from "moment";
+import defaultStyles from "../../config/appStyles";
 
 export default DatePickerComponent = (props) => {
   const { handleOnChange, i18n } = props;
-  const [date, setDate] = useState("");
+  const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
-  const handleFocus = () => {
-    setOpen(true);
-  };
 
-  const hideDatePicker = () => {
+  const handleConfirm = (e) => {
+    if (e) {
+      setDate(e);
+      handleOnChange({ target: { value: e, id: "ActivityDate" } });
+    }
     setOpen(false);
   };
 
-  const handleConfirm = (date) => {
-    setDate(date);
-    hideDatePicker();
-    handleOnChange({ target: { value: date, id: "ActivityDate" } });
-  };
-
   return (
-    <>
-      <TextInput
-        underlineColor="brown"
-        label={i18n.Common.date}
-        value={date && date.toDateString()}
-        onFocus={() => handleFocus()}
-        onChangeText={() => handleFocus()}
-      ></TextInput>
-      <DateTimePickerModal
-        isVisible={open}
-        mode="date"
-        backgroundColor={"#fff"}
-        onConfirm={handleConfirm}
-        onCancel={hideDatePicker}
-      />
-
-      {/* <DatePicker
-        modal
-        open={open}
-        date={date}
-        onConfirm={(date) => {
-          setOpen(false);
-          setDate(date);
-        }}
-        onCancel={() => {
-          setOpen(false);
-        }}
-      /> */}
-    </>
+    <View style={{ width: "50%" }}>
+      <TouchableWithoutFeedback onPress={() => setOpen(true)}>
+        <View style={styles.container}>
+          <MaterialCommunityIcons
+            name={"calendar"}
+            size={20}
+            color={colors.mediumGray}
+            style={styles.icon}
+          />
+          <Text style={[defaultStyles.text, styles.text]}>
+            {date ? moment(date).format("DD MMM YYYY") : i18n.Common.date}
+          </Text>
+        </View>
+      </TouchableWithoutFeedback>
+      {open && (
+        <DateTimePicker
+          value={new Date(date)}
+          mode="date"
+          onChange={(event, date) => {
+            handleConfirm(date);
+          }}
+        />
+      )}
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: colors.lightGray,
+    borderRadius: 25,
+    flexDirection: "row",
+    width: "100%",
+    padding: 15,
+    marginVertical: 5,
+    flex: 1,
+  },
+  modaItem: {
+    marginTop: 42,
+  },
+  icon: {
+    marginRight: 10,
+  },
+  text: {
+    flex: 1,
+  },
+});

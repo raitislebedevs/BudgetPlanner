@@ -12,7 +12,7 @@ import { formatNumber } from "../../utils/standaloneFunctions";
 import LeftModal from "../LeftModal/LeftModal";
 
 const Header = (props) => {
-  const { isLoading, currencySymbol, budget, i18n } = props;
+  const { isLoading, currencySymbol, budget, i18n, navigation } = props;
   const [isModalVisible, setModalVisible] = useState(false);
 
   const toggleModal = () => {
@@ -70,6 +70,7 @@ const Header = (props) => {
       <LeftModal
         isModalVisible={isModalVisible}
         setModalVisible={setModalVisible}
+        navigation={navigation}
       />
     </View>
   );

@@ -33,18 +33,11 @@ const ExpensesScreen = (props) => {
 
   return (
     <ScrollView style={styles.container}>
-      <AskModal
-        modalVisible={modalVisible}
-        setModalVisible={setModalVisible}
-        id={id}
-        getGlobalBudgetData={getGlobalBudgetData}
-      />
       <BudgetPieChart
         isLoading={isLoading}
         chartData={budget?.spentChartData}
         color={"darkred"}
       />
-
       <SubmitActivity
         isLoading={isLoading}
         currencySymbol={currencySymbol}
@@ -72,6 +65,12 @@ const ExpensesScreen = (props) => {
       ) : (
         <ActivityIndicator style={styles.loader} size="large" color="darkred" />
       )}
+      <AskModal
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+        id={id}
+        getGlobalBudgetData={getGlobalBudgetData}
+      />
     </ScrollView>
   );
 };

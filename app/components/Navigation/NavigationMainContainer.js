@@ -48,6 +48,7 @@ const NavigationMainContainer = ({ navigation, i18n }) => {
       <Header
         budget={globalBudget}
         isLoading={isLoading}
+        navigation={navigation}
         currencySymbol={globalBudget.currency}
         period={period}
       />
@@ -96,6 +97,7 @@ const NavigationMainContainer = ({ navigation, i18n }) => {
               budget={globalBudget}
               isLoading={isLoading}
               chartLabels={globalBudget?.bezierChartData}
+              getGlobalBudgetData={getGlobalBudgetData}
             />
           )}
           name={summarryScren}

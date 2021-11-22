@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, StyleSheet, ActivityIndicator } from "react-native";
-import { Picker } from "@react-native-picker/picker";
 import budgetJournal from "../../services/budgetJournal";
 import DatePickerComponent from "../DatePickerComponent/DatePickerComponent";
 import InputNumericField from "../InputNumericField/InputNumericField";
@@ -8,6 +7,7 @@ import { getMyData } from "../../utils/userData";
 import ToastMessage from "../ToastMessage/ToastMessage";
 import { withLocale } from "react-easy-localization";
 import AppButton from "../AppButton/AppButton";
+import AppPicker from "../AppPicker/AppPicker";
 
 const SubmitActivity = (props) => {
   const {
@@ -23,14 +23,18 @@ const SubmitActivity = (props) => {
     i18n,
   } = props;
   const [showInput, setShowInput] = useState(false);
+  const [categoryIcon, setCategoryIcon] = useState("apps");
 
   const [isSubmiting, setIsSubmiting] = useState(false);
+
   const [items, setItems] = useState([]);
 
   const handleOnChange = (event) => {
     const value = event?.target?.value ?? event?.value ?? event;
     const id = event?.target?.id ?? event?.id;
     setInputValues({ ...inputValues, [id]: value });
+
+    console.log(inputValues);
   };
 
   const handleOnChangeCategoryInputValue = (event, iconTarget) => {
@@ -108,62 +112,45 @@ const SubmitActivity = (props) => {
             <>
               <View style={styles.submitContainer}>
                 <View style={styles.pickerItemContainer}>
-                  <View style={styles.pickerContainer}>
-                    <Picker
-                      selectedValue={inputValues?.Category}
-                      style={{ height: 50, width: 150 }}
-                      onValueChange={(itemValue, itemIndex) => {
-                        handleOnChangeCategory({
-                          target: { value: itemValue, id: "Category" },
-                        });
-                      }}
-                    >
-                      <Picker.Item label={i18n.Common.category} value="" />
-                      {categoryItems.map((item) => {
-                        return (
-                          <Picker.Item
-                            label={item.label}
-                            value={item.value}
-                            key={item.label}
-                          />
-                        );
-                      })}
-                    </Picker>
-                  </View>
-                  <View style={styles.pickerContainer}>
-                    <Picker
-                      selectedValue={inputValues?.CategoryItem}
-                      style={{ height: 50, width: 150 }}
-                      onValueChange={(itemValue, itemIndex) => {
-                        handleOnChange({
-                          target: { value: itemValue, id: "CategoryItem" },
-                        });
-                      }}
-                    >
-                      <Picker.Item label={i18n.Common.categoryItem} value="" />
-                      {items.map((item) => {
-                        return (
-                          <Picker.Item
-                            label={item.label}
-                            value={item.value}
-                            key={item.label}
-                          />
-                        );
-                      })}
-                    </Picker>
-                  </View>
+                  <AppPicker
+                    icon={categoryIcon}
+                    underlineColor="brown"
+                    placeholder="Category"
+                    items={categoryItems}
+                    onSelectItem={(itemValue) => {
+                      handleOnChangeCategory({
+                        target: { value: itemValue, id: "Category" },
+                      });
+                    }}
+                    selectedItem={inputValues?.Category}
+                  />
+                  <AppPicker
+                    icon="apps"
+                    underlineColor="brown"
+                    placeholder="Category Item"
+                    items={items}
+                    onSelectItem={(value) => {
+                      handleOnChange({
+                        target: { value, id: "CategoryItem" },
+                      });
+                    }}
+                    selectedItem={inputValues?.CategoryItem}
+                  />
                 </View>
-                <DatePickerComponent
-                  i18n={i18n}
-                  handleOnChange={handleOnChange}
-                />
+                <View style={styles.valueDetails}>
+                  <DatePickerComponent
+                    i18n={i18n}
+                    handleOnChange={handleOnChange}
+                  />
 
-                <InputNumericField
-                  id={"ActivityAmount"}
-                  handleOnChange={handleOnChange}
-                  label={i18n.Common.amount}
-                  currency={currencySymbol}
-                />
+                  <InputNumericField
+                    icon={"cash"}
+                    id={"ActivityAmount"}
+                    handleOnChange={handleOnChange}
+                    label={i18n.Common.amount}
+                    currency={currencySymbol}
+                  />
+                </View>
               </View>
             </>
           ) : (
@@ -182,14 +169,6 @@ const SubmitActivity = (props) => {
           color={buttonColor}
         />
       </View>
-      {/* <TouchableHighlight
-        style={submitButtonStyle}
-        onPress={() => null}
-        underlayColor={"gold"}
-        onPress={() => submitEntry()}
-      >
-        <Text style={styles.submitText}>{buttonText}</Text>
-      </TouchableHighlight> */}
     </>
   );
 };
@@ -197,20 +176,14 @@ const SubmitActivity = (props) => {
 export default withLocale(SubmitActivity);
 
 const styles = StyleSheet.create({
-  pickerContainer: {
-    paddingTop: 10,
-    alignItems: "center",
-    borderBottomColor: "brown",
-    borderBottomWidth: 1,
-    width: "50%",
-    backgroundColor: "#e7e7e7",
-    borderTopLeftRadius: 25,
-    borderTopRightRadius: 25,
-  },
   pickerItemContainer: {
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
+  },
+
+  valueDetails: {
+    flexDirection: "row",
   },
 
   submitText: {
