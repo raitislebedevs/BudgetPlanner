@@ -6,13 +6,14 @@ import { colors } from "../../config/colors";
 import RemoveSwipable from "../RemoveSwipable/RemoveSwipable";
 
 const FinanceDetails = (props) => {
-  const { financeData, title, highlight, budget } = props;
+  const { financeData, title, highlight, budget, color } = props;
 
   return (
     <View>
       <List.Section title={title}>
         {financeData?.map((items) => (
           <List.Accordion
+            theme={{ colors: { primary: colors[color?.firstList] } }}
             title={items.label}
             description={items.description}
             style={styles.mainLabel}
@@ -59,6 +60,7 @@ const FinanceDetails = (props) => {
             {items.data.map((item) => {
               return (
                 <List.Accordion
+                  theme={{ colors: { primary: colors[color?.secondList] } }}
                   title={item.title}
                   style={styles.listIem}
                   right={(props) => (

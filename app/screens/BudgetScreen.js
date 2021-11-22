@@ -227,6 +227,7 @@ const BudgetScreen = (props) => {
             title={i18n.BudgetScreen.label}
             highlight={highlight}
             budget={budget}
+            color={{ firstList: "primary", secondList: "primary" }}
           />
         </>
       ) : (

@@ -84,6 +84,7 @@ const SummaryScreen = (props) => {
                 financeData={budget.incomeData}
                 title={i18n.IncomeScreen.label}
                 highlight={highlight}
+                color={{ firstList: "tertiary", secondList: "primary" }}
               />
             )}
 
@@ -92,6 +93,7 @@ const SummaryScreen = (props) => {
                 financeData={budget.expenseData}
                 title={i18n.ExpenseScreen.label}
                 highlight={highlight}
+                color={{ firstList: "secondary", secondList: "primary" }}
               />
             )}
           </>

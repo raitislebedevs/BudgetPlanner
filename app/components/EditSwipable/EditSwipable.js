@@ -67,8 +67,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     height: "100%",
-    borderTopRightRadius: 20,
-    borderBottomRightRadius: 20,
+    // borderTopRightRadius: 20,
+    // borderBottomRightRadius: 20,
   },
   editBox: {
     backgroundColor: colors.tertiary,
@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     height: "100%",
-    borderTopLeftRadius: 20,
-    borderBottomLeftRadius: 20,
+    // borderTopLeftRadius: 20,
+    // borderBottomLeftRadius: 20,
   },
 });

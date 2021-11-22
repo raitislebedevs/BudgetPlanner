@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     height: "100%",
-    borderTopRightRadius: 20,
-    borderBottomRightRadius: 20,
+    // borderTopRightRadius: 20,
+    // borderBottomRightRadius: 20,
   },
 });

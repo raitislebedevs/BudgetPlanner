@@ -62,6 +62,7 @@ const IncomeScreen = (props) => {
                 financeData={userIncome}
                 title={i18n.IncomeScreen.label}
                 highlight={highlight}
+                color={{ firstList: "tertiary", secondList: "primary" }}
               />
             )}
           </>

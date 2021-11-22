@@ -59,6 +59,7 @@ const ExpensesScreen = (props) => {
               financeData={userExpense}
               title={i18n.ExpenseScreen.label}
               highlight={highlight}
+              color={{ firstList: "secondary", secondList: "primary" }}
             />
           )}
         </>

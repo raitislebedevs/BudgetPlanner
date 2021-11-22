@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Image,
   StyleSheet,
@@ -15,62 +15,103 @@ import AppButton from "../components/AppButton/AppButton";
 import { colors } from "../config/colors";
 import { incomeCategory } from "../utils/categoryItems";
 import defaultStyles from "../config/appStyles";
-import RemoveSwipable from "../components/RemoveSwipable/RemoveSwipable";
 import EditSwipable from "../components/EditSwipable/EditSwipable";
 import { categoryIcons } from "../utils/categoryIcons";
 import AppPickerItem from "../components/AppPicker/AppPickerItem";
 
 function CategorySetUpScreen({ navigation }) {
   const [data, setData] = useState([]);
-  const [swiping, setSriping] = useState(false);
+  const [activeEdit, setActiveEdit] = useState("");
   const [modalIsVisible, setModalVisible] = useState(false);
   const categories = incomeCategory();
   const icons = categoryIcons();
 
+  useEffect(() => {
+    setData(categories);
+  }, []);
+
+  const selectIcon = (item) => {
+    try {
+      let iconChange = activeEdit;
+      iconChange.icon = item;
+      setData([...data, iconChange]);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const deleteIcon = (removable) => {
+    console.log(activeEdit);
+    console.log(data);
+    try {
+      let newData = data.filter((s) => s.label != removable.label);
+      newData.forEach(function (o) {
+        o.items = o?.items?.filter((s) => s != removable);
+      });
+
+      setData([...newData]);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <>
-      <View style={styles.container}>
-        <View style={defaultStyles.statusbar} />
-        <View>
-          <Appbar style={styles.appBar}>
-            <Appbar.BackAction
-              color={colors.white}
-              onPress={() => navigation.navigate("MainScreen")}
+      <View style={defaultStyles.statusbar} />
+      <View>
+        <Appbar style={styles.appBar}>
+          <Appbar.BackAction
+            color={colors.white}
+            onPress={() => navigation.navigate("MainScreen")}
+          />
+
+          <Appbar.Content title="Main Screen" color={colors.white} />
+
+          <View style={styles.header}>
+            <Image
+              style={styles.logo}
+              source={require("../assets/favicon.png")}
             />
-
-            <Appbar.Content title="Main Screen" color={colors.white} />
-
-            <View style={styles.header}>
-              <Image
-                style={styles.logo}
-                source={require("../assets/favicon.png")}
-              />
-            </View>
-          </Appbar>
-        </View>
+          </View>
+        </Appbar>
+      </View>
+      <ScrollView style={styles.container}>
         <View>
           <List.Section>
-            {categories?.map((category) => (
-              <RemoveSwipable>
+            {data?.map((category) => (
+              <EditSwipable
+                onPressEdit={() => {
+                  setModalVisible(true);
+                  setActiveEdit(category);
+                }}
+                onPress={() => deleteIcon(category)}
+              >
                 <List.Accordion
+                  theme={{ colors: { primary: colors.primary } }}
                   left={(props) => (
                     <List.Icon
                       {...props}
-                      icon={"cash"}
+                      icon={category?.icon || "none"}
                       onPress={() => setModalVisible(true)}
                     />
                   )}
                   title={category.label}
                   style={styles.border}
                 >
-                  {category.items.map((item) => {
+                  {category?.items?.map((item) => {
                     return (
-                      <EditSwipable onPressEdit={() => setModalVisible(true)}>
+                      <EditSwipable
+                        onPressEdit={() => {
+                          setModalVisible(true);
+                          setActiveEdit(item);
+                        }}
+                        onPress={() => deleteIcon(item)}
+                      >
                         <List.Item
                           style={styles.item}
                           title={item.label}
                           left={(props) => (
-                            <List.Icon {...props} icon={"cash"} />
+                            <List.Icon {...props} icon={item?.icon || "help"} />
                           )}
                         />
                       </EditSwipable>
@@ -79,14 +120,14 @@ function CategorySetUpScreen({ navigation }) {
 
                   <AppButton title={"Add Category Item"} color={"tertiary"} />
                 </List.Accordion>
-              </RemoveSwipable>
+              </EditSwipable>
             ))}
             <AppButton title={"Add Category"} color={"tertiary"} />
           </List.Section>
         </View>
-        <View style={styles.mainButton}>
-          <AppButton title="Main Screen" />
-        </View>
+      </ScrollView>
+      <View style={styles.mainButton}>
+        <AppButton title="Submit Changes" />
       </View>
       <Modal visible={modalIsVisible} animationType="slide">
         <FlatList
@@ -99,7 +140,8 @@ function CategorySetUpScreen({ navigation }) {
               <AppPickerItem
                 icon={category.item}
                 onPress={() => {
-                  console.log("Testing press");
+                  selectIcon(category.item);
+                  setModalVisible(false);
                 }}
               />
             </View>
@@ -137,8 +179,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   mainButton: {
-    flex: 1,
-    justifyContent: "flex-end",
+    // flex: 1,
+    // justifyContent: "flex-end",
     marginBottom: 10,
   },
   logo: {
