@@ -17,7 +17,7 @@ function AppPickerItem({ label, icon, onPress }) {
             />
           )}
         </View>
-        <Text style={styles.text}>{label}</Text>
+        {label && <Text style={styles.text}>{label}</Text>}
       </View>
     </TouchableOpacity>
   );
