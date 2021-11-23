@@ -60,6 +60,7 @@ const BudgetScreen = (props) => {
     const value = event?.target?.value ?? event?.value ?? event;
     const id = event?.target?.id ?? event?.id;
     setInputValues({ ...inputValues, [id]: value });
+    console.log(inputValues);
   };
 
   const handleOnChangeCategory = (event) => {
@@ -86,7 +87,7 @@ const BudgetScreen = (props) => {
       if (
         !inputValues?.category ||
         !inputValues?.period ||
-        !inputValues?.ActivityAmount
+        !inputValues?.activityAmount
       ) {
         setInputingBudget(false);
         return setErrorText("Fill all fields");
@@ -97,7 +98,7 @@ const BudgetScreen = (props) => {
         category: inputValues?.category,
         categoryItem: inputValues?.categoryItem || "ANY",
         period: inputValues?.period,
-        activityAmount: inputValues.ActivityAmount,
+        activityAmount: inputValues?.activityAmount,
         icon: icon,
         user: user.userId,
       });
@@ -139,13 +140,12 @@ const BudgetScreen = (props) => {
                     underlineColor="brown"
                     placeholder="Category"
                     items={categoryItems}
-                    onSelectItem={(itemValue) => {
-                      console.log("On Selected item", itemValue);
+                    onSelectItem={(value) => {
                       handleOnChangeCategory({
-                        target: { value: itemValue, id: "Category" },
+                        target: { value: value.label, id: "category" },
                       });
                     }}
-                    selectedItem={inputValues?.Category}
+                    selectedItem={inputValues?.category}
                   />
                   <AppPicker
                     icon="apps"
@@ -153,12 +153,11 @@ const BudgetScreen = (props) => {
                     placeholder="Category Item"
                     items={items}
                     onSelectItem={(value) => {
-                      console.log("On Selected item", value);
                       handleOnChange({
-                        target: { value, id: "CategoryItem" },
+                        target: { value: value.label, id: "categoryItem" },
                       });
                     }}
-                    selectedItem={inputValues?.CategoryItem}
+                    selectedItem={inputValues?.categoryItem}
                   />
                 </View>
 
@@ -188,7 +187,7 @@ const BudgetScreen = (props) => {
                   <View style={styles.numericValue}>
                     <InputNumericField
                       icon={"cash"}
-                      id={"ActivityAmount"}
+                      id={"activityAmount"}
                       handleOnChange={handleOnChange}
                       label={i18n.Common.amount}
                       currency={currencySymbol}

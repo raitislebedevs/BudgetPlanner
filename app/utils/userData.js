@@ -7,6 +7,7 @@ export async function getMyData() {
     const { data } = await getUserInfo(user?.data.userInfo);
     data.userId = user?.data?.id;
     data.email = user?.data?.email;
+
     return data;
   } catch (error) {}
   return null;

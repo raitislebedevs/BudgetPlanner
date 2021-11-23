@@ -4,6 +4,7 @@ export const incomeCategory = () => {
       label: "Income",
       value: "Income",
       icon: "wallet",
+      color: "red",
       items: [
         { label: "Salary", value: "Salary", icon: "wallet" },
         { label: "Gifts", value: "Gifts", icon: "gift-outline" },
@@ -19,6 +20,7 @@ export const incomeCategory = () => {
       label: "Savings",
       value: "Savings",
       icon: "chart-bell-curve-cumulative",
+      color: "red",
       items: [
         { label: "Kids", value: "Kids" },
         { label: "Vacation", value: "Vacation" },
@@ -29,6 +31,7 @@ export const incomeCategory = () => {
       label: "Investment",
       value: "Investment",
       icon: "cash",
+      color: "red",
       items: [
         { label: "Markets", value: "Markets" },
         { label: "Real Estate", value: "Real Estate" },
@@ -39,6 +42,7 @@ export const incomeCategory = () => {
       label: "Others",
       value: "Others",
       icon: "alien",
+      color: "red",
       items: [{ label: "Others", value: "Others" }],
     },
   ];

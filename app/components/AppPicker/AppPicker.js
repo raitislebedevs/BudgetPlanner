@@ -56,8 +56,9 @@ function AppPicker({
           keyExtractor={(item) => item.value.toString()}
           renderItem={(category) => (
             <AppPickerItem
-              label={category?.item?.label}
-              icon={category?.item?.icon}
+              label={category?.item?.label || "none"}
+              icon={category?.item?.icon || "help"}
+              color={category?.item?.color || colors.primaryBudget}
               onPress={() => {
                 setModalVisible(false);
                 onSelectItem(category?.item?.label);
@@ -65,11 +66,13 @@ function AppPicker({
             />
           )}
         />
-        <AppButton
-          title={"Close"}
-          color="secondary"
-          onPress={() => setModalVisible(false)}
-        />
+        <View style={styles.textContainer}>
+          <AppButton
+            title={"Close"}
+            color="secondary"
+            onPress={() => setModalVisible(false)}
+          />
+        </View>
       </Modal>
     </>
   );
@@ -92,6 +95,9 @@ const styles = StyleSheet.create({
   },
   text: {
     flex: 1,
+  },
+  textContainer: {
+    marginBottom: 5,
   },
 });
 export default AppPicker;

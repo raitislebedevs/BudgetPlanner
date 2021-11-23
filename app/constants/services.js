@@ -63,3 +63,7 @@ export const BUDGET_JOURNALS = {
 export const USER_BUDGET = {
   BASE: "/budgets",
 };
+
+export const USER_CATEGORIES = {
+  BASE: "/user-categories",
+};

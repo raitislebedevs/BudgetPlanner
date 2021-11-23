@@ -30,7 +30,6 @@ const LoginScreen = (props) => {
   };
 
   const handleSignin = async () => {
-    console.log("Test");
     setErrorText("");
     try {
       let payload = {

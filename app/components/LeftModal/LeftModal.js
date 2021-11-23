@@ -272,7 +272,6 @@ const LeftModal = (props) => {
         <TouchableOpacity>
           <AppButton
             onPress={() => {
-              console.log("Navigating?");
               setModalVisible(false);
               navigation.navigate("Category");
             }}

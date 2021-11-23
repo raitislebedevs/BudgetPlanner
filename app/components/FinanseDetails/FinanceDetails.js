@@ -4,6 +4,7 @@ import { List } from "react-native-paper";
 import { formatNumber } from "../../utils/standaloneFunctions";
 import { colors } from "../../config/colors";
 import RemoveSwipable from "../RemoveSwipable/RemoveSwipable";
+import ListIcon from "../ListIcon/ListIcon";
 
 const FinanceDetails = (props) => {
   const { financeData, title, highlight, budget, color } = props;
@@ -17,7 +18,13 @@ const FinanceDetails = (props) => {
             title={items.label}
             description={items.description}
             style={styles.mainLabel}
-            left={(props) => <List.Icon {...props} icon={items?.icon} />}
+            left={(props) => (
+              <ListIcon
+                {...props}
+                icon={items?.icon}
+                color={items.color || colors.secondary}
+              />
+            )}
             right={(props) => (
               <View style={styles.budgetMarkings}>
                 <Text
@@ -92,6 +99,14 @@ const FinanceDetails = (props) => {
                       )}
                     </View>
                   )}
+                  left={(props) => (
+                    <ListIcon
+                      {...props}
+                      icon={item?.icon || "help"}
+                      color={item.color || colors.secondary}
+                      halfSize={true}
+                    />
+                  )}
                   key={item.title}
                 >
                   {item?.items &&
@@ -148,9 +163,11 @@ const styles = StyleSheet.create({
   },
   listIem: {
     backgroundColor: colors.gray,
+    marginVertical: 2,
+    paddingLeft: 25,
   },
   itemWidth: {
-    alignSelf: "flex-start",
+    alignSelf: "center",
     minWidth: 100,
   },
   budgetNotDefined: {
@@ -161,6 +178,10 @@ const styles = StyleSheet.create({
   },
   mainLabel: {
     color: colors.tertiary,
+    marginVertical: 2,
+    backgroundColor: colors.gray,
+    borderRadius: 25,
   },
+  item: { marginLeft: 10, backgroundColor: colors.gray, marginVertical: 2 },
 });
 export default FinanceDetails;

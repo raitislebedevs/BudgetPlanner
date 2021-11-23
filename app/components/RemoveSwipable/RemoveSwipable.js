@@ -7,7 +7,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 function RemoveSwipable({ children, onPress }) {
   const rightActions = (progress, dragX) => {
     const scale = dragX.interpolate({
-      inputRange: [-100, 0],
+      inputRange: [-60, 0],
       outputRange: [1, 0],
       extrapolate: "clamp",
     });
@@ -19,7 +19,7 @@ function RemoveSwipable({ children, onPress }) {
         >
           <MaterialCommunityIcons
             name={"delete-outline"}
-            size={40}
+            size={30}
             color={colors.white}
           />
         </Animated.View>
@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
   delteBox: {
     backgroundColor: colors.danger,
     color: colors.white,
-    width: 100,
+    width: 60,
     justifyContent: "center",
     alignItems: "center",
     height: "100%",

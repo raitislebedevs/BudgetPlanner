@@ -10,7 +10,7 @@ export const colors = {
   black: "#000",
   white: "#fff",
   danger: "#ff5252",
-
+  success: "green",
   primaryBudget: "#4751fc",
   lightTheme: "white",
   darkTheme: "black",

@@ -6,6 +6,7 @@ import { incomeCategory } from "../utils/categoryItems";
 import SubmitActivity from "../components/SubmitActivity/SubmitActivity";
 import BudgetPieChart from "../components/BudgetPieChart/BudgetPieChart";
 import { withLocale } from "react-easy-localization";
+import { colors } from "@material-ui/core";
 
 const IncomeScreen = (props) => {
   const {
@@ -70,7 +71,7 @@ const IncomeScreen = (props) => {
           <ActivityIndicator
             style={styles.loader}
             size="large"
-            color="darkgreen"
+            color={colors.primary}
           />
         )}
         <AskModal

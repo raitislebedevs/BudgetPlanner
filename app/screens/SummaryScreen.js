@@ -6,6 +6,7 @@ import {
   View,
   ScrollView,
   ActivityIndicator,
+  Text,
 } from "react-native";
 import { LineChart } from "react-native-chart-kit";
 import AskModal from "../components/AskModal/AskModal";
@@ -21,7 +22,7 @@ const SummaryScreen = (props) => {
     setId(id);
     setModalVisible(true);
   };
-
+  console.log(budget);
   return (
     <>
       <AskModal
@@ -30,81 +31,89 @@ const SummaryScreen = (props) => {
         id={id}
         getGlobalBudgetData={getGlobalBudgetData}
       />
-      <ScrollView>
-        {!isLoading ? (
-          <>
-            <View>
-              <LineChart
-                data={{
-                  labels: chartLabels?.xLabels,
-                  datasets: [
-                    {
-                      data: chartLabels?.incomeChartData || [0, 0, 0, 0, 0],
-                      strokeWidth: 1,
-                      color: (opacity = 1) => colors.tertiary,
-                      // optional
+      {budget.savedAmount + budget.spentAmount != 0 ? (
+        <ScrollView>
+          {!isLoading ? (
+            <>
+              <View>
+                <LineChart
+                  data={{
+                    labels: chartLabels?.xLabels,
+                    datasets: [
+                      {
+                        data: chartLabels?.incomeChartData || [0, 0, 0, 0, 0],
+                        strokeWidth: 1,
+                        color: (opacity = 1) => colors.tertiary,
+                        // optional
+                      },
+                      {
+                        data: chartLabels?.expenseChartData || [
+                          0, 0, 0, 0, 0, 0,
+                        ],
+                        strokeWidth: 1,
+                        color: (opacity = 1) => colors.secondary, // optional
+                      },
+                    ],
+                  }}
+                  width={Dimensions.get("window").width} // from react-native
+                  height={242}
+                  yAxisLabel={`${budget?.currency || "$"} `}
+                  title="Summary"
+                  yAxisInterval={1} // optional, defaults to 1
+                  chartConfig={{
+                    // backgroundGradientFrom: "#C04848",
+                    // backgroundGradientTo: "#480048",
+                    backgroundGradientFrom: "#F2F2F2",
+                    backgroundGradientTo: "#F2F2F2",
+                    decimalPlaces: 0, // optional, defaults to 2dp
+                    color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                    labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                    style: {
+                      borderRadius: 16,
                     },
-                    {
-                      data: chartLabels?.expenseChartData || [0, 0, 0, 0, 0, 0],
-                      strokeWidth: 1,
-                      color: (opacity = 1) => colors.secondary, // optional
+                    propsForDots: {
+                      r: "4",
+                      strokeWidth: "0",
                     },
-                  ],
-                }}
-                width={Dimensions.get("window").width} // from react-native
-                height={242}
-                yAxisLabel={`${budget?.currency || "$"} `}
-                title="Summary"
-                yAxisInterval={1} // optional, defaults to 1
-                chartConfig={{
-                  // backgroundGradientFrom: "#C04848",
-                  // backgroundGradientTo: "#480048",
-                  backgroundGradientFrom: "#F2F2F2",
-                  backgroundGradientTo: "#F2F2F2",
-                  decimalPlaces: 0, // optional, defaults to 2dp
-                  color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                  labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                  style: {
-                    borderRadius: 16,
-                  },
-                  propsForDots: {
-                    r: "4",
-                    strokeWidth: "0",
-                  },
-                }}
-                bezier
-                style={{
-                  marginVertical: 0,
-                  borderRadius: 8,
-                }}
-              />
-            </View>
-            {budget?.incomeData?.length > 0 && (
-              <FinanceDetails
-                financeData={budget.incomeData}
-                title={i18n.IncomeScreen.label}
-                highlight={highlight}
-                color={{ firstList: "tertiary", secondList: "primary" }}
-              />
-            )}
+                  }}
+                  bezier
+                  style={{
+                    marginVertical: 0,
+                    borderRadius: 8,
+                  }}
+                />
+              </View>
+              {budget?.incomeData?.length > 0 && (
+                <FinanceDetails
+                  financeData={budget.incomeData}
+                  title={i18n.IncomeScreen.label}
+                  highlight={highlight}
+                  color={{ firstList: "tertiary", secondList: "primary" }}
+                />
+              )}
 
-            {budget?.expenseData?.length > 0 && (
-              <FinanceDetails
-                financeData={budget.expenseData}
-                title={i18n.ExpenseScreen.label}
-                highlight={highlight}
-                color={{ firstList: "secondary", secondList: "primary" }}
-              />
-            )}
-          </>
-        ) : (
-          <ActivityIndicator
-            style={styles.loader}
-            size="large"
-            color="#e26a00"
-          />
-        )}
-      </ScrollView>
+              {budget?.expenseData?.length > 0 && (
+                <FinanceDetails
+                  financeData={budget.expenseData}
+                  title={i18n.ExpenseScreen.label}
+                  highlight={highlight}
+                  color={{ firstList: "secondary", secondList: "primary" }}
+                />
+              )}
+            </>
+          ) : (
+            <ActivityIndicator
+              style={styles.loader}
+              size="large"
+              color="#e26a00"
+            />
+          )}
+        </ScrollView>
+      ) : (
+        <View style={styles.headingTextContainer}>
+          <Text style={styles.headingText}>Enter some Data</Text>
+        </View>
+      )}
     </>
   );
 };
@@ -126,6 +135,18 @@ const styles = StyleSheet.create({
   },
   loader: {
     marginTop: 38,
+  },
+  headingTextContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  headingText: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    fontSize: 25,
+    color: colors.tertiary,
   },
 });
 
