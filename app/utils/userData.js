@@ -13,6 +13,22 @@ export async function getMyData() {
   return null;
 }
 
+export async function getUserData() {
+  try {
+    const { data } = await getUser();
+    return data;
+  } catch (error) {}
+  return null;
+}
+
+export async function getUserInfoData(id) {
+  try {
+    const { data } = await getUserInfo(id);
+    return data;
+  } catch (error) {}
+  return null;
+}
+
 export async function getLinkedUsers() {
   let user = await getMyData();
   let users = [user.userId];

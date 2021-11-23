@@ -22,19 +22,13 @@ let budgetPlanningData = [];
 let budgetChart = [];
 let user = {};
 
-export const initilizeData = async (period, t) => {
-  user = await getMyData();
+export const initilizeData = async (period, t, reduxUser) => {
+  user = reduxUser; //await getMyData();
   currency = user?.currency?.symbol;
   rawIncomeData = await getBudgetData(period, "income");
-
-  // console.log("*******************************************");
-  // console.log("*******************************************");
-  // console.log("Raw Income Data", rawIncomeData);
-  // console.log("*******************************************");
-  // console.log("*******************************************");
-
   rawExpenseData = await getBudgetData(period, "expense");
   rawBudgetData = await getBudgetPlanData(period);
+
   getGroupedIncomeData(currency);
   getGroupedExpenseData(currency);
   getGroupedPlannedData(currency);
@@ -50,12 +44,6 @@ export const initilizeData = async (period, t) => {
   incomeChartData = chartData(incomeData, greenColorCodes);
   spentChartData = chartData(expenseData, redColorCodes);
   getBezierChartPeriod(period, incomeData, expenseData, t);
-
-  // console.log("*******************************************");
-  // console.log("*******************************************");
-  // console.log("Income Data", incomeData);
-  // console.log("*******************************************");
-  // console.log("*******************************************");
 
   return {
     incomeData,

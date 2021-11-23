@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { withLocale } from "react-easy-localization";
+import { useLocale } from "react-easy-localization";
 import {
   StatusBar,
   StyleSheet,
@@ -10,9 +10,11 @@ import {
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { formatNumber } from "../../utils/standaloneFunctions";
 import LeftModal from "../LeftModal/LeftModal";
+import { connect } from "react-redux";
 
 const Header = (props) => {
-  const { isLoading, currencySymbol, budget, i18n, navigation } = props;
+  const { isLoading, currencySymbol, budget, navigation } = props;
+  const { i18n } = useLocale();
   const [isModalVisible, setModalVisible] = useState(false);
 
   const toggleModal = () => {
@@ -120,4 +122,8 @@ const styles = StyleSheet.create({
   },
 });
 
-export default withLocale(Header);
+const mapStateToProps = (state) => ({
+  isLoading: state.loader.isLoading,
+});
+
+export default connect(mapStateToProps)(Header);

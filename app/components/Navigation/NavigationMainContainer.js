@@ -12,19 +12,25 @@ import Period from "../Period/Period";
 import { useState } from "react";
 import { initilizeData } from "../../utils/budgetFunctions";
 import { colors } from "../../config/colors";
-import { withLocale } from "react-easy-localization";
+import { useLocale } from "react-easy-localization";
+import { connect } from "react-redux";
+import { setLoader } from "../../Redux/actions";
 
-const NavigationMainContainer = ({ navigation, i18n }) => {
+const NavigationMainContainer = ({
+  navigation,
+  isLoading,
+  setIsLoading,
+  reduxUser,
+}) => {
+  const { i18n } = useLocale();
   //Screen Names
   const summarryScren = i18n.BottomNavigation.summary;
   const incomeScreen = i18n.BottomNavigation.income;
   const expensesScreen = i18n.BottomNavigation.expanse;
   const budgetScreen = i18n.BottomNavigation.budget;
-
   const Tab = createBottomTabNavigator();
   const [period, setPeriod] = useState("month");
   const [globalBudget, setGlobalBudget] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(async () => {
     await getGlobalBudgetData();
@@ -34,7 +40,7 @@ const NavigationMainContainer = ({ navigation, i18n }) => {
     try {
       if (period) {
         setIsLoading(true);
-        let data = await initilizeData(period, i18n);
+        let data = await initilizeData(period, i18n, reduxUser);
         setGlobalBudget(data);
         setIsLoading(false);
       }
@@ -47,7 +53,6 @@ const NavigationMainContainer = ({ navigation, i18n }) => {
     <>
       <Header
         budget={globalBudget}
-        isLoading={isLoading}
         navigation={navigation}
         currencySymbol={globalBudget.currency}
         period={period}
@@ -95,7 +100,6 @@ const NavigationMainContainer = ({ navigation, i18n }) => {
             <SummaryScreen
               period={period}
               budget={globalBudget}
-              isLoading={isLoading}
               chartLabels={globalBudget?.bezierChartData}
               getGlobalBudgetData={getGlobalBudgetData}
             />
@@ -147,4 +151,16 @@ const NavigationMainContainer = ({ navigation, i18n }) => {
   );
 };
 
-export default withLocale(NavigationMainContainer);
+const mapStateToProps = (state) => ({
+  isLoading: state.loader.isLoading,
+  reduxUser: state.user.user,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  setIsLoading: (value) => dispatch(setLoader(value)),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(NavigationMainContainer);

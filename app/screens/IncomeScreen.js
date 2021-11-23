@@ -5,18 +5,15 @@ import AskModal from "../components/AskModal/AskModal";
 import { incomeCategory } from "../utils/categoryItems";
 import SubmitActivity from "../components/SubmitActivity/SubmitActivity";
 import BudgetPieChart from "../components/BudgetPieChart/BudgetPieChart";
-import { withLocale } from "react-easy-localization";
+import { useLocale } from "react-easy-localization";
 import { colors } from "@material-ui/core";
+import { connect } from "react-redux";
 
 const IncomeScreen = (props) => {
-  const {
-    period,
-    budget,
-    isLoading,
-    currencySymbol,
-    getGlobalBudgetData,
-    i18n,
-  } = props;
+  const { period, budget, isLoading, currencySymbol, getGlobalBudgetData } =
+    props;
+
+  const { i18n } = useLocale();
   const categoryItems = incomeCategory();
   const [id, setId] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -107,4 +104,8 @@ const styles = StyleSheet.create({
   },
 });
 
-export default withLocale(IncomeScreen);
+const mapStateToProps = (state) => ({
+  isLoading: state.loader.isLoading,
+});
+
+export default connect(mapStateToProps)(IncomeScreen);

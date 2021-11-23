@@ -5,7 +5,8 @@ import { expenseCategory } from "../utils/categoryItems";
 import AskModal from "../components/AskModal/AskModal";
 import BudgetPieChart from "../components/BudgetPieChart/BudgetPieChart";
 import SubmitActivity from "../components/SubmitActivity/SubmitActivity";
-import { withLocale } from "react-easy-localization";
+import { connect } from "react-redux";
+import { useLocale } from "react-easy-localization";
 
 const ExpensesScreen = (props) => {
   const {
@@ -14,8 +15,9 @@ const ExpensesScreen = (props) => {
     isLoading,
     currencySymbol,
     getGlobalBudgetData,
-    i18n,
+    coreUser,
   } = props;
+  const { i18n } = useLocale();
   const categoryItems = expenseCategory();
   const [id, setId] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -24,6 +26,7 @@ const ExpensesScreen = (props) => {
 
   useEffect(async () => {
     setUserExpense(budget?.expenseData);
+    console.log(coreUser);
   }, [budget.expenseData]);
 
   const highlight = (id) => {
@@ -97,4 +100,10 @@ const styles = StyleSheet.create({
     borderColor: "#fff",
   },
 });
-export default withLocale(ExpensesScreen);
+
+const mapStateToProps = (state) => ({
+  isLoading: state.loader.isLoading,
+  coreUser: state.user.userCategories,
+});
+
+export default connect(mapStateToProps)(ExpensesScreen);

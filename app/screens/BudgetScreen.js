@@ -17,12 +17,13 @@ import BudgetChart from "../components/BudgetChart/BudgetChart";
 import AskModal from "../components/AskModal/AskModal";
 import { colors } from "../config/colors";
 import AppButton from "../components/AppButton/AppButton";
-import { withLocale } from "react-easy-localization";
+import { useLocale } from "react-easy-localization";
 import AppPicker from "../components/AppPicker/AppPicker";
+import { connect } from "react-redux";
 
 const BudgetScreen = (props) => {
-  const { budget, isLoading, currencySymbol, getGlobalBudgetData, i18n } =
-    props;
+  const { budget, isLoading, currencySymbol, getGlobalBudgetData } = props;
+  const { i18n } = useLocale();
   const categoryItems = expenseCategory();
   const [budgetPeriods, setBudgetPeriods] = useState([
     {
@@ -60,7 +61,6 @@ const BudgetScreen = (props) => {
     const value = event?.target?.value ?? event?.value ?? event;
     const id = event?.target?.id ?? event?.id;
     setInputValues({ ...inputValues, [id]: value });
-    console.log(inputValues);
   };
 
   const handleOnChangeCategory = (event) => {
@@ -283,4 +283,8 @@ const styles = StyleSheet.create({
   },
 });
 
-export default withLocale(BudgetScreen);
+const mapStateToProps = (state) => ({
+  isLoading: state.loader.isLoading,
+});
+
+export default connect(mapStateToProps)(BudgetScreen);

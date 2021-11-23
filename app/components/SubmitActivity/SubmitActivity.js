@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { View, StyleSheet, ActivityIndicator } from "react-native";
 import budgetJournal from "../../services/budgetJournal";
 import DatePickerComponent from "../DatePickerComponent/DatePickerComponent";
@@ -33,8 +33,6 @@ const SubmitActivity = (props) => {
     const value = event?.target?.value ?? event?.value ?? event;
     const id = event?.target?.id ?? event?.id;
     setInputValues({ ...inputValues, [id]: value });
-
-    console.log(inputValues);
   };
 
   const handleOnChangeCategoryInputValue = (event, iconTarget) => {

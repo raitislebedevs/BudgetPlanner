@@ -13,12 +13,22 @@ import AppTextInput from "../components/AppTextInput/AppTextInput";
 import { colors } from "../config/colors";
 import { ConnectionServices } from "../services";
 import { save } from "../utils/expoSecure";
-import { getMyData } from "../utils/userData";
+import { getMyData, getUserData, getUserInfoData } from "../utils/userData";
+import { connect } from "react-redux";
+import * as actions from "../Redux/actions";
 
 const image = require("../assets/Light.jpg");
 
 const LoginScreen = (props) => {
-  const { navigation } = props;
+  const {
+    navigation,
+    setCurrency,
+    setUser,
+    setUserInfo,
+    setUserCategories,
+    setLinkedUsers,
+    setUserInvites,
+  } = props;
 
   const [errorText, setErrorText] = useState("");
   const [inputValues, setInputValues] = useState({});
@@ -53,10 +63,32 @@ const LoginScreen = (props) => {
   };
 
   useEffect(async () => {
-    if (await getMyData()) {
+    await getInitialUserValues();
+  }, []);
+
+  const getInitialUserValues = async () => {
+    let userCore = await getUserData();
+    let userInfoData = await getUserInfoData(userCore.userInfo);
+    let linkedUsers = [];
+    let userInvites = [];
+    userInfoData.linkedUsers.forEach((person) => {
+      linkedUsers.push(person.id);
+    });
+    userInfoData.invites.forEach((person) => {
+      userInvites.push(person.id);
+    });
+
+    setCurrency(userInfoData?.currency?.symbol);
+    setUser(userCore);
+    setLinkedUsers(linkedUsers);
+    setUserInfo(userInfoData);
+    setUserInvites(userInfoData);
+    setUserCategories(userInfoData.userCategories);
+
+    if (userCore) {
       navigation.navigate("MainScreen");
     }
-  }, []);
+  };
 
   return (
     <SafeAreaView style={styles.content}>
@@ -111,8 +143,22 @@ const LoginScreen = (props) => {
     </SafeAreaView>
   );
 };
+const mapStateToProps = (state) => ({
+  isLoading: state.loader.isLoading,
+  localCurrency: state.user.currrency,
+  userData: state.user.user,
+});
 
-export default LoginScreen;
+const mapDispatchToProps = (dispatch) => ({
+  setCurrency: (value) => dispatch(actions.setCurrency(value)),
+  setUser: (value) => dispatch(actions.setUser(value)),
+  setUserInfo: (value) => dispatch(actions.setUserInfo(value)),
+  setUserCategories: (value) => dispatch(actions.setUserCategories(value)),
+  setLinkedUsers: (value) => dispatch(actions.setLinkedUsers(value)),
+  setUserInvites: (value) => dispatch(actions.setUserInvites(value)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(LoginScreen);
 
 const styles = StyleSheet.create({
   content: {

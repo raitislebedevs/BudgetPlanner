@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { withLocale } from "react-easy-localization";
+import { useLocale } from "react-easy-localization";
 import {
   Dimensions,
   StyleSheet,
@@ -12,9 +12,11 @@ import { LineChart } from "react-native-chart-kit";
 import AskModal from "../components/AskModal/AskModal";
 import FinanceDetails from "../components/FinanseDetails/FinanceDetails";
 import { colors } from "../config/colors";
+import { connect } from "react-redux";
 
 const SummaryScreen = (props) => {
-  const { budget, chartLabels, isLoading, i18n, getGlobalBudgetData } = props;
+  const { budget, chartLabels, isLoading, getGlobalBudgetData } = props;
+  const { i18n } = useLocale();
   const [modalVisible, setModalVisible] = useState(false);
   const [id, setId] = useState("");
 
@@ -22,7 +24,6 @@ const SummaryScreen = (props) => {
     setId(id);
     setModalVisible(true);
   };
-  console.log(budget);
   return (
     <>
       <AskModal
@@ -150,4 +151,8 @@ const styles = StyleSheet.create({
   },
 });
 
-export default withLocale(SummaryScreen);
+const mapStateToProps = (state) => ({
+  isLoading: state.loader.isLoading,
+});
+
+export default connect(mapStateToProps)(SummaryScreen);
