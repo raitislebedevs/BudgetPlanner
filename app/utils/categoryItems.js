@@ -1,3 +1,10 @@
+import store from "../Redux/store";
+
+let storeData = store.subscribe(() => {
+  const state = store.getState();
+  return state;
+});
+
 export const incomeCategory = () => {
   return [
     {

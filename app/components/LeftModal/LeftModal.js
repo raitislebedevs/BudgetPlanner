@@ -18,11 +18,22 @@ import { colors } from "../../config/colors";
 import defaultStyles from "../../config/appStyles";
 import AppButton from "../AppButton/AppButton";
 import AppTextInput from "../AppTextInput/AppTextInput";
-import { withLocale } from "react-easy-localization";
+import { useLocale } from "react-easy-localization";
+import { connect } from "react-redux";
 
 const LeftModal = (props) => {
-  const { isModalVisible, setModalVisible, i18n, changeLanguage, navigation } =
-    props;
+  const {
+    isModalVisible,
+    setModalVisible,
+    navigation,
+    localCurrency,
+    userData,
+    linkedUsers,
+    userInvites,
+    userInfo,
+  } = props;
+
+  const { changeLanguage, i18n } = useLocale();
   const [user, setUser] = useState(false);
   const [currencyPicker, setCurrencyPicker] = useState(false);
   const [invitePerson, setInvitePerson] = useState("");
@@ -155,8 +166,6 @@ const LeftModal = (props) => {
   return (
     <Modal
       isVisible={isModalVisible}
-      // deviceWidth={800}
-      // deviceHeight={1800}
       style={styles.modalStyle}
       swipeDirection="left"
       backdropColor={colors.lightGray}
@@ -275,7 +284,17 @@ const LeftModal = (props) => {
               setModalVisible(false);
               navigation.navigate("Category");
             }}
-            title={"Edit Categories"}
+            title={"Income categories"}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <AppButton
+            onPress={() => {
+              setModalVisible(false);
+              navigation.navigate("Expense Category");
+            }}
+            title={"Expense categories"}
+            color={"secondary"}
           />
         </TouchableOpacity>
 
@@ -439,4 +458,23 @@ const styles = StyleSheet.create({
     // borderWidth: 6,
   },
 });
-export default withLocale(LeftModal);
+
+const mapStateToProps = (state) => ({
+  isLoading: state.loader.isLoading,
+  localCurrency: state.user.currrency,
+  userData: state.user.user,
+  linkedUsers: state.user.linkedUsers,
+  userInvites: state.user.userInvites,
+  userInfo: state.user.userInfo,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  setCurrency: (value) => dispatch(actions.setCurrency(value)),
+  setUser: (value) => dispatch(actions.setUser(value)),
+  setUserInfo: (value) => dispatch(actions.setUserInfo(value)),
+  setUserCategories: (value) => dispatch(actions.setUserCategories(value)),
+  setLinkedUsers: (value) => dispatch(actions.setLinkedUsers(value)),
+  setUserInvites: (value) => dispatch(actions.setUserInvites(value)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(LeftModal);

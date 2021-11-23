@@ -1,5 +1,4 @@
 import React from "react";
-import { StyleSheet } from "react-native";
 import NavigationMainContainer from "./app/components/Navigation/NavigationMainContainer";
 import LoginScreen from "./app/screens/LoginScreen";
 import RegisterScreen from "./app/screens/RegisterScreen";
@@ -9,13 +8,12 @@ import { LocaleProvider } from "react-easy-localization";
 import { languages } from "./app/locales";
 import CategorySetUpScreen from "./app/screens/CategorySetUpScreen";
 import { Provider } from "react-redux";
-import { createStore } from "redux";
-import rootReducer from "./app/Redux/reducers/rootReducer";
+import store from "./app/Redux/store";
+import CategoryIncomeScreens from "./app/screens/CategoryIncomeScreens";
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-  let store = createStore(rootReducer);
   return (
     <Provider store={store}>
       <LocaleProvider resources={languages}>
@@ -41,22 +39,14 @@ export default function App() {
               name="Category"
               component={CategorySetUpScreen}
             />
+            <Stack.Screen
+              options={{ headerShown: false }}
+              name="Expense Category"
+              component={CategoryIncomeScreens}
+            />
           </Stack.Navigator>
         </NavigationContainer>
       </LocaleProvider>
     </Provider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  toastStyle: {
-    backgroundColor: "black",
-    color: "#fff",
-  },
-});

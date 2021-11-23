@@ -11,7 +11,7 @@ import {
 import { Appbar, List } from "react-native-paper";
 import AppButton from "../components/AppButton/AppButton";
 import { colors } from "../config/colors";
-import { incomeCategory } from "../utils/categoryItems";
+import { expenseCategory } from "../utils/categoryItems";
 import defaultStyles from "../config/appStyles";
 import EditSwipable from "../components/EditSwipable/EditSwipable";
 import { categoryIcons } from "../utils/categoryIcons";
@@ -23,7 +23,7 @@ import userCategories from "../services/userCategories";
 import { getMyData } from "../utils/userData";
 import userInfoServices from "../services/userInfoServices";
 
-function CategorySetUpScreen({ navigation }) {
+function CategoryIncomeScreens({ navigation }) {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [seeCategory, setSeeCategory] = useState(false);
@@ -34,7 +34,7 @@ function CategorySetUpScreen({ navigation }) {
   const [activeEdit, setActiveEdit] = useState("");
   const [modalIsVisible, setModalVisible] = useState(false);
   const [colorPickerVisibility, setColorPickerVisibility] = useState(false);
-  const categories = incomeCategory();
+  const categories = expenseCategory();
   const icons = categoryIcons();
 
   useEffect(async () => {
@@ -44,7 +44,7 @@ function CategorySetUpScreen({ navigation }) {
   const getCategories = async () => {
     setSeeCategory(true);
     let user = await getMyData();
-    setData(user.userCategories.userCategories || categories);
+    setData(user.userCategories.expense || categories);
     setSeeCategory(false);
   };
 
@@ -123,19 +123,19 @@ function CategorySetUpScreen({ navigation }) {
 
       if (id) {
         let payload = {
-          userCategories: data,
+          expense: data,
         };
 
         await userCategories.UPDATE(id, payload);
         setIsLoading(false);
         return;
       }
-      console.log("STEP 2");
+
       let users = [];
       users.push(user.userId);
 
       let payload = {
-        userCategories: data,
+        expense: data,
         users,
       };
       console.log(payload);
@@ -351,7 +351,7 @@ function CategorySetUpScreen({ navigation }) {
   );
 }
 
-export default CategorySetUpScreen;
+export default CategoryIncomeScreens;
 
 const styles = StyleSheet.create({
   container: {

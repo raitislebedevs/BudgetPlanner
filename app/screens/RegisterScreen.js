@@ -64,14 +64,14 @@ const RegisterScreen = (props) => {
 
       if (data) {
         await save("access_token", data?.jwt);
-        await save("user_data", JSON.stringify(data?.user));
+        // await save("user_data", JSON.stringify(data?.user));
       }
       if (error) {
         setErrorText(error);
         setIsLoading(false);
         return;
       }
-      navigation.navigate("MainScreen");
+      navigation.navigate("Login");
     } catch (error) {
       setErrorText(error);
     }

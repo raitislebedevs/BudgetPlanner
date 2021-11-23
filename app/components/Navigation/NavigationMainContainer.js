@@ -21,6 +21,7 @@ const NavigationMainContainer = ({
   isLoading,
   setIsLoading,
   reduxUser,
+  linkedUsers,
 }) => {
   const { i18n } = useLocale();
   //Screen Names
@@ -33,14 +34,14 @@ const NavigationMainContainer = ({
   const [globalBudget, setGlobalBudget] = useState({});
 
   useEffect(async () => {
-    await getGlobalBudgetData();
+    if (period) await getGlobalBudgetData();
   }, [period]);
 
   const getGlobalBudgetData = async () => {
     try {
       if (period) {
         setIsLoading(true);
-        let data = await initilizeData(period, i18n, reduxUser);
+        let data = await initilizeData(period, i18n, reduxUser, linkedUsers);
         setGlobalBudget(data);
         setIsLoading(false);
       }
@@ -153,7 +154,8 @@ const NavigationMainContainer = ({
 
 const mapStateToProps = (state) => ({
   isLoading: state.loader.isLoading,
-  reduxUser: state.user.user,
+  reduxUser: state.user.userInfo,
+  linkedUsers: state.user.linkedUsers,
 });
 
 const mapDispatchToProps = (dispatch) => ({

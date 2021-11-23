@@ -13,7 +13,7 @@ import AppTextInput from "../components/AppTextInput/AppTextInput";
 import { colors } from "../config/colors";
 import { ConnectionServices } from "../services";
 import { save } from "../utils/expoSecure";
-import { getMyData, getUserData, getUserInfoData } from "../utils/userData";
+import { getUserData, getUserInfoData } from "../utils/userData";
 import { connect } from "react-redux";
 import * as actions from "../Redux/actions";
 
@@ -71,9 +71,11 @@ const LoginScreen = (props) => {
     let userInfoData = await getUserInfoData(userCore.userInfo);
     let linkedUsers = [];
     let userInvites = [];
+
     userInfoData.linkedUsers.forEach((person) => {
       linkedUsers.push(person.id);
     });
+    linkedUsers.push(userCore.id);
     userInfoData.invites.forEach((person) => {
       userInvites.push(person.id);
     });
@@ -143,6 +145,7 @@ const LoginScreen = (props) => {
     </SafeAreaView>
   );
 };
+
 const mapStateToProps = (state) => ({
   isLoading: state.loader.isLoading,
   localCurrency: state.user.currrency,

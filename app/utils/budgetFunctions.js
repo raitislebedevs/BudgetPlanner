@@ -1,10 +1,10 @@
 import moment from "moment";
+import store from "../Redux/store";
 import budgetJournal from "../services/budgetJournal";
 import userBudget from "../services/userBudget";
 import greenColorCodes from "./greenColorCodes";
 import redColorCodes from "./redColorCodes";
 import { sumWithReduce } from "./standaloneFunctions";
-import { getLinkedUsers, getMyData } from "./userData";
 
 let rawIncomeData = [];
 let rawExpenseData = [];
@@ -21,23 +21,22 @@ let rawBudgetData = [];
 let budgetPlanningData = [];
 let budgetChart = [];
 let user = {};
+let linkedUsers;
 
-export const initilizeData = async (period, t, reduxUser) => {
-  user = reduxUser; //await getMyData();
-  currency = user?.currency?.symbol;
+export const initilizeData = async (period, t, reduxUser, reduxLinkedUsers) => {
+  linkedUsers = reduxLinkedUsers;
+  user = reduxUser;
+  currency = reduxUser?.currency?.symbol;
   rawIncomeData = await getBudgetData(period, "income");
   rawExpenseData = await getBudgetData(period, "expense");
   rawBudgetData = await getBudgetPlanData(period);
-
   getGroupedIncomeData(currency);
   getGroupedExpenseData(currency);
   getGroupedPlannedData(currency);
-
   let refObj = JSON.stringify(expenseData);
   let newExpenseData = JSON.parse(refObj);
   updateGroupedPlannedData(budgetPlanningData, newExpenseData);
   updateAnyBudget(budgetPlanningData);
-
   incomeAmount = sumWithReduce(incomeData, "total");
   spentAmount = sumWithReduce(expenseData, "total");
   savedAmount = incomeAmount - spentAmount;
@@ -111,7 +110,7 @@ const getGroupedPlannedData = (currency) => {
 
 const getBudgetData = async (period, activity) => {
   try {
-    let users = await getLinkedUsers();
+    let users = linkedUsers;
     let filter = { user_in: users, activity_contains: activity };
     let count = 0;
 
@@ -130,7 +129,7 @@ const getBudgetData = async (period, activity) => {
 
 const getBudgetPlanData = async (period) => {
   try {
-    let users = await getLinkedUsers();
+    let users = linkedUsers;
     let filter = { user_in: users, period_contains: period };
 
     getBudgetPeriodFilter(period, filter);
