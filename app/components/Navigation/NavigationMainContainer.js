@@ -161,9 +161,9 @@ const NavigationMainContainer = ({
 
 const mapStateToProps = (state) => ({
   isLoading: state.loader.isLoading,
-  reduxUser: state.user.userInfo,
-  linkedUsers: state.user.linkedUsers,
-  categoryDetails: state.user.categories,
+  reduxUser: state.user?.userInfo,
+  linkedUsers: state.user?.linkedUsers,
+  categoryDetails: state.user?.categories,
 });
 
 const mapDispatchToProps = (dispatch) => ({

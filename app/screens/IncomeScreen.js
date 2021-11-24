@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, ScrollView, ActivityIndicator } from "react-native";
+import { StyleSheet, ScrollView, ActivityIndicator } from "react-native";
 import FinanceDetails from "../components/FinanseDetails/FinanceDetails";
 import AskModal from "../components/AskModal/AskModal";
 import SubmitActivity from "../components/SubmitActivity/SubmitActivity";
@@ -7,6 +7,7 @@ import BudgetPieChart from "../components/BudgetPieChart/BudgetPieChart";
 import { useLocale } from "react-easy-localization";
 import { colors } from "@material-ui/core";
 import { connect } from "react-redux";
+import { incomeCategory } from "../utils/categoryItems";
 
 const IncomeScreen = (props) => {
   const {
@@ -109,8 +110,8 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state) => ({
-  isLoading: state.loader.isLoading,
-  categoryItems: state.user.categories.incomeCategory,
+  isLoading: state.loader?.isLoading,
+  categoryItems: state.user?.categories?.incomeCategory || incomeCategory(),
 });
 
 export default connect(mapStateToProps)(IncomeScreen);

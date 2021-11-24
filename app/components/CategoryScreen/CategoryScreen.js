@@ -131,8 +131,13 @@ function CategoryScreen({
           users,
         };
 
+        console.log(payload);
+
         const result = await userCategories.CREATE(payload);
+
+        console.log(result);
         setUserCategories(result.data);
+
         const { data } = await userInfoServices.UPDATE(reduxUserInfo?.id, {
           userCategories: result.data.id,
         });

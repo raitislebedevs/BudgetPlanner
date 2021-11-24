@@ -15,10 +15,9 @@ const ExpensesScreen = (props) => {
     isLoading,
     currencySymbol,
     getGlobalBudgetData,
-    coreUser,
+    categoryItems,
   } = props;
   const { i18n } = useLocale();
-  const categoryItems = expenseCategory();
   const [id, setId] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [userExpense, setUserExpense] = useState([]);
@@ -26,7 +25,6 @@ const ExpensesScreen = (props) => {
 
   useEffect(async () => {
     setUserExpense(budget?.expenseData);
-    console.log(coreUser);
   }, [budget.expenseData]);
 
   const highlight = (id) => {
@@ -103,7 +101,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => ({
   isLoading: state.loader.isLoading,
-  coreUser: state.user.userCategories,
+  categoryItems: state.user?.categories?.expensCategory || expenseCategory(),
 });
 
 export default connect(mapStateToProps)(ExpensesScreen);

@@ -22,9 +22,9 @@ import AppPicker from "../components/AppPicker/AppPicker";
 import { connect } from "react-redux";
 
 const BudgetScreen = (props) => {
-  const { budget, isLoading, currencySymbol, getGlobalBudgetData } = props;
+  const { budget, isLoading, currrency, getGlobalBudgetData, categoryItems } =
+    props;
   const { i18n } = useLocale();
-  const categoryItems = expenseCategory();
   const [budgetPeriods, setBudgetPeriods] = useState([
     {
       label: "Week",
@@ -186,7 +186,7 @@ const BudgetScreen = (props) => {
                       id={"activityAmount"}
                       handleOnChange={handleOnChange}
                       label={i18n.Common.amount}
-                      currency={currencySymbol}
+                      currency={currrency}
                     />
                   </View>
                 </View>
@@ -281,6 +281,8 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => ({
   isLoading: state.loader.isLoading,
+  categoryItems: state.user?.categories?.expensCategory || expenseCategory(),
+  currrency: state.user.currrency || "$",
 });
 
 export default connect(mapStateToProps)(BudgetScreen);

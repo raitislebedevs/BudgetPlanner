@@ -28,6 +28,8 @@ export const initilizeData = async (
   reduxLinkedUsers,
   categoryDetails
 ) => {
+  if (!reduxUser || reduxLinkedUsers?.length == 0) return;
+
   linkedUsers = reduxLinkedUsers;
   user = reduxUser;
   currency = reduxUser?.currency?.symbol;

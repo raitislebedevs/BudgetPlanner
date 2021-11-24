@@ -1,10 +1,4 @@
-import store from "../Redux/store";
 import { randomColor } from "./standaloneFunctions";
-
-let storeData = store.subscribe(() => {
-  const state = store.getState();
-  return state;
-});
 
 export const incomeCategory = () => {
   return [

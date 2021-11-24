@@ -70,7 +70,7 @@ const RegisterScreen = (props) => {
         setIsLoading(false);
         return;
       }
-      navigation.navigate("Login");
+      setTimeout(() => navigation.navigate("Login"), 3000);
     } catch (error) {
       setErrorText(error);
     }

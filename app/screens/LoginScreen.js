@@ -66,28 +66,32 @@ const LoginScreen = (props) => {
   }, []);
 
   const getInitialUserValues = async () => {
-    let userCore = await getUserData();
-    let userInfoData = await getUserInfoData(userCore?.userInfo);
-    let linkedUsers = [];
-    let userInvites = [];
+    try {
+      let userCore = await getUserData();
+      let userInfoData = await getUserInfoData(userCore?.userInfo);
+      let linkedUsers = [];
+      let userInvites = [];
 
-    userInfoData.linkedUsers.forEach((person) => {
-      linkedUsers.push(person?.id);
-    });
-    linkedUsers.push(userCore?.id);
-    userInfoData.invites.forEach((person) => {
-      userInvites.push(person.id);
-    });
+      userInfoData?.linkedUsers.forEach((person) => {
+        linkedUsers.push(person?.id);
+      });
+      linkedUsers.push(userCore?.id);
+      userInfoData?.invites.forEach((person) => {
+        userInvites.push(person.id);
+      });
 
-    setCurrency(userInfoData?.currency?.symbol);
-    setUser(userCore);
-    setLinkedUsers(linkedUsers);
-    setUserInfo(userInfoData);
-    setUserInvites(userInfoData);
-    setUserCategories(userInfoData.userCategories);
+      setCurrency(userInfoData?.currency?.symbol);
+      setUser(userCore);
+      setLinkedUsers(linkedUsers);
+      setUserInfo(userInfoData);
+      setUserInvites(userInfoData);
+      setUserCategories(userInfoData?.userCategories);
 
-    if (userCore) {
-      navigation.navigate("MainScreen");
+      if (userCore) {
+        navigation.navigate("MainScreen");
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -147,8 +151,8 @@ const LoginScreen = (props) => {
 
 const mapStateToProps = (state) => ({
   isLoading: state.loader.isLoading,
-  localCurrency: state.user.currrency,
-  userData: state.user.user,
+  localCurrency: state.user?.currrency,
+  userData: state.user?.user,
 });
 
 const mapDispatchToProps = (dispatch) => ({
