@@ -22,6 +22,7 @@ const NavigationMainContainer = ({
   setIsLoading,
   reduxUser,
   linkedUsers,
+  categoryDetails,
 }) => {
   const { i18n } = useLocale();
   //Screen Names
@@ -41,7 +42,13 @@ const NavigationMainContainer = ({
     try {
       if (period) {
         setIsLoading(true);
-        let data = await initilizeData(period, i18n, reduxUser, linkedUsers);
+        let data = await initilizeData(
+          period,
+          i18n,
+          reduxUser,
+          linkedUsers,
+          categoryDetails
+        );
         setGlobalBudget(data);
         setIsLoading(false);
       }
@@ -156,6 +163,7 @@ const mapStateToProps = (state) => ({
   isLoading: state.loader.isLoading,
   reduxUser: state.user.userInfo,
   linkedUsers: state.user.linkedUsers,
+  categoryDetails: state.user.categories,
 });
 
 const mapDispatchToProps = (dispatch) => ({

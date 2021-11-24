@@ -251,6 +251,33 @@ const LeftModal = (props) => {
             {i18n.UserDrawer.edit}
           </Text>
         </View>
+
+        <View style={styles.heading}>
+          <Text style={defaultStyles.appTextNormal}>Income categories</Text>
+          <Text
+            onPress={() => {
+              setModalVisible(false);
+              navigation.navigate("Income Category");
+            }}
+            style={defaultStyles.appTextTertiary}
+          >
+            {i18n.UserDrawer.edit}
+          </Text>
+        </View>
+
+        <View style={styles.heading}>
+          <Text style={defaultStyles.appTextNormal}>Expense categories</Text>
+          <Text
+            onPress={() => {
+              setModalVisible(false);
+              navigation.navigate("Expense Category");
+            }}
+            style={defaultStyles.appTextTertiary}
+          >
+            {i18n.UserDrawer.edit}
+          </Text>
+        </View>
+
         <View style={styles.heading}>
           <Text style={defaultStyles.appTextNormal}>
             {i18n.UserDrawer.theme.label}: {`${theme}`}
@@ -277,26 +304,6 @@ const LeftModal = (props) => {
             value={langPicker}
           />
         </View>
-
-        <TouchableOpacity>
-          <AppButton
-            onPress={() => {
-              setModalVisible(false);
-              navigation.navigate("Category");
-            }}
-            title={"Income categories"}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <AppButton
-            onPress={() => {
-              setModalVisible(false);
-              navigation.navigate("Expense Category");
-            }}
-            title={"Expense categories"}
-            color={"secondary"}
-          />
-        </TouchableOpacity>
 
         {user?.linkedUsers?.length > 0 && (
           <>

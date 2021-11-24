@@ -8,7 +8,7 @@ function ListIcon({ onPress, icon, color, halfSize, ...others }) {
     <View style={[styles.container, { backgroundColor: color }]}>
       <List.Icon
         {...others}
-        icon={icon || "none"}
+        icon={icon || "help"}
         onPress={onPress}
         color={colors.white}
         style={[

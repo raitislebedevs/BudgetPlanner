@@ -12,11 +12,11 @@ export default DatePickerComponent = (props) => {
   const [open, setOpen] = useState(false);
 
   const handleConfirm = (e) => {
+    setOpen(false);
     if (e) {
       setDate(e);
       handleOnChange({ target: { value: e, id: "ActivityDate" } });
     }
-    setOpen(false);
   };
 
   return (

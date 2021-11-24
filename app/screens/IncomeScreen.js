@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, ScrollView, ActivityIndicator } from "react-native";
 import FinanceDetails from "../components/FinanseDetails/FinanceDetails";
 import AskModal from "../components/AskModal/AskModal";
-import { incomeCategory } from "../utils/categoryItems";
 import SubmitActivity from "../components/SubmitActivity/SubmitActivity";
 import BudgetPieChart from "../components/BudgetPieChart/BudgetPieChart";
 import { useLocale } from "react-easy-localization";
@@ -10,11 +9,16 @@ import { colors } from "@material-ui/core";
 import { connect } from "react-redux";
 
 const IncomeScreen = (props) => {
-  const { period, budget, isLoading, currencySymbol, getGlobalBudgetData } =
-    props;
+  const {
+    period,
+    budget,
+    isLoading,
+    currencySymbol,
+    getGlobalBudgetData,
+    categoryItems,
+  } = props;
 
   const { i18n } = useLocale();
-  const categoryItems = incomeCategory();
   const [id, setId] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [userIncome, setUserIncome] = useState([]);
@@ -106,6 +110,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => ({
   isLoading: state.loader.isLoading,
+  categoryItems: state.user.categories.incomeCategory,
 });
 
 export default connect(mapStateToProps)(IncomeScreen);

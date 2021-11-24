@@ -40,15 +40,12 @@ const BudgetScreen = (props) => {
     },
   ]);
 
-  const [icon, setIcon] = useState();
   const [inputValues, setInputValues] = useState();
   const [items, setItems] = useState([{ label: "Choose Category", value: "" }]);
   const [inputBudget, setInputBudget] = useState(false);
   const [inputingBudget, setInputingBudget] = useState(false);
   const [errorText, setErrorText] = useState("");
   const [successText, setSuccessText] = useState("");
-  const [categoryIcon, setCategoryIcon] = useState("apps");
-
   const [id, setId] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -69,7 +66,7 @@ const BudgetScreen = (props) => {
     var category = categoryItems.filter(function (el) {
       return el.value == value;
     })[0];
-    setIcon(category?.icon);
+
     setItems(category?.items);
     handleOnChange(event);
   };
@@ -99,7 +96,6 @@ const BudgetScreen = (props) => {
         categoryItem: inputValues?.categoryItem || "ANY",
         period: inputValues?.period,
         activityAmount: inputValues?.activityAmount,
-        icon: icon,
         user: user.userId,
       });
 
@@ -136,13 +132,13 @@ const BudgetScreen = (props) => {
               <View style={styles.submitContainer}>
                 <View style={styles.pickerItemContainer}>
                   <AppPicker
-                    icon={categoryIcon}
+                    icon={"apps"}
                     underlineColor="brown"
                     placeholder="Category"
                     items={categoryItems}
                     onSelectItem={(value) => {
                       handleOnChangeCategory({
-                        target: { value: value.label, id: "category" },
+                        target: { value: value, id: "category" },
                       });
                     }}
                     selectedItem={inputValues?.category}
@@ -154,7 +150,7 @@ const BudgetScreen = (props) => {
                     items={items}
                     onSelectItem={(value) => {
                       handleOnChange({
-                        target: { value: value.label, id: "categoryItem" },
+                        target: { value, id: "categoryItem" },
                       });
                     }}
                     selectedItem={inputValues?.categoryItem}

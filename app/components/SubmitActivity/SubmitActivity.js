@@ -23,10 +23,7 @@ const SubmitActivity = (props) => {
     i18n,
   } = props;
   const [showInput, setShowInput] = useState(false);
-  const [categoryIcon, setCategoryIcon] = useState("apps");
-
   const [isSubmiting, setIsSubmiting] = useState(false);
-
   const [items, setItems] = useState([]);
 
   const handleOnChange = (event) => {
@@ -35,14 +32,13 @@ const SubmitActivity = (props) => {
     setInputValues({ ...inputValues, [id]: value });
   };
 
-  const handleOnChangeCategoryInputValue = (event, iconTarget) => {
+  const handleOnChangeCategoryInputValue = (event) => {
     const value = event?.target?.value ?? event?.value ?? event;
     const id = event?.target?.id ?? event?.id;
     setInputValues({
       ...inputValues,
       [id]: value,
       CategoryItem: "",
-      [iconTarget?.id]: iconTarget.value,
     });
   };
 
@@ -67,7 +63,6 @@ const SubmitActivity = (props) => {
       }
       if (
         !inputValues.Category ||
-        !inputValues.CategoryItem ||
         !inputValues.ActivityDate ||
         !inputValues.ActivityAmount
       ) {
@@ -82,11 +77,10 @@ const SubmitActivity = (props) => {
 
       let payload = {
         category: inputValues.Category,
-        categoryItem: inputValues.CategoryItem,
+        categoryItem: inputValues?.CategoryItem || "ANY",
         activityDate: inputValues.ActivityDate,
         activityAmount: inputValues.ActivityAmount,
         activity: activity,
-        icon: inputValues.icon,
         user: user?.userId,
       };
       const { data } = await budgetJournal.CREATE(payload);
@@ -111,7 +105,7 @@ const SubmitActivity = (props) => {
               <View style={styles.submitContainer}>
                 <View style={styles.pickerItemContainer}>
                   <AppPicker
-                    icon={categoryIcon}
+                    icon={"apps"}
                     underlineColor="brown"
                     placeholder="Category"
                     items={categoryItems}

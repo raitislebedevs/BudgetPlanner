@@ -53,10 +53,10 @@ function AppPicker({
           data={items}
           numColumns={3}
           style={styles.modaItem}
-          keyExtractor={(item) => item.value.toString()}
+          keyExtractor={(item) => `${item?.value.toString()}_${item?.icon}`}
           renderItem={(category) => (
             <AppPickerItem
-              label={category?.item?.label || "none"}
+              label={category?.item?.label || "help"}
               icon={category?.item?.icon || "help"}
               color={category?.item?.color || colors.primaryBudget}
               onPress={() => {

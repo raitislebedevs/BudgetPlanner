@@ -6,10 +6,10 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { LocaleProvider } from "react-easy-localization";
 import { languages } from "./app/locales";
-import CategorySetUpScreen from "./app/screens/CategorySetUpScreen";
 import { Provider } from "react-redux";
 import store from "./app/Redux/store";
-import CategoryIncomeScreens from "./app/screens/CategoryIncomeScreens";
+import CategoryExpenseScreens from "./app/screens/CategoryExpenseScreens";
+import CategoryIncomeScreen from "./app/screens/CategoryIncomeScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -36,13 +36,13 @@ export default function App() {
             />
             <Stack.Screen
               options={{ headerShown: false }}
-              name="Category"
-              component={CategorySetUpScreen}
+              name="Income Category"
+              component={CategoryIncomeScreen}
             />
             <Stack.Screen
               options={{ headerShown: false }}
               name="Expense Category"
-              component={CategoryIncomeScreens}
+              component={CategoryExpenseScreens}
             />
           </Stack.Navigator>
         </NavigationContainer>

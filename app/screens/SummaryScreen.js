@@ -64,8 +64,8 @@ const SummaryScreen = (props) => {
                   chartConfig={{
                     // backgroundGradientFrom: "#C04848",
                     // backgroundGradientTo: "#480048",
-                    backgroundGradientFrom: "#F2F2F2",
-                    backgroundGradientTo: "#F2F2F2",
+                    backgroundGradientFrom: colors.chartGray,
+                    backgroundGradientTo: colors.chartGray,
                     decimalPlaces: 0, // optional, defaults to 2dp
                     color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
                     labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,

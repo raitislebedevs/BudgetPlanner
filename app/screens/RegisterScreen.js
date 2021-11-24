@@ -64,7 +64,6 @@ const RegisterScreen = (props) => {
 
       if (data) {
         await save("access_token", data?.jwt);
-        // await save("user_data", JSON.stringify(data?.user));
       }
       if (error) {
         setErrorText(error);
@@ -104,14 +103,14 @@ const RegisterScreen = (props) => {
           </Appbar>
 
           <AppTextInput
-            icon="email"
+            icon="account"
             placeholder="First Name"
             onChangeText={(e) =>
               handleOnChange({ target: { value: e, id: "firstName" } })
             }
           />
           <AppTextInput
-            icon="email"
+            icon="account"
             placeholder="Last Name"
             onChangeText={(e) =>
               handleOnChange({ target: { value: e, id: "lastName" } })

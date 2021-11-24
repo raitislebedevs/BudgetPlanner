@@ -1,5 +1,4 @@
 import moment from "moment";
-import store from "../Redux/store";
 import budgetJournal from "../services/budgetJournal";
 import userBudget from "../services/userBudget";
 import greenColorCodes from "./greenColorCodes";
@@ -19,20 +18,31 @@ let spentAmount = 0;
 let currency = "$";
 let rawBudgetData = [];
 let budgetPlanningData = [];
-let budgetChart = [];
 let user = {};
 let linkedUsers;
 
-export const initilizeData = async (period, t, reduxUser, reduxLinkedUsers) => {
+export const initilizeData = async (
+  period,
+  t,
+  reduxUser,
+  reduxLinkedUsers,
+  categoryDetails
+) => {
   linkedUsers = reduxLinkedUsers;
   user = reduxUser;
   currency = reduxUser?.currency?.symbol;
   rawIncomeData = await getBudgetData(period, "income");
   rawExpenseData = await getBudgetData(period, "expense");
   rawBudgetData = await getBudgetPlanData(period);
+
   getGroupedIncomeData(currency);
   getGroupedExpenseData(currency);
   getGroupedPlannedData(currency);
+
+  updateCategories(incomeData, categoryDetails?.incomeCategory);
+  updateCategories(expenseData, categoryDetails?.expensCategory);
+  updateCategories(budgetPlanningData, categoryDetails?.expensCategory);
+
   let refObj = JSON.stringify(expenseData);
   let newExpenseData = JSON.parse(refObj);
   updateGroupedPlannedData(budgetPlanningData, newExpenseData);
@@ -238,7 +248,6 @@ const groupDataByPeriod = (budgetData, currency) => {
     let groupedBudgetData = [];
     let groupedItemData = [];
     let group = groupDataByIndex(budgetData, "category");
-    let icon = "";
     let activity = "";
 
     Object.keys(group).forEach((el) => {
@@ -255,7 +264,6 @@ const groupDataByPeriod = (budgetData, currency) => {
             )
           ).toFixed(2),
         };
-        icon = categoryItems[el][0].icon;
         activity = categoryItems[el][0].activity;
 
         categoryItems[el].forEach((item) => {
@@ -277,7 +285,6 @@ const groupDataByPeriod = (budgetData, currency) => {
       let categorySummary = {
         label: el,
         total: totalValue,
-        icon,
         currency: currency,
         style: {
           color: activity == "expense" ? "darkred" : "darkgreen",
@@ -585,4 +592,20 @@ function getBudgetPeriodFilter(period, filter) {
     default:
       break;
   }
+}
+
+function updateCategories(data, category) {
+  if (!category) return;
+  data.forEach((group) => {
+    let item = category.filter((c) => c.value == group.label)[0];
+    if (!item) return;
+    let items = item.items;
+    group.icon = item.icon;
+    group.color = item.color;
+    group.data.forEach((cat) => {
+      let innerItem = items.filter((i) => i.value == cat.title)[0];
+      cat.icon = innerItem?.icon;
+      cat.color = innerItem?.color;
+    });
+  });
 }

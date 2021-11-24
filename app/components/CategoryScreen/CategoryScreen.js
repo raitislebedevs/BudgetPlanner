@@ -9,21 +9,33 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { Appbar, List } from "react-native-paper";
-import AppButton from "../components/AppButton/AppButton";
-import { colors } from "../config/colors";
-import { expenseCategory } from "../utils/categoryItems";
-import defaultStyles from "../config/appStyles";
-import EditSwipable from "../components/EditSwipable/EditSwipable";
-import { categoryIcons } from "../utils/categoryIcons";
-import AppPickerItem from "../components/AppPicker/AppPickerItem";
+import AppButton from "../../components/AppButton/AppButton";
+import { colors } from "../../config/colors";
+import defaultStyles from "../../config/appStyles";
+import EditSwipable from "../../components/EditSwipable/EditSwipable";
+import { categoryIcons } from "../../utils/categoryIcons";
+import AppPickerItem from "../../components/AppPicker/AppPickerItem";
 import { TriangleColorPicker } from "react-native-color-picker";
-import ListIcon from "../components/ListIcon/ListIcon";
-import AddCategoryItem from "../components/AddCategoryItem/AddCategoryItem";
-import userCategories from "../services/userCategories";
-import { getMyData } from "../utils/userData";
-import userInfoServices from "../services/userInfoServices";
+import ListIcon from "../../components/ListIcon/ListIcon";
+import AddCategoryItem from "../../components/AddCategoryItem/AddCategoryItem";
+import userCategories from "../../services/userCategories";
+import userInfoServices from "../../services/userInfoServices";
+import { connect } from "react-redux";
+import * as actions from "../../Redux/actions";
+import { useLocale } from "react-easy-localization";
 
-function CategoryIncomeScreens({ navigation }) {
+function CategoryScreen({
+  navigation,
+  reduxCategories,
+  type,
+  defaultCategories,
+  reduxUser,
+  reduxUserInfo,
+  setUserCategories,
+  setUserInfo,
+}) {
+  const { i18n } = useLocale();
+  const t = i18n;
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [seeCategory, setSeeCategory] = useState(false);
@@ -34,17 +46,15 @@ function CategoryIncomeScreens({ navigation }) {
   const [activeEdit, setActiveEdit] = useState("");
   const [modalIsVisible, setModalVisible] = useState(false);
   const [colorPickerVisibility, setColorPickerVisibility] = useState(false);
-  const categories = expenseCategory();
-  const icons = categoryIcons();
+  const icons = categoryIcons(t);
 
-  useEffect(async () => {
-    await getCategories();
+  useEffect(() => {
+    getCategories();
   }, []);
 
-  const getCategories = async () => {
+  const getCategories = () => {
     setSeeCategory(true);
-    let user = await getMyData();
-    setData(user.userCategories.expense || categories);
+    setData((reduxCategories && reduxCategories[type]) || defaultCategories);
     setSeeCategory(false);
   };
 
@@ -68,12 +78,6 @@ function CategoryIncomeScreens({ navigation }) {
     } catch (error) {
       console.log(error);
     }
-  };
-  const changeAddedArray = () => {
-    setAddedCategories([{}]);
-  };
-  const changeAddedItemArray = (category) => {
-    setAddedCategoryItems([{ category }]);
   };
   const onColorChange = (color) => {
     try {
@@ -115,35 +119,39 @@ function CategoryIncomeScreens({ navigation }) {
     }
   };
 
-  const submitCategories = async () => {
+  const submitCategory = async () => {
     setIsLoading(true);
     try {
-      let user = await getMyData();
-      const { id } = user.userCategories;
+      if (!reduxUserInfo?.userCategories) {
+        let users = [];
+        users.push(reduxUser?.id);
 
-      if (id) {
         let payload = {
-          expense: data,
+          [type]: data,
+          users,
         };
 
-        await userCategories.UPDATE(id, payload);
+        const result = await userCategories.CREATE(payload);
+        setUserCategories(result.data);
+        const { data } = await userInfoServices.UPDATE(reduxUserInfo?.id, {
+          userCategories: result.data.id,
+        });
+        setUserInfo(data);
         setIsLoading(false);
         return;
       }
+      const { id } = reduxUserInfo?.userCategories;
+      if (id) {
+        let payload = {
+          [type]: data,
+        };
 
-      let users = [];
-      users.push(user.userId);
+        const result = await userCategories.UPDATE(id, payload);
+        setUserCategories(result?.data);
 
-      let payload = {
-        expense: data,
-        users,
-      };
-      console.log(payload);
-
-      const result = await userCategories.CREATE(payload);
-      await userInfoServices.UPDATE(user.id, {
-        userCategories: result.data.id,
-      });
+        setIsLoading(false);
+        return;
+      }
     } catch (error) {
       console.log(error);
     }
@@ -165,7 +173,7 @@ function CategoryIncomeScreens({ navigation }) {
           <View style={styles.header}>
             <Image
               style={styles.logo}
-              source={require("../assets/favicon.png")}
+              source={require("../../assets/favicon.png")}
             />
           </View>
         </Appbar>
@@ -241,9 +249,10 @@ function CategoryIncomeScreens({ navigation }) {
 
                             return (
                               <AddCategoryItem
-                                onPressSuccess={() =>
-                                  onCategoryItemAdd(category.label)
-                                }
+                                onPressSuccess={() => {
+                                  onCategoryItemAdd(category.label);
+                                  setAddedCategoryItems([]);
+                                }}
                                 handleOnChange={(e) => setCategoryItem(e)}
                                 onPressCancel={() => setAddedCategoryItems([])}
                               />
@@ -255,7 +264,11 @@ function CategoryIncomeScreens({ navigation }) {
                             style={styles.button}
                             title={"Add Category Item"}
                             color={"tertiary"}
-                            onPress={() => changeAddedItemArray(category.label)}
+                            onPress={() =>
+                              setAddedCategoryItems([
+                                { category: category.label },
+                              ])
+                            }
                           />
                         </View>
                       </List.Accordion>
@@ -274,7 +287,10 @@ function CategoryIncomeScreens({ navigation }) {
               {addedCategories.map((item) => {
                 return (
                   <AddCategoryItem
-                    onPressSuccess={() => onCategoryAdd()}
+                    onPressSuccess={() => {
+                      onCategoryAdd();
+                      setAddedCategories([]);
+                    }}
                     onPressCancel={() => setAddedCategories([])}
                     handleOnChange={(e) => setCategory(e)}
                   />
@@ -287,7 +303,7 @@ function CategoryIncomeScreens({ navigation }) {
                 style={styles.button}
                 title={"Add Category"}
                 color={"tertiary"}
-                onPress={() => changeAddedArray()}
+                onPress={() => setAddedCategories([{}])}
               />
             </View>
           </List.Section>
@@ -295,10 +311,7 @@ function CategoryIncomeScreens({ navigation }) {
       </ScrollView>
       {!isLoading ? (
         <View style={styles.mainButton}>
-          <AppButton
-            title="Submit Changes"
-            onPress={() => submitCategories()}
-          />
+          <AppButton title="Submit Changes" onPress={() => submitCategory()} />
         </View>
       ) : (
         <ActivityIndicator
@@ -351,7 +364,18 @@ function CategoryIncomeScreens({ navigation }) {
   );
 }
 
-export default CategoryIncomeScreens;
+const mapStateToProps = (state) => ({
+  reduxCategories: state?.user?.categories,
+  reduxUser: state?.user?.user,
+  reduxUserInfo: state?.user?.userInfo,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  setUserCategories: (value) => dispatch(actions.setUserCategories(value)),
+  setUserInfo: (value) => dispatch(actions.setUserInfo(value)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(CategoryScreen);
 
 const styles = StyleSheet.create({
   container: {

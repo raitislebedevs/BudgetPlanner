@@ -7,7 +7,6 @@ import {
   Image,
   ImageBackground,
 } from "react-native";
-// import { Button } from "react-native-paper";
 import AppButton from "../components/AppButton/AppButton";
 import AppTextInput from "../components/AppTextInput/AppTextInput";
 import { colors } from "../config/colors";
@@ -68,14 +67,14 @@ const LoginScreen = (props) => {
 
   const getInitialUserValues = async () => {
     let userCore = await getUserData();
-    let userInfoData = await getUserInfoData(userCore.userInfo);
+    let userInfoData = await getUserInfoData(userCore?.userInfo);
     let linkedUsers = [];
     let userInvites = [];
 
     userInfoData.linkedUsers.forEach((person) => {
-      linkedUsers.push(person.id);
+      linkedUsers.push(person?.id);
     });
-    linkedUsers.push(userCore.id);
+    linkedUsers.push(userCore?.id);
     userInfoData.invites.forEach((person) => {
       userInvites.push(person.id);
     });

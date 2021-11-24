@@ -76,3 +76,11 @@ export const upperCaseFirstLetter = (string) => {
 export const getPosition = (string, subString, index) => {
   return string.split(subString, index).join(subString).length;
 };
+
+export const randomColor = () => {
+  let red = Math.floor(Math.random() * 256);
+  let green = Math.floor(Math.random() * 256);
+  let blue = Math.floor(Math.random() * 256);
+
+  return `rgb(${red},${green},${blue})`;
+};
