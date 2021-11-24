@@ -509,5 +509,70 @@ export const categoryIcons = () => {
       icon: "flower-tulip-outline",
       color: randomColor(),
     },
+    {
+      icon: "silverware-clean",
+      color: randomColor(),
+    },
+    { icon: "barley", color: randomColor() },
+    { icon: "barley-off", color: randomColor() },
+    { icon: "cow", color: randomColor() },
+    { icon: "instrument-triangle", color: randomColor() },
+    { icon: "food-steak", color: randomColor() },
+    { icon: "food-drumstick", color: randomColor() },
+
+    {
+      icon: "food",
+      color: randomColor(),
+    },
+    {
+      icon: "peanut",
+      color: randomColor(),
+    },
+
+    {
+      icon: "hamburger",
+      color: randomColor(),
+    },
+
+    {
+      icon: "pasta",
+      color: randomColor(),
+    },
+    {
+      icon: "noodles",
+      color: randomColor(),
+    },
+    { icon: "wind-turbine", color: randomColor() },
+
+    {
+      icon: "gas-station-outline",
+      color: randomColor(),
+    },
+    {
+      icon: "gas-station",
+      color: randomColor(),
+    },
+    {
+      icon: "finance",
+      color: randomColor(),
+    },
+
+    {
+      icon: "chart-bell-curve",
+      color: randomColor(),
+    },
+    {
+      icon: "chart-arc",
+      color: randomColor(),
+    },
+    {
+      icon: "chart-pie",
+      color: randomColor(),
+    },
+
+    {
+      icon: "island",
+      color: randomColor(),
+    },
   ];
 };
