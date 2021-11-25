@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Dimensions, View } from "react-native";
 import { connect } from "react-redux";
 import {
@@ -15,6 +15,12 @@ function BudgetChart(props) {
   const { budget, currrency } = props;
   const chartData = budget.budgetChartData;
   const screenWidth = Dimensions.get("window").width;
+
+  if (
+    !budget?.budgetChartData?.spentData ||
+    budget?.budgetChartData?.spentData.length == 0
+  )
+    return <View></View>;
 
   return (
     <View>
@@ -57,7 +63,7 @@ function BudgetChart(props) {
             `${formatNumber(parseFloat(t).toFixed(0), currrency)}`
           }
         />
-        <VictoryGroup offset={18}>
+        <VictoryGroup offset={20}>
           <VictoryBar
             style={{ data: { fill: colors.primary } }}
             data={chartData?.budgetData}

@@ -307,8 +307,8 @@ const LeftModal = (props) => {
 
         <View style={styles.toggle}>
           <Text style={[defaultStyles.appTextNormal, styles.toogleText]}>
-            {i18n.UserDrawer.language.label}:{" "}
-            {`${langPicker ? "English" : "Latviešu"}`}
+            {i18n.UserDrawer.language.label}:
+            {`${langPicker ? " English" : " Latviešu"}`}
           </Text>
           <Switch
             trackColor={{ false: colors.primary, true: "#fff" }}

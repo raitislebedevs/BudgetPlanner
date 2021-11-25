@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -22,7 +22,7 @@ import AppPicker from "../components/AppPicker/AppPicker";
 import { connect } from "react-redux";
 
 const BudgetScreen = (props) => {
-  const { budget, isLoading, currrency, getGlobalBudgetData, categoryItems } =
+  const { budget, isLoading, currrency, getGlobalBudgetData, reduxCategories } =
     props;
   const { i18n } = useLocale();
   const [budgetPeriods, setBudgetPeriods] = useState([
@@ -39,7 +39,7 @@ const BudgetScreen = (props) => {
       value: "Year",
     },
   ]);
-
+  const categoryItems = reduxCategories || expenseCategory(i18n);
   const [inputValues, setInputValues] = useState();
   const [items, setItems] = useState([{ label: "Choose Category", value: "" }]);
   const [inputBudget, setInputBudget] = useState(false);
@@ -289,7 +289,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => ({
   isLoading: state.loader.isLoading,
-  categoryItems: state.user?.categories?.expensCategory || expenseCategory(),
+  reduxCategories: state.user?.categories?.expensCategory,
   currrency: state.user.currrency || "$",
 });
 

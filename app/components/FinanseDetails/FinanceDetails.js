@@ -5,6 +5,7 @@ import { formatNumber } from "../../utils/standaloneFunctions";
 import { colors } from "../../config/colors";
 import RemoveSwipable from "../RemoveSwipable/RemoveSwipable";
 import ListIcon from "../ListIcon/ListIcon";
+import moment from "moment";
 
 const FinanceDetails = (props) => {
   const { financeData, title, highlight, budget, color } = props;
@@ -117,7 +118,9 @@ const FinanceDetails = (props) => {
                           onPress={() => highlight(singleEntry?.id)}
                         >
                           <List.Item
-                            title={singleEntry?.date}
+                            title={moment(singleEntry?.date).format(
+                              "DD-MMM-YYYY"
+                            )}
                             right={(props) => (
                               <View
                                 style={[

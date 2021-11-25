@@ -59,12 +59,7 @@ const NavigationMainContainer = ({
 
   return (
     <>
-      <Header
-        budget={globalBudget}
-        navigation={navigation}
-        currencySymbol={globalBudget.currency}
-        period={period}
-      />
+      <Header budget={globalBudget} navigation={navigation} period={period} />
       <Period period={period} setPeriod={setPeriod} />
       <Tab.Navigator
         initialRouteName={summarryScren}
@@ -121,7 +116,6 @@ const NavigationMainContainer = ({
               period={period}
               budget={globalBudget}
               isLoading={isLoading}
-              currencySymbol={globalBudget.currency}
               getGlobalBudgetData={getGlobalBudgetData}
             />
           )}
@@ -134,7 +128,6 @@ const NavigationMainContainer = ({
               period={period}
               budget={globalBudget}
               isLoading={isLoading}
-              currencySymbol={globalBudget.currency}
               getGlobalBudgetData={getGlobalBudgetData}
             />
           )}

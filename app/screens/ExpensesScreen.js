@@ -16,9 +16,10 @@ const ExpensesScreen = (props) => {
     isLoading,
     currencySymbol,
     getGlobalBudgetData,
-    categoryItems,
+    reduxItems,
   } = props;
   const { i18n } = useLocale();
+  const categoryItems = reduxItems || expenseCategory(i18n);
   const [id, setId] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [userExpense, setUserExpense] = useState([]);
@@ -109,7 +110,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => ({
   isLoading: state.loader.isLoading,
-  categoryItems: state.user?.categories?.expensCategory || expenseCategory(),
+  reduxItems: state.user?.categories?.expensCategory,
 });
 
 export default connect(mapStateToProps)(ExpensesScreen);

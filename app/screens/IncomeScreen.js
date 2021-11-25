@@ -17,10 +17,11 @@ const IncomeScreen = (props) => {
     isLoading,
     currencySymbol,
     getGlobalBudgetData,
-    categoryItems,
+    reduxItems,
   } = props;
 
   const { i18n } = useLocale();
+  const categoryItems = reduxItems || incomeCategory(i18n);
   const [id, setId] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [userIncome, setUserIncome] = useState([]);
@@ -112,7 +113,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => ({
   isLoading: state.loader?.isLoading,
-  categoryItems: state.user?.categories?.incomeCategory || incomeCategory(),
+  reduxItems: state.user?.categories?.incomeCategory,
 });
 
 export default connect(mapStateToProps)(IncomeScreen);
