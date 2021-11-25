@@ -11,6 +11,8 @@ export const languages = {
       edit: "Edit",
       name: "Name",
       email: "Email",
+      income: "Income categories",
+      expense: "Expense categories",
       theme: { label: "Theme", light: "Light", dark: "Dark" },
       language: { label: "Language", en: "English", lv: "Latviešu" },
       linked: "Linked users",
@@ -20,6 +22,11 @@ export const languages = {
       yes: "Yes",
       no: "No",
       send: "Send",
+      error: {
+        noUser: "User not found",
+        noEmail: "Email not specified",
+        userInvited: "User already invited",
+      },
     },
     Period: {
       day: "Day",
@@ -55,6 +62,8 @@ export const languages = {
       edit: "Labot",
       name: "Vārds",
       email: "E-pasts",
+      income: "Ienākumu kategorijas",
+      expense: "Izdevumu kategorijas",
       theme: { label: "Tēma", light: "Gaiša", dark: "Tumša" },
       language: { label: "Valoda", en: "English", lv: "Latviešu" },
       linked: "Savienotie lietotāji",
@@ -64,6 +73,11 @@ export const languages = {
       yes: "Jā",
       no: "Nē",
       send: "Sūtīt",
+      error: {
+        noUser: "Lietotājs netika atrasts",
+        noEmail: "Nepieciešams epasts",
+        userInvited: "Lietotājs jau ielūgts",
+      },
     },
     Period: {
       day: "Diena",

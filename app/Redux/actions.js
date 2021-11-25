@@ -34,3 +34,8 @@ export const setUserCategories = (payload) => ({
   type: Types.SET_USER_CATEGORIES,
   value: payload,
 });
+
+export const setUserTheme = (payload) => ({
+  type: Types.SET_USER_THEME,
+  value: payload,
+});

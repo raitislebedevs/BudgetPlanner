@@ -18,6 +18,7 @@ let spentAmount = 0;
 let currency = "$";
 let rawBudgetData = [];
 let budgetPlanningData = [];
+let budgetChartData = {};
 let user = {};
 let linkedUsers;
 
@@ -55,6 +56,7 @@ export const initilizeData = async (
   incomeChartData = chartData(incomeData, greenColorCodes);
   spentChartData = chartData(expenseData, redColorCodes);
   getBezierChartPeriod(period, incomeData, expenseData, t);
+  getBudgetChartData();
 
   return {
     incomeData,
@@ -67,6 +69,7 @@ export const initilizeData = async (
     bezierChartData,
     currency,
     budgetPlanningData,
+    budgetChartData,
   };
 };
 
@@ -80,6 +83,43 @@ const chartData = (userData, colorCodes) => {
   return data;
 };
 
+const getBudgetChartData = () => {
+  let budgetPlanChartData = [];
+  let budgetSpentChartData = [];
+
+  budgetPlanningData.forEach((plan) => {
+    budgetPlanChartData.push({ x: plan.label, y: plan.total });
+    budgetSpentChartData.push({ x: plan.label, y: plan.amountSpent });
+  });
+
+  let maxPositive = Math.max.apply(
+    Math,
+    budgetPlanChartData.map(function (o) {
+      return o.y;
+    })
+  );
+
+  let maxNegative = Math.max.apply(
+    Math,
+    budgetSpentChartData.map(function (o) {
+      return o.y;
+    })
+  );
+
+  let maxValue = Math.max(maxPositive, maxNegative);
+  let yAxis = [0];
+  let step = Math.round(maxValue / 7);
+
+  for (let i = 0; i < 8; i++) {
+    yAxis.push(step * i + 0.5 * step);
+  }
+
+  budgetChartData = {
+    spentData: budgetSpentChartData,
+    budgetData: budgetPlanChartData,
+    yAxis,
+  };
+};
 export const refreshData = async (period) => {
   resetValues();
   await initilizeData(period);
@@ -360,22 +400,18 @@ const getBezierChartPeriod = (period, income, expense, lang) => {
       })
     );
 
-    console.log("maxPositive", maxPositive);
     let maxNegative = Math.max.apply(
       Math,
       chartData.negative.map(function (o) {
         return o.amount;
       })
     );
-    console.log("maxNegative", maxNegative);
 
     let maxValue = Math.max(maxPositive, maxNegative);
     let yAxis = [0];
     let step = Math.round(maxValue / 7);
-    console.log("Step", step);
 
     for (let i = 0; i < 8; i++) {
-      console.log("Item ", step * i);
       yAxis.push(step * i + 0.5 * step);
     }
 
@@ -390,7 +426,6 @@ const getBezierChartPeriod = (period, income, expense, lang) => {
 const formatChartData = (xLabel, incomeChartData) => {
   let lineData = [];
   xLabel.forEach((el, index) => {
-    console.log(parseFloat(incomeChartData[index]).toFixed(2));
     lineData.push({
       period: el,
       amount: incomeChartData[index],

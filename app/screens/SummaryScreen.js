@@ -1,14 +1,12 @@
 import React, { useState } from "react";
 import { useLocale } from "react-easy-localization";
 import {
-  Dimensions,
   StyleSheet,
   View,
   ScrollView,
   ActivityIndicator,
   Text,
 } from "react-native";
-import { LineChart } from "react-native-chart-kit";
 import AskModal from "../components/AskModal/AskModal";
 import FinanceDetails from "../components/FinanseDetails/FinanceDetails";
 import { colors } from "../config/colors";

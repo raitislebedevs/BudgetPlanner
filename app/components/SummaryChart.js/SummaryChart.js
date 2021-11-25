@@ -13,9 +13,6 @@ import { formatNumber } from "../../utils/standaloneFunctions";
 
 function SummaryChart({ chartLabels, currrency }) {
   const screenWidth = Dimensions.get("window").width;
-  useEffect(() => {
-    console.log(chartLabels);
-  }, [chartLabels]);
 
   return (
     <View>
@@ -32,7 +29,7 @@ function SummaryChart({ chartLabels, currrency }) {
         width={screenWidth}
         height={screenWidth - 70}
         margin={30}
-        padding={{ left: 60, right: 34, bottom: 40, top: 5 }}
+        padding={{ left: 60, right: 50, bottom: 40, top: 5 }}
       >
         <VictoryAxis
           style={{

@@ -35,6 +35,14 @@ export default {
     fontFamily: Platform.OS === "android" ? "Roboto" : "Avenir",
     fontWeight: "bold",
   },
+  errorText: {
+    marginTop: 5,
+    color: colors.danger,
+    fontSize: 17,
+    fontFamily: Platform.OS === "android" ? "Roboto" : "Avenir",
+    fontWeight: "bold",
+    alignSelf: "center",
+  },
   statusbar: {
     backgroundColor: colors.primary,
     paddingTop: StatusBar.currentHeight + 10,

@@ -32,14 +32,22 @@ function BudgetPieChart(props) {
         height={screenWidth - 70}
         data={chartData}
         colorScale={colorCodes}
-        padAngle={() => 1}
+        padAngle={1.5}
         labelPosition={"centroid"}
         labelPlacement={"parallel"}
-        labelRadius={({ innerRadius }) => innerRadius + 15}
+        labelRadius={({ innerRadius }) => innerRadius + 30}
         style={{
-          labels: { fill: colors.black, fontSize: 14, fontWeight: "bold" },
+          labels: {
+            fill: colors.black,
+            fontSize: 14,
+            fontWeight: "bold",
+          },
+          data: {
+            fillOpacity: 0.7,
+          },
         }}
-        innerRadius={82}
+        cornerRadius={5}
+        innerRadius={80}
       />
       <Text
         style={{

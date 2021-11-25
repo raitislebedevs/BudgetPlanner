@@ -20,47 +20,46 @@ import AppButton from "../AppButton/AppButton";
 import AppTextInput from "../AppTextInput/AppTextInput";
 import { useLocale } from "react-easy-localization";
 import { connect } from "react-redux";
+import * as actions from "../../Redux/actions";
 
 const LeftModal = (props) => {
   const {
     isModalVisible,
     setModalVisible,
     navigation,
-    localCurrency,
-    userData,
-    linkedUsers,
-    userInvites,
-    userInfo,
+    userTheme,
+    setUserTheme,
   } = props;
 
   const { changeLanguage, i18n } = useLocale();
+  const [errorText, setErrorText] = useState("");
   const [user, setUser] = useState(false);
   const [currencyPicker, setCurrencyPicker] = useState(false);
   const [invitePerson, setInvitePerson] = useState("");
   const [currencyLoader, setCurrencyLoader] = useState(false);
   const [currency, setCurrency] = useState("");
   const [items, setItems] = useState([]);
-  const [theme, setTheme] = useState(i18n.UserDrawer.theme.light);
-  const [lang, setLang] = useState("en");
+  const [theme, setTheme] = useState(userTheme);
   const [isInviting, setIsInviting] = useState(false);
   const [isEnabled, setIsEnabled] = useState(false);
   const [langPicker, setLangPicker] = useState(false);
+
   const toggleSwitch = () => {
-    if (theme === i18n.UserDrawer.theme.light)
-      setTheme(i18n.UserDrawer.theme.dark);
-
-    if (theme === i18n.UserDrawer.theme.dark)
-      setTheme(i18n.UserDrawer.theme.light);
-
+    if (theme === "light") {
+      setTheme("dark");
+      setUserTheme("dark");
+    }
+    if (theme === "dark") {
+      setTheme("light");
+      setUserTheme("light");
+    }
     setIsEnabled((previousState) => !previousState);
   };
   const languageSwitch = () => {
     setLangPicker(!langPicker);
     return langPicker ? changeLanguage("lv") : changeLanguage("en");
   };
-  const toggleModal = () => {
-    setModalVisible(!isModalVisible);
-  };
+
   const handleCurrencyChange = async (event) => {
     setCurrencyLoader(true);
     try {
@@ -128,35 +127,46 @@ const LeftModal = (props) => {
 
   const sendInvatation = async () => {
     try {
+      setErrorText("");
       setIsInviting(true);
-      if (invitePerson) {
-        let invites = [];
-        let filter = { email: invitePerson };
-        let person = await userServices.FIND(filter);
-
-        if (person.data.length == 0) {
-          setIsInviting(false);
-          return;
-        }
-        const userInfoData = person?.data[0].userInfo;
-        userInfoData?.invites.forEach((person) => {
-          invites.push(person?.id);
-        });
-
-        let data = await getMyData();
-
-        if (invites.includes(data.id)) {
-          setIsInviting(false);
-          return;
-        }
-
-        invites.push(data.id);
-        let payload = {
-          invites,
-        };
-        await userInfoServices.UPDATE(userInfoData.id, payload);
+      if (!invitePerson) {
         setIsInviting(false);
+        setErrorText(i18n.UserDrawer.error.noEmail);
+        return;
       }
+
+      let invites = [];
+      let filter = { email: invitePerson };
+      //Finding the person whom I am inviting
+      let person = await userServices.FIND(filter);
+
+      if (person.data.length == 0) {
+        setIsInviting(false);
+        setErrorText(i18n.UserDrawer.error.noUser);
+        return;
+      }
+
+      const userInfoData = person?.data[0].userInfo;
+
+      userInfoData?.invites.forEach((person) => {
+        invites.push(person);
+      });
+
+      let data = await getMyData();
+
+      if (invites.includes(data.id)) {
+        setIsInviting(false);
+        setErrorText(i18n.UserDrawer.error.userInvited);
+        return;
+      }
+
+      invites.push(data.id);
+      let payload = {
+        invites,
+      };
+
+      await userInfoServices.UPDATE(userInfoData.id, payload);
+      setIsInviting(false);
     } catch (error) {
       console.log(error);
     }
@@ -173,7 +183,7 @@ const LeftModal = (props) => {
       animationIn="slideInLeft"
       animationOut="slideOutRight"
     >
-      <ScrollView>
+      <ScrollView style={styles.modalContainer}>
         <View style={styles.headingContainer}>
           <View style={styles.heading}>
             <Text style={[styles.label, defaultStyles.headingText]}>
@@ -183,7 +193,7 @@ const LeftModal = (props) => {
               style={styles.close}
               onPress={() => null}
               underlayColor={colors.primary}
-              onPress={toggleModal}
+              onPress={() => setModalVisible(!isModalVisible)}
             >
               <Text style={styles.closeText}>X</Text>
             </TouchableOpacity>
@@ -235,7 +245,7 @@ const LeftModal = (props) => {
           </View>
         )}
 
-        <View style={styles.heading}>
+        {/* <View style={styles.heading}>
           <Text
             style={defaultStyles.appTextNormal}
           >{`${i18n.UserDrawer.name}: ${user.firstName} ${user.lastName} ­`}</Text>
@@ -250,10 +260,12 @@ const LeftModal = (props) => {
           <Text style={defaultStyles.appTextTertiary}>
             {i18n.UserDrawer.edit}
           </Text>
-        </View>
+        </View> */}
 
         <View style={styles.heading}>
-          <Text style={defaultStyles.appTextNormal}>Income categories</Text>
+          <Text style={defaultStyles.appTextNormal}>
+            {i18n.UserDrawer.income}
+          </Text>
           <Text
             onPress={() => {
               setModalVisible(false);
@@ -266,7 +278,9 @@ const LeftModal = (props) => {
         </View>
 
         <View style={styles.heading}>
-          <Text style={defaultStyles.appTextNormal}>Expense categories</Text>
+          <Text style={defaultStyles.appTextNormal}>
+            {i18n.UserDrawer.expense}
+          </Text>
           <Text
             onPress={() => {
               setModalVisible(false);
@@ -278,9 +292,9 @@ const LeftModal = (props) => {
           </Text>
         </View>
 
-        <View style={styles.heading}>
-          <Text style={defaultStyles.appTextNormal}>
-            {i18n.UserDrawer.theme.label}: {`${theme}`}
+        {/* <View style={styles.toggle}>
+          <Text style={[defaultStyles.appTextNormal, styles.toogleText]}>
+            {i18n.UserDrawer.theme.label}: {`${i18n.UserDrawer.theme[theme]}`}
           </Text>
           <Switch
             trackColor={{ false: colors.primary, true: "#fff" }}
@@ -289,10 +303,10 @@ const LeftModal = (props) => {
             onValueChange={toggleSwitch}
             value={isEnabled}
           />
-        </View>
+        </View> */}
 
-        <View style={styles.heading}>
-          <Text style={defaultStyles.appTextNormal}>
+        <View style={styles.toggle}>
+          <Text style={[defaultStyles.appTextNormal, styles.toogleText]}>
             {i18n.UserDrawer.language.label}:{" "}
             {`${langPicker ? "English" : "Latviešu"}`}
           </Text>
@@ -386,6 +400,8 @@ const LeftModal = (props) => {
             />
           )}
         </View>
+
+        <Text style={defaultStyles.errorText}>{errorText && errorText}</Text>
       </ScrollView>
     </Modal>
   );
@@ -456,32 +472,31 @@ const styles = StyleSheet.create({
     borderColor: colors.primary,
     borderWidth: 1,
     backgroundColor: colors.lightGray,
-    borderRadius: 5,
+    borderRadius: 20,
   },
 
   modalStyle: {
     justifyContent: "flex-start",
-    // borderColor: colors.primary,
-    // borderWidth: 6,
+  },
+  modalContainer: {
+    marginLeft: "2.5%",
+    marginRight: "2.5%",
+  },
+  toggle: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  toogleText: {
+    marginTop: 10,
   },
 });
 
 const mapStateToProps = (state) => ({
-  isLoading: state.loader.isLoading,
-  localCurrency: state.user.currrency,
-  userData: state.user.user,
-  linkedUsers: state.user.linkedUsers,
-  userInvites: state.user.userInvites,
-  userInfo: state.user.userInfo,
+  userTheme: state.theme.userTheme,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  setCurrency: (value) => dispatch(actions.setCurrency(value)),
-  setUser: (value) => dispatch(actions.setUser(value)),
-  setUserInfo: (value) => dispatch(actions.setUserInfo(value)),
-  setUserCategories: (value) => dispatch(actions.setUserCategories(value)),
-  setLinkedUsers: (value) => dispatch(actions.setLinkedUsers(value)),
-  setUserInvites: (value) => dispatch(actions.setUserInvites(value)),
+  setUserTheme: (value) => dispatch(actions.setUserTheme(value)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(LeftModal);

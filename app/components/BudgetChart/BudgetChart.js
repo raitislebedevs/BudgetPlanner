@@ -1,91 +1,79 @@
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, Dimensions, View } from "react-native";
-import { BarChart } from "react-native-chart-kit";
+import { Dimensions, View } from "react-native";
 import { connect } from "react-redux";
+import {
+  VictoryChart,
+  VictoryBar,
+  VictoryGroup,
+  VictoryTheme,
+  VictoryAxis,
+} from "victory-native";
 import { colors } from "../../config/colors";
+import { formatNumber } from "../../utils/standaloneFunctions";
 
 function BudgetChart(props) {
-  const { budget, isLoading, currrency } = props;
-  const [spent, setSpent] = useState([]);
-  const [planning, setPlanning] = useState([]);
-  const [labels, setLabels] = useState([]);
-
-  useEffect(() => {
-    if (budget?.budgetPlanningData) {
-      overviewChart();
-    }
-  }, [budget]);
-
-  const overviewChart = () => {
-    let labels = [];
-    let values = [];
-    let plan = [];
-    budget?.budgetPlanningData.forEach((group) => {
-      labels.push(group.label);
-      values.push(group.amountSpent);
-      plan.push(group.amoun);
-    });
-
-    setSpent(values);
-    setPlanning(plan);
-    setLabels(labels);
-  };
-
+  const { budget, currrency } = props;
+  const chartData = budget.budgetChartData;
   const screenWidth = Dimensions.get("window").width;
 
-  const chartConfig = {
-    backgroundColor: colors.primary,
-    backgroundGradientFrom: colors.chartGray,
-    backgroundGradientTo: colors.chartGray,
-    fillShadowGradient: colors.primary,
-    fillShadowGradientOpacity: 1,
-    color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-    labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-    style: {
-      borderRadius: 16,
-    },
-    strokeWidth: 6,
-    barPercentage: 0.5,
-    useShadowColorFromDataset: false,
-  };
-  const data = {
-    labels: labels,
-    datasets: [
-      {
-        data: spent,
-      },
-      {
-        data: planning,
-      },
-    ],
-  };
-
   return (
-    <>
-      {!isLoading ? (
-        <View>
-          <BarChart
-            data={data}
-            width={screenWidth - 5}
-            height={230}
-            yAxisSuffix={` ${currrency}`}
-            withInnerLines={true}
-            showValuesOnTopOfBars={true}
-            fromZero={true}
-            chartConfig={chartConfig}
+    <View>
+      <VictoryChart
+        animate={{
+          duration: 2000,
+          onLoad: { duration: 1000 },
+        }}
+        domainPadding={{ x: 20, y: 15 }}
+        theme={VictoryTheme.material}
+        style={{
+          grid: { stroke: "#F4F5F7", strokeWidth: 0.5 },
+        }}
+        width={screenWidth}
+        height={screenWidth - 70}
+        margin={30}
+        padding={{ left: 50, right: 50, bottom: 40, top: 5 }}
+      >
+        <VictoryAxis
+          style={{
+            grid: {
+              stroke: "#718096",
+              strokeDasharray: "3 10",
+            },
+            tickLabels: { fontSize: 13 },
+          }}
+          theme={VictoryTheme.material}
+        />
+        <VictoryAxis
+          dependentAxis
+          style={{
+            grid: {
+              stroke: "#718096",
+              strokeDasharray: "3 10",
+            },
+            tickLabels: { fontSize: 13 },
+          }}
+          tickValues={chartData?.yAxis}
+          tickFormat={(t) =>
+            `${formatNumber(parseFloat(t).toFixed(0), currrency)}`
+          }
+        />
+        <VictoryGroup offset={18}>
+          <VictoryBar
+            style={{ data: { fill: colors.primary } }}
+            data={chartData?.budgetData}
           />
-        </View>
-      ) : (
-        <ActivityIndicator size="large" color={colors.secondary} />
-      )}
-    </>
+          <VictoryBar
+            style={{ data: { fill: colors.secondary } }}
+            data={chartData?.spentData}
+          />
+        </VictoryGroup>
+      </VictoryChart>
+    </View>
   );
 }
 
 const mapStateToProps = (state) => ({
-  isLoading: state.loader.isLoading,
-  categoryItems: state.user?.categories?.expensCategory || expenseCategory(),
-  currrency: state.user.currrency || "$",
+  currrency: state.user?.currrency || "$",
 });
 
 export default connect(mapStateToProps)(BudgetChart);
