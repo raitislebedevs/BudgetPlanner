@@ -147,7 +147,6 @@ const NavigationMainContainer = ({
               period={period}
               budget={globalBudget}
               isLoading={isLoading}
-              currencySymbol={globalBudget.currency}
               getGlobalBudgetData={getGlobalBudgetData}
             />
           )}

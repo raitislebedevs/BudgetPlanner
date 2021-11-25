@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, Dimensions, View } from "react-native";
 import { BarChart } from "react-native-chart-kit";
+import { connect } from "react-redux";
 import { colors } from "../../config/colors";
 
 function BudgetChart(props) {
-  const { budget, isLoading } = props;
+  const { budget, isLoading, currrency } = props;
   const [spent, setSpent] = useState([]);
   const [planning, setPlanning] = useState([]);
   const [labels, setLabels] = useState([]);
@@ -67,8 +68,7 @@ function BudgetChart(props) {
             data={data}
             width={screenWidth - 5}
             height={230}
-            yAxisLabel={"$ "}
-            yAxisSuffix={" $"}
+            yAxisSuffix={` ${currrency}`}
             withInnerLines={true}
             showValuesOnTopOfBars={true}
             fromZero={true}
@@ -82,4 +82,10 @@ function BudgetChart(props) {
   );
 }
 
-export default BudgetChart;
+const mapStateToProps = (state) => ({
+  isLoading: state.loader.isLoading,
+  categoryItems: state.user?.categories?.expensCategory || expenseCategory(),
+  currrency: state.user.currrency || "$",
+});
+
+export default connect(mapStateToProps)(BudgetChart);

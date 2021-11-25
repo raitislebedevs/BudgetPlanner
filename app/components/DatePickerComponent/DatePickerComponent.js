@@ -38,6 +38,7 @@ export default DatePickerComponent = (props) => {
         <DateTimePicker
           value={new Date(date)}
           mode="date"
+          style={styles.text}
           onChange={(event, date) => {
             handleConfirm(date);
           }}
@@ -65,5 +66,6 @@ const styles = StyleSheet.create({
   },
   text: {
     flex: 1,
+    fontSize: 14,
   },
 });

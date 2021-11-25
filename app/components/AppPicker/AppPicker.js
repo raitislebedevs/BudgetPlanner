@@ -34,7 +34,7 @@ function AppPicker({
               style={styles.icon}
             />
           )}
-          <Text style={[defaultStyles.text, styles.text]}>
+          <Text style={[defaultStyles.appTextNormal, styles.text]}>
             {selectedItem ? selectedItem : placeholder}
           </Text>
           <MaterialCommunityIcons
@@ -95,6 +95,7 @@ const styles = StyleSheet.create({
   },
   text: {
     flex: 1,
+    fontSize: 14,
   },
   textContainer: {
     marginBottom: 5,

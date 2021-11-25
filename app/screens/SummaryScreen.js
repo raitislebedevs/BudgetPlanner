@@ -13,6 +13,7 @@ import AskModal from "../components/AskModal/AskModal";
 import FinanceDetails from "../components/FinanseDetails/FinanceDetails";
 import { colors } from "../config/colors";
 import { connect } from "react-redux";
+import SummaryChart from "../components/SummaryChart.js/SummaryChart";
 
 const SummaryScreen = (props) => {
   const { budget, chartLabels, isLoading, getGlobalBudgetData } = props;
@@ -36,54 +37,7 @@ const SummaryScreen = (props) => {
         <ScrollView>
           {!isLoading ? (
             <>
-              <View>
-                <LineChart
-                  data={{
-                    labels: chartLabels?.xLabels,
-                    datasets: [
-                      {
-                        data: chartLabels?.incomeChartData || [0, 0, 0, 0, 0],
-                        strokeWidth: 1,
-                        color: (opacity = 1) => colors.tertiary,
-                        // optional
-                      },
-                      {
-                        data: chartLabels?.expenseChartData || [
-                          0, 0, 0, 0, 0, 0,
-                        ],
-                        strokeWidth: 1,
-                        color: (opacity = 1) => colors.secondary, // optional
-                      },
-                    ],
-                  }}
-                  width={Dimensions.get("window").width} // from react-native
-                  height={242}
-                  yAxisLabel={`${budget?.currency || "$"} `}
-                  title="Summary"
-                  yAxisInterval={1} // optional, defaults to 1
-                  chartConfig={{
-                    // backgroundGradientFrom: "#C04848",
-                    // backgroundGradientTo: "#480048",
-                    backgroundGradientFrom: colors.chartGray,
-                    backgroundGradientTo: colors.chartGray,
-                    decimalPlaces: 0, // optional, defaults to 2dp
-                    color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                    labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                    style: {
-                      borderRadius: 16,
-                    },
-                    propsForDots: {
-                      r: "4",
-                      strokeWidth: "0",
-                    },
-                  }}
-                  bezier
-                  style={{
-                    marginVertical: 0,
-                    borderRadius: 8,
-                  }}
-                />
-              </View>
+              <SummaryChart chartLabels={chartLabels} />
               {budget?.incomeData?.length > 0 && (
                 <FinanceDetails
                   financeData={budget.incomeData}

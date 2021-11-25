@@ -124,7 +124,9 @@ const BudgetScreen = (props) => {
         budget={true}
         getGlobalBudgetData={getGlobalBudgetData}
       />
-      <BudgetChart budget={budget} isLoading={isLoading} />
+      <View style={styles.chartContainer}>
+        <BudgetChart budget={budget} isLoading={isLoading} />
+      </View>
       {inputBudget && (
         <>
           {!inputingBudget ? (
@@ -276,6 +278,10 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "green",
     alignItems: "center",
+  },
+  chartContainer: {
+    flex: 1,
+    marginLeft: "2%",
   },
 });
 

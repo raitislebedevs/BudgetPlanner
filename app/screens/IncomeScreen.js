@@ -8,6 +8,7 @@ import { useLocale } from "react-easy-localization";
 import { colors } from "@material-ui/core";
 import { connect } from "react-redux";
 import { incomeCategory } from "../utils/categoryItems";
+import greenColorCodes from "../utils/greenColorCodes";
 
 const IncomeScreen = (props) => {
   const {
@@ -24,7 +25,7 @@ const IncomeScreen = (props) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [userIncome, setUserIncome] = useState([]);
   const [inputValues, setInputValues] = useState({ ActivityDate: new Date() });
-
+  const colorCodes = greenColorCodes();
   useEffect(async () => {
     setUserIncome(budget?.incomeData);
   }, [budget.incomeData]);
@@ -38,9 +39,9 @@ const IncomeScreen = (props) => {
     <>
       <ScrollView style={styles.container}>
         <BudgetPieChart
-          isLoading={isLoading}
           chartData={budget?.incomeChartData || []}
-          color={"primary"}
+          color={"green"}
+          colorCodes={colorCodes}
         />
 
         <SubmitActivity

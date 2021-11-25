@@ -16,7 +16,7 @@ function AppTextInput({ icon, frameColor, rightIcon, ...otherProps }) {
         />
       )}
       <TextInput
-        style={[styles.textInput, defaultStyles.text]}
+        style={[defaultStyles.text, styles.textInput]}
         {...otherProps}
       />
       {rightIcon && (
@@ -44,6 +44,7 @@ const styles = StyleSheet.create({
   },
   textInput: {
     width: "100%",
+    fontSize: 14,
   },
 });
 export default AppTextInput;

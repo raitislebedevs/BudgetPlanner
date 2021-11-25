@@ -1,55 +1,74 @@
-import React from "react";
-import { ActivityIndicator, Dimensions, StyleSheet } from "react-native";
-import { PieChart } from "react-native-chart-kit";
+import React, { useEffect, useState } from "react";
+import { Dimensions, StyleSheet, Text } from "react-native";
 import { colors } from "../../config/colors";
+import { VictoryPie } from "victory-native";
+import { formatNumber, sumWithReduce } from "../../utils/standaloneFunctions";
+import { connect } from "react-redux";
 
 function BudgetPieChart(props) {
-  const { isLoading, chartData, color } = props;
+  const { chartData, colorCodes, currrency, color } = props;
+  const [total, setTotal] = useState("0");
   const screenWidth = Dimensions.get("window").width;
 
-  const chartConfig = {
-    backgroundGradientFrom: "#1E2923",
-    backgroundGradientFromOpacity: 0,
-    backgroundGradientTo: "#08130D",
-    backgroundGradientToOpacity: 1,
-    color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
-    strokeWidth: 2,
-    barPercentage: 0.5,
-    useShadowColorFromDataset: false,
-  };
+  useEffect(() => {
+    if (chartData) {
+      setTotal(
+        formatNumber(
+          parseFloat(sumWithReduce(chartData, "y")).toFixed(2),
+          currrency
+        )
+      );
+    }
+  }, [chartData]);
 
   return (
     <>
-      {!isLoading ? (
-        <>
-          {chartData?.length > 0 && (
-            <PieChart
-              data={chartData}
-              width={screenWidth}
-              height={220}
-              chartConfig={chartConfig}
-              accessor={"amount"}
-              paddingLeft={"15"}
-              center={[0, 0]}
-              absolute
-            />
-          )}
-        </>
-      ) : (
-        <ActivityIndicator
-          style={styles.loader}
-          size="large"
-          color={colors.secondary}
-        />
-      )}
+      <VictoryPie
+        animate={{
+          duration: 2000,
+          onLoad: { duration: 1000 },
+        }}
+        width={screenWidth}
+        height={screenWidth - 70}
+        data={chartData}
+        colorScale={colorCodes}
+        padAngle={() => 1}
+        labelPosition={"centroid"}
+        labelPlacement={"parallel"}
+        labelRadius={({ innerRadius }) => innerRadius + 15}
+        style={{
+          labels: { fill: colors.black, fontSize: 14, fontWeight: "bold" },
+        }}
+        innerRadius={82}
+      />
+      <Text
+        style={{
+          position: "absolute",
+          top: 150,
+          fontSize: 24,
+          fontWeight: "bold",
+          justifyContent: "center",
+          alignSelf: "center",
+          color: colors[color],
+        }}
+      >
+        {`${total}`}
+      </Text>
     </>
   );
 }
 
-export default BudgetPieChart;
+const mapStateToProps = (state) => ({
+  currrency: state.user?.currrency || "$",
+});
+
+export default connect(mapStateToProps)(BudgetPieChart);
 
 const styles = StyleSheet.create({
   loader: {
     marginTop: 25,
+  },
+  text: {
+    color: "black",
   },
 });

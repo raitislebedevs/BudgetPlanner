@@ -71,16 +71,10 @@ export const initilizeData = async (
 };
 
 const chartData = (userData, colorCodes) => {
-  let colors = colorCodes();
-  let count = 0;
   let data = userData.map((sum) => {
-    count++;
     return {
-      name: sum.label,
-      amount: sum.total,
-      color: colors[count],
-      legendFontColor: "#7F7F7F",
-      legendFontSize: 15,
+      x: sum.label,
+      y: sum.total,
     };
   });
   return data;
@@ -351,15 +345,59 @@ const getBezierChartPeriod = (period, income, expense, lang) => {
   try {
     let periodData = getBudgetPeriodData(period, lang);
     const { chartLabel, chartPeriods } = periodData;
-    let chartData = {
-      xLabels: chartLabel,
-      incomeChartData: getBezierChartData(chartPeriods, income),
-      expenseChartData: getBezierChartData(chartPeriods, expense),
-    };
+
+    let xLabel = chartLabel;
+    let incomeChartData = getBezierChartData(chartPeriods, income);
+    let expenseChartData = getBezierChartData(chartPeriods, expense);
+
+    let postiveLine = formatChartData(xLabel, incomeChartData);
+    let negativeLine = formatChartData(xLabel, expenseChartData);
+    let chartData = { positive: postiveLine, negative: negativeLine };
+    let maxPositive = Math.max.apply(
+      Math,
+      chartData.positive.map(function (o) {
+        return o.amount;
+      })
+    );
+
+    console.log("maxPositive", maxPositive);
+    let maxNegative = Math.max.apply(
+      Math,
+      chartData.negative.map(function (o) {
+        return o.amount;
+      })
+    );
+    console.log("maxNegative", maxNegative);
+
+    let maxValue = Math.max(maxPositive, maxNegative);
+    let yAxis = [0];
+    let step = Math.round(maxValue / 7);
+    console.log("Step", step);
+
+    for (let i = 0; i < 8; i++) {
+      console.log("Item ", step * i);
+      yAxis.push(step * i + 0.5 * step);
+    }
+
+    chartData.yAxis = yAxis;
+
     bezierChartData = chartData;
   } catch (error) {
     console.log(error);
   }
+};
+
+const formatChartData = (xLabel, incomeChartData) => {
+  let lineData = [];
+  xLabel.forEach((el, index) => {
+    console.log(parseFloat(incomeChartData[index]).toFixed(2));
+    lineData.push({
+      period: el,
+      amount: incomeChartData[index],
+    });
+  });
+
+  return lineData;
 };
 
 const getBezierChartData = (dates, data) => {
@@ -394,8 +432,6 @@ const getBezierChartData = (dates, data) => {
 
             if (result) {
               chartPoint += parseFloat(point.amount);
-
-              // delete categoryItem.items[index];
             }
           });
         });

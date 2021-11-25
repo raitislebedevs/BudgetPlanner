@@ -16,4 +16,7 @@ export const colors = {
   primaryBudget: "#4751fc",
   lightTheme: "white",
   darkTheme: "black",
+
+  green: "#0fc604",
+  red: "#FC4C56",
 };
