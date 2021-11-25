@@ -27,15 +27,15 @@ const BudgetScreen = (props) => {
   const { i18n } = useLocale();
   const [budgetPeriods, setBudgetPeriods] = useState([
     {
-      label: "Week",
+      label: i18n.BudgetScreen.period.week,
       value: "Week",
     },
     {
-      label: "Month",
+      label: i18n.BudgetScreen.period.month,
       value: "Month",
     },
     {
-      label: "Year",
+      label: i18n.BudgetScreen.period.year,
       value: "Year",
     },
   ]);
@@ -62,7 +62,6 @@ const BudgetScreen = (props) => {
 
   const handleOnChangeCategory = (event) => {
     const value = event?.target?.value;
-
     var category = categoryItems.filter(function (el) {
       return el.value == value;
     })[0];
@@ -136,7 +135,7 @@ const BudgetScreen = (props) => {
                   <AppPicker
                     icon={"apps"}
                     underlineColor="brown"
-                    placeholder="Category"
+                    placeholder={i18n.Common.category}
                     items={categoryItems}
                     onSelectItem={(value) => {
                       handleOnChangeCategory({
@@ -148,7 +147,7 @@ const BudgetScreen = (props) => {
                   <AppPicker
                     icon="apps"
                     underlineColor="brown"
-                    placeholder="Category Item"
+                    placeholder={i18n.Common.categoryItem}
                     items={items}
                     onSelectItem={(value) => {
                       handleOnChange({
@@ -170,7 +169,10 @@ const BudgetScreen = (props) => {
                         });
                       }}
                     >
-                      <Picker.Item label="Period" value="" />
+                      <Picker.Item
+                        label={i18n.BudgetScreen.period.label}
+                        value=""
+                      />
                       {budgetPeriods.map((item) => {
                         return (
                           <Picker.Item

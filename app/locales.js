@@ -5,7 +5,11 @@ export const languages = {
     SummaryScreen: {},
     IncomeScreen: { label: "Income", addIncome: "Add income" },
     ExpenseScreen: { label: "Expense", addExpense: "Add expense" },
-    BudgetScreen: { label: "Budget limits", addBudget: "Add limit" },
+    BudgetScreen: {
+      label: "Budget limits",
+      addBudget: "Add limit",
+      period: { label: "Period", week: "Week", month: "Month", year: "Year" },
+    },
     UserDrawer: {
       curency: "Currency",
       edit: "Edit",
@@ -41,13 +45,23 @@ export const languages = {
       date: "Date",
       amount: "Amount",
       category: "Category",
-      categoryItem: "Category item",
+      categoryItem: "Subcategory",
+      categoryChange: {
+        add: "Add Category",
+        submit: "Submit Changes",
+        name: "Category Name",
+        addItem: "Add Subcategory",
+        mainScreen: "Main screen",
+      },
     },
     BottomNavigation: {
       summary: "Summary",
       income: "Income",
       expanse: "Expanses",
       budget: "Budget",
+    },
+    IncomeCategories: {
+      income: "Income",
     },
   },
   lv: {
@@ -56,7 +70,16 @@ export const languages = {
     SummaryScreen: {},
     IncomeScreen: { label: "Ienākumi", addIncome: "Pievienot ienākumu" },
     ExpenseScreen: { label: "Izdevumi", addExpense: "Pievienot izdevumu" },
-    BudgetScreen: { label: "Budžeta limiti", addBudget: "Pievienot limitu" },
+    BudgetScreen: {
+      label: "Budžeta limiti",
+      addBudget: "Pievienot limitu",
+      period: {
+        label: "Periods",
+        week: "Nedēļa",
+        month: "Mēnesis",
+        year: "Gads",
+      },
+    },
     UserDrawer: {
       curency: "Valūta",
       edit: "Labot",
@@ -93,12 +116,22 @@ export const languages = {
       amount: "Summa",
       category: "Kategorija",
       categoryItem: "Apakškategorija",
+      categoryChange: {
+        add: "Pievienots ketegoriju",
+        submit: "Apstiprināt izmaiņas",
+        name: "Kategorijas vārds",
+        addItem: "Pievienot Apakškategoriju",
+        mainScreen: "Kopsavilkums",
+      },
     },
     BottomNavigation: {
       summary: "Kopsavilkums",
       income: "Ienākumi",
       expanse: "Izdevumi",
       budget: "Budžets",
+    },
+    IncomeCategories: {
+      income: "Income",
     },
   },
 };

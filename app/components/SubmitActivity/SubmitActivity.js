@@ -107,7 +107,7 @@ const SubmitActivity = (props) => {
                   <AppPicker
                     icon={"apps"}
                     underlineColor="brown"
-                    placeholder="Category"
+                    placeholder={i18n.Common.category}
                     items={categoryItems}
                     onSelectItem={(itemValue) => {
                       handleOnChangeCategory({
@@ -119,7 +119,7 @@ const SubmitActivity = (props) => {
                   <AppPicker
                     icon="apps"
                     underlineColor="brown"
-                    placeholder="Category Item"
+                    placeholder={i18n.Common.categoryItem}
                     items={items}
                     onSelectItem={(value) => {
                       handleOnChange({

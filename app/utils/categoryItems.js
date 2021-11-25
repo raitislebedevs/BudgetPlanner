@@ -1,6 +1,6 @@
 import { randomColor } from "./standaloneFunctions";
 
-export const incomeCategory = () => {
+export const incomeCategory = (t) => {
   return [
     {
       label: "Income",

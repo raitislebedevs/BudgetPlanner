@@ -1,9 +1,10 @@
 import React from "react";
+import { withLocale } from "react-easy-localization";
 import CategoryScreen from "../components/CategoryScreen/CategoryScreen";
 import { incomeCategory } from "../utils/categoryItems";
 
-function CategoryIncomeScreen({ navigation }) {
-  const categories = incomeCategory();
+function CategoryIncomeScreen({ navigation, i18n }) {
+  const categories = incomeCategory(i18n);
 
   return (
     <CategoryScreen
@@ -14,4 +15,4 @@ function CategoryIncomeScreen({ navigation }) {
   );
 }
 
-export default CategoryIncomeScreen;
+export default withLocale(CategoryIncomeScreen);

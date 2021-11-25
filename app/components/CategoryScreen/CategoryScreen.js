@@ -168,7 +168,10 @@ function CategoryScreen({
             onPress={() => navigation.navigate("MainScreen")}
           />
 
-          <Appbar.Content title="Main Screen" color={colors.white} />
+          <Appbar.Content
+            title={t.Common.categoryChange.mainScreen}
+            color={colors.white}
+          />
 
           <View style={styles.header}>
             <Image
@@ -262,7 +265,7 @@ function CategoryScreen({
                         <View style={styles.helpButtonItem}>
                           <AppButton
                             style={styles.button}
-                            title={"Add Category Item"}
+                            title={t.Common.categoryChange.addItem}
                             color={"tertiary"}
                             onPress={() =>
                               setAddedCategoryItems([
@@ -301,7 +304,7 @@ function CategoryScreen({
             <View style={styles.helpButton}>
               <AppButton
                 style={styles.button}
-                title={"Add Category"}
+                title={t.Common.categoryChange.add}
                 color={"tertiary"}
                 onPress={() => setAddedCategories([{}])}
               />
@@ -311,7 +314,10 @@ function CategoryScreen({
       </ScrollView>
       {!isLoading ? (
         <View style={styles.mainButton}>
-          <AppButton title="Submit Changes" onPress={() => submitCategory()} />
+          <AppButton
+            title={t.Common.categoryChange.submit}
+            onPress={() => submitCategory()}
+          />
         </View>
       ) : (
         <ActivityIndicator
