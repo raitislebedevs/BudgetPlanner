@@ -40,7 +40,7 @@ const SummaryScreen = (props) => {
     setModalVisible(true);
   };
   return (
-    <>
+    <View style={styles.container}>
       <AskModal
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
@@ -87,7 +87,7 @@ const SummaryScreen = (props) => {
           <Text style={styles.headingText}>Enter some Data</Text>
         </View>
       )}
-    </>
+    </View>
   );
 };
 
@@ -120,6 +120,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     fontSize: 25,
     color: colors.tertiary,
+  },
+
+  markedContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "flex-start",
+    borderColor: "green",
+    borderWidth: 2,
   },
 });
 

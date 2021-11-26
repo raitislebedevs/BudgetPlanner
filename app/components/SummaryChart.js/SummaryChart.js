@@ -15,7 +15,7 @@ function SummaryChart({ chartLabels, currrency }) {
   const screenWidth = Dimensions.get("window").width;
 
   return (
-    <View>
+    <>
       <VictoryChart
         animate={{
           duration: 2000,
@@ -28,8 +28,7 @@ function SummaryChart({ chartLabels, currrency }) {
         }}
         width={screenWidth}
         height={screenWidth - 70}
-        margin={30}
-        padding={{ left: 60, right: 50, bottom: 40, top: 5 }}
+        padding={{ left: 60, right: 50, bottom: 40, top: -30 }}
       >
         <VictoryAxis
           style={{
@@ -87,7 +86,7 @@ function SummaryChart({ chartLabels, currrency }) {
           y={(d) => d.amount}
         />
       </VictoryChart>
-    </View>
+    </>
   );
 }
 
