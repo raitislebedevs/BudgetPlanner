@@ -6,18 +6,34 @@ import {
   ScrollView,
   ActivityIndicator,
   Text,
+  RefreshControl,
 } from "react-native";
 import AskModal from "../components/AskModal/AskModal";
 import FinanceDetails from "../components/FinanseDetails/FinanceDetails";
 import { colors } from "../config/colors";
 import { connect } from "react-redux";
 import SummaryChart from "../components/SummaryChart.js/SummaryChart";
+import * as actions from "../Redux/actions";
 
 const SummaryScreen = (props) => {
-  const { budget, chartLabels, isLoading, getGlobalBudgetData } = props;
+  const {
+    budget,
+    chartLabels,
+    isLoading,
+    getGlobalBudgetData,
+    refreshing,
+    setRefreshing,
+  } = props;
   const { i18n } = useLocale();
   const [modalVisible, setModalVisible] = useState(false);
   const [id, setId] = useState("");
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  };
 
   const highlight = (id) => {
     setId(id);
@@ -31,8 +47,12 @@ const SummaryScreen = (props) => {
         id={id}
         getGlobalBudgetData={getGlobalBudgetData}
       />
-      {budget.savedAmount + budget.spentAmount != 0 ? (
-        <ScrollView>
+      {budget?.savedAmount + budget?.spentAmount != 0 ? (
+        <ScrollView
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        >
           {!isLoading ? (
             <>
               <SummaryChart chartLabels={chartLabels} />
@@ -105,6 +125,11 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => ({
   isLoading: state.loader.isLoading,
+  refreshing: state.loader.refreshing,
 });
 
-export default connect(mapStateToProps)(SummaryScreen);
+const mapDispatchToProps = (dispatch) => ({
+  setRefreshing: (value) => dispatch(actions.setRefresh(value)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(SummaryScreen);

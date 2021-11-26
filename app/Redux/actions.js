@@ -5,6 +5,11 @@ export const setLoader = (payload) => ({
   value: payload,
 });
 
+export const setRefresh = (payload) => ({
+  type: Types.SET_REFRESH,
+  value: payload,
+});
+
 export const setCurrency = (payload) => ({
   type: Types.SET_CURRENCY,
   value: payload,

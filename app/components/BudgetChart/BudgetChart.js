@@ -1,5 +1,5 @@
 import React from "react";
-import { Dimensions, View } from "react-native";
+import { Dimensions, StyleSheet, View } from "react-native";
 import { connect } from "react-redux";
 import {
   VictoryChart,
@@ -7,6 +7,7 @@ import {
   VictoryGroup,
   VictoryTheme,
   VictoryAxis,
+  VictoryLabel,
 } from "victory-native";
 import { colors } from "../../config/colors";
 import { formatNumber } from "../../utils/standaloneFunctions";
@@ -23,7 +24,7 @@ function BudgetChart(props) {
     return <View></View>;
 
   return (
-    <View>
+    <View style={styles.container}>
       <VictoryChart
         animate={{
           duration: 2000,
@@ -35,7 +36,7 @@ function BudgetChart(props) {
           grid: { stroke: "#F4F5F7", strokeWidth: 0.5 },
         }}
         width={screenWidth}
-        height={screenWidth - 70}
+        // height={screenWidth - 70}
         margin={30}
         padding={{ left: 50, right: 50, bottom: 40, top: 5 }}
       >
@@ -48,7 +49,20 @@ function BudgetChart(props) {
             tickLabels: { fontSize: 13 },
           }}
           theme={VictoryTheme.material}
+          tickLabelComponent={<VictoryLabel angle={15} y={323} start />}
         />
+
+        {/* {chartData?.budgetData.map((d, i) => {
+          return (
+            <VictoryAxis
+              dependentAxis
+              key={i}
+              label={d.x}
+              style={{ tickLabels: { fill: "none" } }}
+              axisValue={d.x}
+            />
+          );
+        })} */}
         <VictoryAxis
           dependentAxis
           style={{
@@ -63,13 +77,13 @@ function BudgetChart(props) {
             `${formatNumber(parseFloat(t).toFixed(0), currrency)}`
           }
         />
-        <VictoryGroup offset={20}>
+        <VictoryGroup offset={16}>
           <VictoryBar
-            style={{ data: { fill: colors.primary } }}
+            style={{ data: { fill: colors.primary, width: 15 } }}
             data={chartData?.budgetData}
           />
           <VictoryBar
-            style={{ data: { fill: colors.secondary } }}
+            style={{ data: { fill: colors.secondary, width: 15 } }}
             data={chartData?.spentData}
           />
         </VictoryGroup>
@@ -77,7 +91,11 @@ function BudgetChart(props) {
     </View>
   );
 }
-
+const styles = StyleSheet.create({
+  container: {
+    marginBottom: 15,
+  },
+});
 const mapStateToProps = (state) => ({
   currrency: state.user?.currrency || "$",
 });

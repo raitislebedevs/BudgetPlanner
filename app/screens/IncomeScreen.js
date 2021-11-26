@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, ScrollView, ActivityIndicator } from "react-native";
+import {
+  StyleSheet,
+  ScrollView,
+  ActivityIndicator,
+  RefreshControl,
+} from "react-native";
 import FinanceDetails from "../components/FinanseDetails/FinanceDetails";
 import AskModal from "../components/AskModal/AskModal";
 import SubmitActivity from "../components/SubmitActivity/SubmitActivity";
@@ -9,6 +14,7 @@ import { colors } from "@material-ui/core";
 import { connect } from "react-redux";
 import { incomeCategory } from "../utils/categoryItems";
 import greenColorCodes from "../utils/greenColorCodes";
+import * as actions from "../Redux/actions";
 
 const IncomeScreen = (props) => {
   const {
@@ -18,6 +24,8 @@ const IncomeScreen = (props) => {
     currencySymbol,
     getGlobalBudgetData,
     reduxItems,
+    refreshing,
+    setRefreshing,
   } = props;
 
   const { i18n } = useLocale();
@@ -35,10 +43,21 @@ const IncomeScreen = (props) => {
     setId(id);
     setModalVisible(true);
   };
+  const onRefresh = () => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  };
 
   return (
     <>
-      <ScrollView style={styles.container}>
+      <ScrollView
+        style={styles.container}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
         <BudgetPieChart
           chartData={budget?.incomeChartData || []}
           color={"green"}
@@ -114,6 +133,11 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => ({
   isLoading: state.loader?.isLoading,
   reduxItems: state.user?.categories?.incomeCategory,
+  refreshing: state.loader.refreshing,
 });
 
-export default connect(mapStateToProps)(IncomeScreen);
+const mapDispatchToProps = (dispatch) => ({
+  setRefreshing: (value) => dispatch(actions.setRefresh(value)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(IncomeScreen);

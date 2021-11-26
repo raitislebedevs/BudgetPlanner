@@ -23,6 +23,7 @@ const NavigationMainContainer = ({
   reduxUser,
   linkedUsers,
   categoryDetails,
+  refresh,
 }) => {
   const { i18n } = useLocale();
   //Screen Names
@@ -37,6 +38,10 @@ const NavigationMainContainer = ({
   useEffect(async () => {
     if (period) await getGlobalBudgetData();
   }, [period]);
+
+  useEffect(async () => {
+    if (refresh) await getGlobalBudgetData();
+  }, [refresh]);
 
   const getGlobalBudgetData = async () => {
     try {
@@ -156,6 +161,7 @@ const mapStateToProps = (state) => ({
   reduxUser: state.user?.userInfo,
   linkedUsers: state.user?.linkedUsers,
   categoryDetails: state.user?.categories,
+  refresh: state.loader.refreshing,
 });
 
 const mapDispatchToProps = (dispatch) => ({

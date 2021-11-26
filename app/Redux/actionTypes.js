@@ -1,4 +1,5 @@
 export const SET_LOADER = "SET_LOADER";
+export const SET_REFRESH = "SET_REFRESH";
 
 export const SET_USER = "SET_USER";
 export const SET_CURRENCY = "SET_CURRENCY";

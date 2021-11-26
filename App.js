@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import NavigationMainContainer from "./app/components/Navigation/NavigationMainContainer";
 import LoginScreen from "./app/screens/LoginScreen";
 import RegisterScreen from "./app/screens/RegisterScreen";

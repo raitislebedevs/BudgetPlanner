@@ -39,7 +39,7 @@ export const languages = {
       year: "Year",
       all: "All",
     },
-    Header: { saved: "Saved", spent: "Spent" },
+    Header: { saved: "Saved", spent: "Spent", planned: "Budget" },
     Common: {
       week: "Week",
       date: "Date",
@@ -174,7 +174,7 @@ export const languages = {
       year: "Gads",
       all: "Viss",
     },
-    Header: { saved: "Uzkrājums", spent: "Iztērēts" },
+    Header: { saved: "Uzkrājums", spent: "Iztērēts", planned: "Budžets" },
     Common: {
       week: "Nedēļa",
       date: "Datums",

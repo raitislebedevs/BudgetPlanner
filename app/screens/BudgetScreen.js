@@ -5,12 +5,13 @@ import {
   ScrollView,
   View,
   ActivityIndicator,
+  RefreshControl,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import FinanceDetails from "../components/FinanseDetails/FinanceDetails";
 import InputNumericField from "../components/InputNumericField/InputNumericField";
 import userBudget from "../services/userBudget";
-import { cleanObject } from "../utils/standaloneFunctions";
+import { cleanObject, formatNumber } from "../utils/standaloneFunctions";
 import { getMyData } from "../utils/userData";
 import { expenseCategory } from "../utils/categoryItems";
 import BudgetChart from "../components/BudgetChart/BudgetChart";
@@ -20,10 +21,18 @@ import AppButton from "../components/AppButton/AppButton";
 import { useLocale } from "react-easy-localization";
 import AppPicker from "../components/AppPicker/AppPicker";
 import { connect } from "react-redux";
+import * as actions from "../Redux/actions";
 
 const BudgetScreen = (props) => {
-  const { budget, isLoading, currrency, getGlobalBudgetData, reduxCategories } =
-    props;
+  const {
+    budget,
+    isLoading,
+    currrency,
+    getGlobalBudgetData,
+    reduxCategories,
+    refreshing,
+    setRefreshing,
+  } = props;
   const { i18n } = useLocale();
   const [budgetPeriods, setBudgetPeriods] = useState([
     {
@@ -113,130 +122,177 @@ const BudgetScreen = (props) => {
     setInputingBudget(false);
     return null;
   };
-
+  const onRefresh = () => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  };
   return (
-    <ScrollView style={styles.container}>
-      <AskModal
-        modalVisible={modalVisible}
-        setModalVisible={setModalVisible}
-        id={id}
-        budget={true}
-        getGlobalBudgetData={getGlobalBudgetData}
-      />
-      <View style={styles.chartContainer}>
-        <BudgetChart budget={budget} isLoading={isLoading} />
-      </View>
-      {inputBudget && (
-        <>
-          {!inputingBudget ? (
-            <>
-              <View style={styles.submitContainer}>
-                <View style={styles.pickerItemContainer}>
-                  <AppPicker
-                    icon={"apps"}
-                    underlineColor="brown"
-                    placeholder={i18n.Common.category}
-                    items={categoryItems}
-                    onSelectItem={(value) => {
-                      handleOnChangeCategory({
-                        target: { value: value, id: "category" },
-                      });
-                    }}
-                    selectedItem={inputValues?.category}
-                  />
-                  <AppPicker
-                    icon="apps"
-                    underlineColor="brown"
-                    placeholder={i18n.Common.categoryItem}
-                    items={items}
-                    onSelectItem={(value) => {
-                      handleOnChange({
-                        target: { value, id: "categoryItem" },
-                      });
-                    }}
-                    selectedItem={inputValues?.categoryItem}
-                  />
-                </View>
+    <>
+      {!isLoading ? (
+        <View style={styles.summaryContainer}>
+          <View>
+            <Text style={styles.label}>{i18n.Header.planned}</Text>
+            <Text
+              style={
+                budget?.spentAmount > budget?.budgetAmount
+                  ? styles.overspentAmount
+                  : styles.positiveAmount
+              }
+            >
+              {`${
+                formatNumber(
+                  parseFloat(budget?.budgetAmount).toFixed(2),
+                  currrency
+                ) || parseFloat(0).toFixed(2)
+              }`}
+            </Text>
+          </View>
+          <View>
+            <Text style={styles.label}>{i18n.Header.spent}</Text>
+            <Text style={styles.negativeAmount}>
+              {`${
+                formatNumber(
+                  parseFloat(budget?.spentAmount).toFixed(2),
+                  currrency
+                ) || parseFloat(0).toFixed(2)
+              }`}
+            </Text>
+          </View>
+        </View>
+      ) : (
+        <ActivityIndicator style={styles.loader} size="large" color="#e26a00" />
+      )}
+      <ScrollView
+        style={styles.container}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
+        <AskModal
+          modalVisible={modalVisible}
+          setModalVisible={setModalVisible}
+          id={id}
+          budget={true}
+          getGlobalBudgetData={getGlobalBudgetData}
+        />
 
-                <View style={styles.pickerItemContainer}>
-                  <View style={styles.pickerPeriodContainer}>
-                    <Picker
-                      selectedValue={inputValues?.period}
-                      style={{ height: 50, width: 150 }}
-                      onValueChange={(itemValue, itemIndex) => {
-                        handleOnChange({
-                          target: { value: itemValue, id: "period" },
+        <View style={styles.chartContainer}>
+          <BudgetChart budget={budget} isLoading={isLoading} />
+        </View>
+        {inputBudget && (
+          <>
+            {!inputingBudget ? (
+              <>
+                <View style={styles.submitContainer}>
+                  <View style={styles.pickerItemContainer}>
+                    <AppPicker
+                      icon={"apps"}
+                      underlineColor="brown"
+                      placeholder={i18n.Common.category}
+                      items={categoryItems}
+                      onSelectItem={(value) => {
+                        handleOnChangeCategory({
+                          target: { value: value, id: "category" },
                         });
                       }}
-                    >
-                      <Picker.Item
-                        label={i18n.BudgetScreen.period.label}
-                        value=""
-                      />
-                      {budgetPeriods.map((item) => {
-                        return (
-                          <Picker.Item
-                            label={item.label}
-                            value={item.value}
-                            key={item.label}
-                          />
-                        );
-                      })}
-                    </Picker>
-                  </View>
-                  <View style={styles.numericValue}>
-                    <InputNumericField
-                      icon={"cash"}
-                      id={"activityAmount"}
-                      handleOnChange={handleOnChange}
-                      label={i18n.Common.amount}
-                      currency={currrency}
+                      selectedItem={inputValues?.category}
+                    />
+                    <AppPicker
+                      icon="apps"
+                      underlineColor="brown"
+                      placeholder={i18n.Common.categoryItem}
+                      items={items}
+                      onSelectItem={(value) => {
+                        handleOnChange({
+                          target: { value, id: "categoryItem" },
+                        });
+                      }}
+                      selectedItem={inputValues?.categoryItem}
                     />
                   </View>
+
+                  <View style={styles.pickerItemContainer}>
+                    <View style={styles.pickerPeriodContainer}>
+                      <Picker
+                        selectedValue={inputValues?.period}
+                        style={{ height: 50, width: 150 }}
+                        onValueChange={(itemValue, itemIndex) => {
+                          handleOnChange({
+                            target: { value: itemValue, id: "period" },
+                          });
+                        }}
+                      >
+                        <Picker.Item
+                          label={i18n.BudgetScreen.period.label}
+                          value=""
+                        />
+                        {budgetPeriods.map((item) => {
+                          return (
+                            <Picker.Item
+                              label={item.label}
+                              value={item.value}
+                              key={item.label}
+                            />
+                          );
+                        })}
+                      </Picker>
+                    </View>
+                    <View style={styles.numericValue}>
+                      <InputNumericField
+                        icon={"cash"}
+                        id={"activityAmount"}
+                        handleOnChange={handleOnChange}
+                        label={i18n.Common.amount}
+                        currency={currrency}
+                      />
+                    </View>
+                  </View>
                 </View>
-              </View>
-              <View style={errorText ? styles.errorText : styles.successText}>
-                <Text style={errorText ? styles.errorText : styles.successText}>
-                  {errorText ? errorText : successText}
-                </Text>
-              </View>
-            </>
-          ) : (
-            <ActivityIndicator
-              style={styles.loader}
-              size="large"
-              color="darkgreen"
-            />
-          )}
-        </>
-      )}
-
-      <View style={styles.buttonStyle}>
-        <AppButton
-          title={i18n.BudgetScreen.addBudget}
-          onPress={() => addBudget()}
-          color={"primary"}
-        />
-      </View>
-
-      {!isLoading ? (
-        <>
-          <FinanceDetails
-            financeData={budget?.budgetPlanningData || []}
-            title={i18n.BudgetScreen.label}
-            highlight={highlight}
-            budget={budget}
-            color={{ firstList: "primary", secondList: "primary" }}
+                <View style={errorText ? styles.errorText : styles.successText}>
+                  <Text
+                    style={errorText ? styles.errorText : styles.successText}
+                  >
+                    {errorText ? errorText : successText}
+                  </Text>
+                </View>
+              </>
+            ) : (
+              <ActivityIndicator
+                style={styles.loader}
+                size="large"
+                color="darkgreen"
+              />
+            )}
+          </>
+        )}
+        <View style={styles.buttonStyle}>
+          <AppButton
+            title={i18n.BudgetScreen.addBudget}
+            onPress={() => addBudget()}
+            color={"primary"}
           />
-        </>
-      ) : (
-        <ActivityIndicator
-          style={styles.loader}
-          size="large"
-          color={colors.secondary}
-        />
-      )}
-    </ScrollView>
+        </View>
+        {!isLoading ? (
+          <>
+            <FinanceDetails
+              financeData={budget?.budgetPlanningData || []}
+              title={i18n.BudgetScreen.label}
+              highlight={highlight}
+              budget={budget}
+              color={{ firstList: "primary", secondList: "primary" }}
+            />
+          </>
+        ) : (
+          <ActivityIndicator
+            style={styles.loader}
+            size="large"
+            color={colors.secondary}
+          />
+        )}
+      </ScrollView>
+    </>
   );
 };
 
@@ -285,12 +341,52 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: "2%",
   },
+  positiveAmount: {
+    color: "green",
+    fontSize: 11,
+    fontWeight: "bold",
+  },
+  negativeAmount: {
+    color: "darkred",
+    fontSize: 11,
+    fontWeight: "bold",
+  },
+  overspentAmount: {
+    color: "red",
+    fontSize: 11,
+    fontStyle: "italic",
+    fontWeight: "bold",
+  },
+  label: {
+    color: "black",
+    fontSize: 12,
+    fontWeight: "bold",
+    alignSelf: "center",
+  },
+  leftNav: {
+    color: "black",
+    alignSelf: "center",
+  },
+  summaryContainer: {
+    marginTop: 8,
+    marginBottom: 10,
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+  },
+  loader: {
+    marginTop: 25,
+  },
 });
 
 const mapStateToProps = (state) => ({
   isLoading: state.loader.isLoading,
   reduxCategories: state.user?.categories?.expensCategory,
   currrency: state.user.currrency || "$",
+  refreshing: state.loader.refreshing,
 });
 
-export default connect(mapStateToProps)(BudgetScreen);
+const mapDispatchToProps = (dispatch) => ({
+  setRefreshing: (value) => dispatch(actions.setRefresh(value)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(BudgetScreen);

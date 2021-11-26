@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { useLocale } from "react-easy-localization";
 import {
-  StatusBar,
   StyleSheet,
   Text,
   View,
   ActivityIndicator,
+  StatusBar,
+  Platform,
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { formatNumber } from "../../utils/standaloneFunctions";
@@ -22,7 +23,9 @@ const Header = (props) => {
   };
 
   return (
-    <View style={styles.topNavigation}>
+    <View
+      style={[styles.topNavigation, Platform.OS === "ios" && styles.statusbar]}
+    >
       <View>
         <Ionicons
           style={styles.leftNav}
@@ -119,6 +122,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingLeft: 45,
+  },
+  statusbar: {
+    paddingTop: 30,
   },
 });
 

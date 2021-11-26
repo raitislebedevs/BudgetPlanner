@@ -55,6 +55,7 @@ function CategoryScreen({
   const getCategories = () => {
     setSeeCategory(true);
     setData((reduxCategories && reduxCategories[type]) || defaultCategories);
+
     setSeeCategory(false);
   };
 
@@ -121,15 +122,18 @@ function CategoryScreen({
 
   const submitCategory = async () => {
     setIsLoading(true);
+    console.log("Data", data);
+    let payloadData = data;
     try {
       if (!reduxUserInfo?.userCategories) {
         let users = [];
         users.push(reduxUser?.id);
 
         let payload = {
-          [type]: data,
+          [type]: payloadData,
           users,
         };
+        console.log("Data", data);
         const result = await userCategories.CREATE(payload);
         setUserCategories(result.data);
 
@@ -143,7 +147,7 @@ function CategoryScreen({
       const { id } = reduxUserInfo?.userCategories;
       if (id) {
         let payload = {
-          [type]: data,
+          [type]: payloadData,
         };
 
         const result = await userCategories.UPDATE(id, payload);

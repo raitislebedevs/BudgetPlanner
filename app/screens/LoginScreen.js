@@ -6,6 +6,7 @@ import {
   Text,
   Image,
   ImageBackground,
+  ActivityIndicator,
 } from "react-native";
 import AppButton from "../components/AppButton/AppButton";
 import AppTextInput from "../components/AppTextInput/AppTextInput";
@@ -27,6 +28,8 @@ const LoginScreen = (props) => {
     setUserCategories,
     setLinkedUsers,
     setUserInvites,
+    isLoading,
+    setLoader,
   } = props;
 
   const [errorText, setErrorText] = useState("");
@@ -40,7 +43,9 @@ const LoginScreen = (props) => {
 
   const handleSignin = async () => {
     setErrorText("");
+    setLoader(true);
     try {
+      await getInitialUserValues();
       let payload = {
         identifier: inputValues?.email || null,
         password: inputValues?.password || null,
@@ -48,8 +53,8 @@ const LoginScreen = (props) => {
 
       const { data, error } = await ConnectionServices.LOGIN(payload);
       if (data) {
+        setLoader(true);
         save("access_token", data?.jwt);
-        save("user_data", JSON.stringify(data?.user));
         navigation.navigate("MainScreen");
       }
 
@@ -59,6 +64,7 @@ const LoginScreen = (props) => {
     } catch (error) {
       setErrorText(error);
     }
+    setLoader(false);
   };
 
   useEffect(async () => {
@@ -67,11 +73,11 @@ const LoginScreen = (props) => {
 
   const getInitialUserValues = async () => {
     try {
+      setLoader(true);
       let userCore = await getUserData();
       let userInfoData = await getUserInfoData(userCore?.userInfo);
       let linkedUsers = [];
       let userInvites = [];
-
       userInfoData?.linkedUsers.forEach((person) => {
         linkedUsers.push(person?.id);
       });
@@ -86,8 +92,9 @@ const LoginScreen = (props) => {
       setUserInfo(userInfoData);
       setUserInvites(userInfoData);
       setUserCategories(userInfoData?.userCategories);
-
+      setLoader(false);
       if (userCore) {
+        setLoader(true);
         navigation.navigate("MainScreen");
       }
     } catch (error) {
@@ -96,61 +103,71 @@ const LoginScreen = (props) => {
   };
 
   return (
-    <SafeAreaView style={styles.content}>
-      <ImageBackground
-        source={image}
-        blurRadius={5}
-        resizeMode="cover"
-        style={styles.image}
-      >
-        <View style={styles.view}>
-          <View style={styles.formControl}>
-            <View style={styles.header}>
-              <Image
-                style={styles.logo}
-                source={require("../assets/favicon.png")}
-              />
-              <Text style={styles.logoText}>Placifull Budget Planner</Text>
-            </View>
-            <View style={styles.frameMargin}>
-              <AppTextInput
-                icon="email"
-                placeholder="Email"
-                keyboardType="email-address"
-                onChangeText={(e) =>
-                  handleOnChange({ target: { value: e, id: "email" } })
-                }
-              />
-              <AppTextInput
-                icon="key"
-                underlineColor="brown"
-                placeholder="Password"
-                secureTextEntry={true}
-                onChangeText={(e) =>
-                  handleOnChange({ target: { value: e, id: "password" } })
-                }
-              />
-              <View style={styles.frameMargin}>
-                <AppButton title={"Login"} onPress={() => handleSignin()} />
-                <AppButton
-                  title={"Register"}
-                  color={"secondary"}
-                  onPress={() => navigation.navigate("Register")}
-                />
+    <>
+      <SafeAreaView style={styles.content}>
+        <ImageBackground
+          source={image}
+          blurRadius={5}
+          resizeMode="cover"
+          style={styles.image}
+        >
+          {!isLoading ? (
+            <View style={styles.view}>
+              <View style={styles.formControl}>
+                <View style={styles.header}>
+                  <Image
+                    style={styles.logo}
+                    source={require("../assets/favicon.png")}
+                  />
+                  <Text style={styles.logoText}>Placifull Budget Planner</Text>
+                </View>
+                <View style={styles.frameMargin}>
+                  <AppTextInput
+                    icon="email"
+                    placeholder="Email"
+                    keyboardType="email-address"
+                    onChangeText={(e) =>
+                      handleOnChange({ target: { value: e, id: "email" } })
+                    }
+                  />
+                  <AppTextInput
+                    icon="key"
+                    underlineColor="brown"
+                    placeholder="Password"
+                    secureTextEntry={true}
+                    onChangeText={(e) =>
+                      handleOnChange({ target: { value: e, id: "password" } })
+                    }
+                  />
+                  <View style={styles.frameMargin}>
+                    <AppButton title={"Login"} onPress={() => handleSignin()} />
+                    <AppButton
+                      title={"Register"}
+                      color={"secondary"}
+                      onPress={() => navigation.navigate("Register")}
+                    />
+                  </View>
+                  <View style={styles.errorText}>
+                    <Text style={styles.errorText}>{errorText}</Text>
+                  </View>
+                </View>
               </View>
-              <View style={styles.errorText}>
-                <Text style={styles.errorText}>{errorText}</Text>
-              </View>
             </View>
-          </View>
-        </View>
-      </ImageBackground>
-    </SafeAreaView>
+          ) : (
+            <ActivityIndicator
+              style={styles.loader}
+              size="large"
+              color={colors.primary}
+            />
+          )}
+        </ImageBackground>
+      </SafeAreaView>
+    </>
   );
 };
 
 const mapStateToProps = (state) => ({
-  isLoading: state.loader.isLoading,
+  isLoading: state?.loader.isLoading,
   localCurrency: state.user?.currrency,
   userData: state.user?.user,
 });
@@ -162,6 +179,7 @@ const mapDispatchToProps = (dispatch) => ({
   setUserCategories: (value) => dispatch(actions.setUserCategories(value)),
   setLinkedUsers: (value) => dispatch(actions.setLinkedUsers(value)),
   setUserInvites: (value) => dispatch(actions.setUserInvites(value)),
+  setLoader: (value) => dispatch(actions.setLoader(value)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(LoginScreen);
@@ -209,5 +227,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.lightTheme,
     borderRadius: 25,
     borderColor: colors.white,
+  },
+  loader: {
+    marginTop: "33%",
   },
 });

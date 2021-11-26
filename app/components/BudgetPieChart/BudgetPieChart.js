@@ -26,7 +26,6 @@ function BudgetPieChart(props) {
       <VictoryPie
         animate={{
           duration: 2000,
-          onLoad: { duration: 1000 },
         }}
         width={screenWidth}
         height={screenWidth - 70}

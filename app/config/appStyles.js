@@ -45,6 +45,9 @@ export default {
   },
   statusbar: {
     backgroundColor: colors.primary,
-    paddingTop: StatusBar.currentHeight + 10,
+    paddingTop:
+      Platform.OS === "android"
+        ? StatusBar.currentHeight + 10
+        : StatusBar.currentHeight + 20,
   },
 };

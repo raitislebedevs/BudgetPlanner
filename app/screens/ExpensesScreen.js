@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, ScrollView, ActivityIndicator } from "react-native";
+import {
+  StyleSheet,
+  ScrollView,
+  ActivityIndicator,
+  RefreshControl,
+} from "react-native";
 import FinanceDetails from "../components/FinanseDetails/FinanceDetails";
 import { expenseCategory } from "../utils/categoryItems";
 import AskModal from "../components/AskModal/AskModal";
@@ -8,6 +13,7 @@ import SubmitActivity from "../components/SubmitActivity/SubmitActivity";
 import { connect } from "react-redux";
 import { useLocale } from "react-easy-localization";
 import redColorCodes from "../utils/redColorCodes";
+import * as actions from "../Redux/actions";
 
 const ExpensesScreen = (props) => {
   const {
@@ -17,6 +23,8 @@ const ExpensesScreen = (props) => {
     currencySymbol,
     getGlobalBudgetData,
     reduxItems,
+    refreshing,
+    setRefreshing,
   } = props;
   const { i18n } = useLocale();
   const categoryItems = reduxItems || expenseCategory(i18n);
@@ -33,10 +41,21 @@ const ExpensesScreen = (props) => {
     setId(id);
     setModalVisible(true);
   };
+  const onRefresh = () => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  };
 
   return (
     <>
-      <ScrollView style={styles.container}>
+      <ScrollView
+        style={styles.container}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
         <BudgetPieChart
           isLoading={isLoading}
           chartData={budget?.spentChartData}
@@ -111,6 +130,11 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => ({
   isLoading: state.loader.isLoading,
   reduxItems: state.user?.categories?.expensCategory,
+  refreshing: state.loader.refreshing,
 });
 
-export default connect(mapStateToProps)(ExpensesScreen);
+const mapDispatchToProps = (dispatch) => ({
+  setRefreshing: (value) => dispatch(actions.setRefresh(value)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ExpensesScreen);

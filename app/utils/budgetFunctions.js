@@ -14,6 +14,7 @@ let incomeChartData = [];
 let spentChartData = [];
 let savedAmount = 0;
 let incomeAmount = 0;
+let budgetAmount = 0;
 let spentAmount = 0;
 let currency = "$";
 let rawBudgetData = [];
@@ -70,6 +71,7 @@ export const initilizeData = async (
     currency,
     budgetPlanningData,
     budgetChartData,
+    budgetAmount,
   };
 };
 
@@ -86,8 +88,9 @@ const chartData = (userData, colorCodes) => {
 const getBudgetChartData = () => {
   let budgetPlanChartData = [];
   let budgetSpentChartData = [];
-
+  budgetAmount = 0;
   budgetPlanningData.forEach((plan) => {
+    budgetAmount += plan.total;
     budgetPlanChartData.push({ x: plan.label, y: plan.total });
     budgetSpentChartData.push({ x: plan.label, y: plan.amountSpent });
   });
