@@ -22,12 +22,13 @@ function AppButton({ title, onPress, color = "primary", mode = "contained" }) {
 const styles = StyleSheet.create({
   contained: {
     backgroundColor: colors.primary,
-    borderRadius: 20,
+    color: colors.white,
     minWidth: 90,
-    padding: 17,
-    marginTop: 15,
+    borderRadius: 20,
     justifyContent: "center",
     alignItems: "center",
+    padding: 10,
+    marginBottom: 15,
   },
   outlined: {
     backgroundColor: colors.white,

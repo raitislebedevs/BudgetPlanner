@@ -1,6 +1,13 @@
 import React, { useState } from "react";
+import { Platform, StatusBar } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { StyleSheet, Text, TouchableWithoutFeedback, View } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TouchableWithoutFeedback,
+  View,
+  DatePickerIOS,
+} from "react-native";
 import { colors } from "../../config/colors";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import moment from "moment";
@@ -20,31 +27,35 @@ export default DatePickerComponent = (props) => {
   };
 
   return (
-    <View style={{ width: "50%" }}>
-      <TouchableWithoutFeedback onPress={() => setOpen(true)}>
-        <View style={styles.container}>
-          <MaterialCommunityIcons
-            name={"calendar"}
-            size={20}
-            color={colors.mediumGray}
-            style={styles.icon}
-          />
-          <Text style={[defaultStyles.text, styles.text]}>
-            {date ? moment(date).format("DD MMM YYYY") : i18n.Common.date}
-          </Text>
-        </View>
-      </TouchableWithoutFeedback>
-      {open && (
-        <DateTimePicker
-          value={new Date(date)}
-          mode="date"
-          style={styles.text}
-          onChange={(event, date) => {
-            handleConfirm(date);
-          }}
-        />
-      )}
-    </View>
+    <>
+      <View style={{ width: Platform.OS === "ios" && open ? "100%" : "50%" }}>
+        <TouchableWithoutFeedback onPress={() => setOpen(true)}>
+          <View style={styles.container}>
+            <MaterialCommunityIcons
+              name={"calendar"}
+              size={20}
+              color={colors.mediumGray}
+              style={styles.icon}
+            />
+            <Text style={[defaultStyles.text, styles.text]}>
+              {date ? moment(date).format("DD MMM YYYY") : i18n.Common.date}
+            </Text>
+          </View>
+        </TouchableWithoutFeedback>
+        {open && (
+          <>
+            <DateTimePicker
+              value={new Date(date)}
+              mode="date"
+              onChange={(event, date) => {
+                handleConfirm(date);
+              }}
+              display={Platform.OS === "ios" ? "inline" : "default"}
+            />
+          </>
+        )}
+      </View>
+    </>
   );
 };
 

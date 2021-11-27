@@ -672,6 +672,7 @@ function getBudgetPeriodFilter(period, filter) {
 
 function updateCategories(data, category) {
   if (!category) return;
+
   data.forEach((group) => {
     let item = category.filter((c) => c.value == group.label)[0];
     if (!item) return;

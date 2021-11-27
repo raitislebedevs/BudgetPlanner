@@ -17,6 +17,7 @@ export const handleGetCurrencies = async () => {
       data = data.map((item) => ({
         value: item.id,
         label: `${item.name} - ${item.symbol}`,
+        symbol: item.symbol,
         key: item.id,
       }));
       data = [emptyValue, ...data];

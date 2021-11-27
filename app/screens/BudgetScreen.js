@@ -6,6 +6,7 @@ import {
   View,
   ActivityIndicator,
   RefreshControl,
+  Platform,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import FinanceDetails from "../components/FinanseDetails/FinanceDetails";
@@ -22,6 +23,8 @@ import { useLocale } from "react-easy-localization";
 import AppPicker from "../components/AppPicker/AppPicker";
 import { connect } from "react-redux";
 import * as actions from "../Redux/actions";
+import AppTextInput from "../components/AppTextInput/AppTextInput";
+import IOSPicker from "../components/IOSPicker/IOSPicker";
 
 const BudgetScreen = (props) => {
   const {
@@ -35,6 +38,10 @@ const BudgetScreen = (props) => {
   } = props;
   const { i18n } = useLocale();
   const [budgetPeriods, setBudgetPeriods] = useState([
+    {
+      label: i18n.BudgetScreen.period.label,
+      value: "",
+    },
     {
       label: i18n.BudgetScreen.period.week,
       value: "Week",
@@ -67,6 +74,7 @@ const BudgetScreen = (props) => {
     const value = event?.target?.value ?? event?.value ?? event;
     const id = event?.target?.id ?? event?.id;
     setInputValues({ ...inputValues, [id]: value });
+    console.log(event);
   };
 
   const handleOnChangeCategory = (event) => {
@@ -130,6 +138,7 @@ const BudgetScreen = (props) => {
   };
   return (
     <>
+      {/* <IOSPicker pickerModal={pickerModal} setPickerModal={setPickerModal} /> */}
       {!isLoading ? (
         <View style={styles.summaryContainer}>
           <View>
@@ -149,6 +158,7 @@ const BudgetScreen = (props) => {
               }`}
             </Text>
           </View>
+
           <View>
             <Text style={styles.label}>{i18n.Header.spent}</Text>
             <Text style={styles.negativeAmount}>
@@ -215,29 +225,50 @@ const BudgetScreen = (props) => {
 
                   <View style={styles.pickerItemContainer}>
                     <View style={styles.pickerPeriodContainer}>
-                      <Picker
-                        selectedValue={inputValues?.period}
-                        style={{ height: 50, width: 150 }}
-                        onValueChange={(itemValue, itemIndex) => {
-                          handleOnChange({
-                            target: { value: itemValue, id: "period" },
-                          });
-                        }}
-                      >
-                        <Picker.Item
-                          label={i18n.BudgetScreen.period.label}
-                          value=""
-                        />
-                        {budgetPeriods.map((item) => {
-                          return (
-                            <Picker.Item
-                              label={item.label}
-                              value={item.value}
-                              key={item.label}
-                            />
-                          );
-                        })}
-                      </Picker>
+                      {Platform.OS === "android" ? (
+                        <Picker
+                          selectedValue={inputValues?.period}
+                          style={{ height: 50, width: 150 }}
+                          onValueChange={(itemValue, itemIndex) => {
+                            handleOnChange({
+                              target: { value: itemValue, id: "period" },
+                            });
+                          }}
+                        >
+                          <Picker.Item
+                            label={i18n.BudgetScreen.period.label}
+                            value=""
+                          />
+                          {budgetPeriods.map((item) => {
+                            return (
+                              <Picker.Item
+                                label={item.label}
+                                value={item.value}
+                                key={item.label}
+                              />
+                            );
+                          })}
+                        </Picker>
+                      ) : (
+                        <>
+                          <IOSPicker
+                            icon={"calendar-clock"}
+                            style={{ height: 100, width: 150 }}
+                            onValueChange={(itemValue, itemIndex) => {
+                              handleOnChange({
+                                target: { value: itemValue, id: "period" },
+                              });
+                            }}
+                            i18n={i18n}
+                            items={budgetPeriods}
+                            placeholder={
+                              budgetPeriods.filter(
+                                (item) => item.value == inputValues?.period
+                              )[0]?.label || i18n.BudgetScreen.period.label
+                            }
+                          />
+                        </>
+                      )}
                     </View>
                     <View style={styles.numericValue}>
                       <InputNumericField

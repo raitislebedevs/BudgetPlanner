@@ -15,6 +15,8 @@ import { colors } from "../../config/colors";
 import { useLocale } from "react-easy-localization";
 import { connect } from "react-redux";
 import { setLoader } from "../../Redux/actions";
+import { getUserData, getUserInfoData } from "../../utils/userData";
+import * as actions from "../../Redux/actions";
 
 const NavigationMainContainer = ({
   navigation,
@@ -24,6 +26,12 @@ const NavigationMainContainer = ({
   linkedUsers,
   categoryDetails,
   refresh,
+  setCurrency,
+  setUser,
+  setUserInfo,
+  setUserCategories,
+  setLinkedUsers,
+  setUserInvites,
 }) => {
   const { i18n } = useLocale();
   //Screen Names
@@ -40,7 +48,27 @@ const NavigationMainContainer = ({
   }, [period]);
 
   useEffect(async () => {
-    if (refresh) await getGlobalBudgetData();
+    if (refresh) {
+      let userCore = await getUserData();
+      let userInfoData = await getUserInfoData(userCore?.userInfo);
+      let linkedUsers = [];
+      let userInvites = [];
+      userInfoData?.linkedUsers.forEach((person) => {
+        linkedUsers.push(person?.id);
+      });
+      linkedUsers.push(userCore?.id);
+      userInfoData?.invites.forEach((person) => {
+        userInvites.push(person.id);
+      });
+
+      setCurrency(userInfoData?.currency?.symbol);
+      setUser(userCore);
+      setLinkedUsers(linkedUsers);
+      setUserInfo(userInfoData);
+      setUserInvites(userInfoData);
+      setUserCategories(userInfoData?.userCategories);
+      await getGlobalBudgetData();
+    }
   }, [refresh]);
 
   const getGlobalBudgetData = async () => {
@@ -166,6 +194,12 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   setIsLoading: (value) => dispatch(setLoader(value)),
+  setUser: (value) => dispatch(actions.setUser(value)),
+  setUserInfo: (value) => dispatch(actions.setUserInfo(value)),
+  setUserCategories: (value) => dispatch(actions.setUserCategories(value)),
+  setLinkedUsers: (value) => dispatch(actions.setLinkedUsers(value)),
+  setUserInvites: (value) => dispatch(actions.setUserInvites(value)),
+  setCurrency: (value) => dispatch(actions.setCurrency(value)),
 });
 
 export default connect(

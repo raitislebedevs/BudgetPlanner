@@ -13,7 +13,7 @@ import Modal from "react-native-modal";
 import { handleGetCurrencies } from "../../utils/currencyData";
 import userInfoServices from "../../services/userInfoServices";
 import userServices from "../../services/userServices";
-import { getMyData } from "../../utils/userData";
+import { getMyData, getUserData, getUserInfoData } from "../../utils/userData";
 import { colors } from "../../config/colors";
 import defaultStyles from "../../config/appStyles";
 import AppButton from "../AppButton/AppButton";
@@ -21,6 +21,7 @@ import AppTextInput from "../AppTextInput/AppTextInput";
 import { useLocale } from "react-easy-localization";
 import { connect } from "react-redux";
 import * as actions from "../../Redux/actions";
+import IOSPicker from "../IOSPicker/IOSPicker";
 
 const LeftModal = (props) => {
   const {
@@ -29,11 +30,15 @@ const LeftModal = (props) => {
     navigation,
     userTheme,
     setUserTheme,
+    setUserInfo,
+    setReduxCurrency,
+    reduxUser,
   } = props;
+
+  console.log("Redux User", reduxUser);
 
   const { changeLanguage, i18n } = useLocale();
   const [errorText, setErrorText] = useState("");
-  const [user, setUser] = useState(false);
   const [currencyPicker, setCurrencyPicker] = useState(false);
   const [invitePerson, setInvitePerson] = useState("");
   const [currencyLoader, setCurrencyLoader] = useState(false);
@@ -41,20 +46,22 @@ const LeftModal = (props) => {
   const [items, setItems] = useState([]);
   const [theme, setTheme] = useState(userTheme);
   const [isInviting, setIsInviting] = useState(false);
-  const [isEnabled, setIsEnabled] = useState(false);
+  const [isConfirming, setIsConfirming] = useState(false);
+  // const [isEnabled, setIsEnabled] = useState(false);
   const [langPicker, setLangPicker] = useState(false);
 
-  const toggleSwitch = () => {
-    if (theme === "light") {
-      setTheme("dark");
-      setUserTheme("dark");
-    }
-    if (theme === "dark") {
-      setTheme("light");
-      setUserTheme("light");
-    }
-    setIsEnabled((previousState) => !previousState);
-  };
+  // const toggleSwitch = () => {
+  //   if (theme === "light") {
+  //     setTheme("dark");
+  //     setUserTheme("dark");
+  //   }
+  //   if (theme === "dark") {
+  //     setTheme("light");
+  //     setUserTheme("light");
+  //   }
+  //   setIsEnabled((previousState) => !previousState);
+  // };
+
   const languageSwitch = () => {
     setLangPicker(!langPicker);
     return langPicker ? changeLanguage("lv") : changeLanguage("en");
@@ -66,14 +73,22 @@ const LeftModal = (props) => {
       let payload = {
         currency: event.value,
       };
+
       setCurrency(event);
-      await userInfoServices.UPDATE(user?.id, payload);
+
+      await userInfoServices.UPDATE(reduxUser?.id, payload);
       await refreshUser();
+      if (items.filter((item) => item.value == event.value).length != 0) {
+        setReduxCurrency(
+          items.filter((item) => item.value == event.value)[0]?.symbol
+        );
+      }
     } catch (error) {
       console.log(error);
     }
-    setCurrencyPicker(false);
+
     setCurrencyLoader(false);
+    setCurrencyPicker(false);
   };
 
   useEffect(async () => {
@@ -84,45 +99,50 @@ const LeftModal = (props) => {
   }, []);
 
   const refreshUser = async () => {
-    setUser(await getMyData());
+    let userCore = await getUserData();
+    setUserInfo(await getUserInfoData(userCore?.userInfo));
   };
 
-  useEffect(async () => {
-    if (user) setCurrency(user?.currency?.id);
-  }, [user]);
-
   const removeInvite = async (personId) => {
+    setIsConfirming(true);
     try {
-      let invites = user?.invites.filter((person) => personId != person.id);
+      let invites = reduxUser?.invites.filter(
+        (person) => personId != person.id
+      );
       let payload = {
         invites,
       };
 
-      await userInfoServices.UPDATE(user?.id, payload);
+      await userInfoServices.UPDATE(reduxUser?.id, payload);
       await refreshUser();
     } catch (error) {
       console.log(error);
     }
+    setIsConfirming(false);
   };
 
   const acceptInvite = async (userId, personId) => {
+    setIsConfirming(true);
     try {
       let linkedUsers = [];
-      user?.linkedUsers.forEach((person) => {
+      reduxUser?.linkedUsers.forEach((person) => {
         linkedUsers.push(person?.id);
       });
       linkedUsers.push(userId);
-      let invites = user?.invites.filter((person) => personId != person.id);
+      let invites = reduxUser?.invites.filter(
+        (person) => personId != person.id
+      );
 
       let payload = {
         linkedUsers,
         invites,
       };
-      await userInfoServices.UPDATE(user?.id, payload);
+      await userInfoServices.UPDATE(reduxUser?.id, payload);
       await refreshUser();
     } catch (error) {
       console.log(error);
     }
+    setIsConfirming(false);
   };
 
   const sendInvatation = async () => {
@@ -187,7 +207,7 @@ const LeftModal = (props) => {
         <View style={styles.headingContainer}>
           <View style={styles.heading}>
             <Text style={[styles.label, defaultStyles.headingText]}>
-              {`${user.firstName} ${user.lastName}`}
+              {`${reduxUser.firstName} ${reduxUser.lastName}`}
             </Text>
             <TouchableOpacity
               style={styles.close}
@@ -202,8 +222,8 @@ const LeftModal = (props) => {
         <View style={styles.heading}>
           <Text style={defaultStyles.appTextNormal}>{`${
             i18n.UserDrawer.curency
-          }: ${user?.currency?.name || "USD"} - ${
-            user?.currency?.symbol || "$"
+          }: ${reduxUser?.currency?.name || "USD"} - ${
+            reduxUser?.currency?.symbol || "$"
           } ­`}</Text>
           <Text
             style={defaultStyles.appTextTertiary}
@@ -221,26 +241,47 @@ const LeftModal = (props) => {
                 color={colors.secondary}
               />
             ) : (
-              <Picker
-                selectedValue={currency}
-                style={{ height: 50, width: 150 }}
-                onValueChange={(itemValue, itemIndex) => {
-                  handleCurrencyChange({
-                    value: itemValue,
-                    id: "currency",
-                  });
-                }}
-              >
-                {items.map((item) => {
-                  return (
-                    <Picker.Item
-                      label={item.label}
-                      value={item.value}
-                      key={item.label}
-                    />
-                  );
-                })}
-              </Picker>
+              <>
+                {Platform.OS === "android" ? (
+                  <Picker
+                    selectedValue={currency}
+                    style={{ height: 50, width: 150 }}
+                    onValueChange={(itemValue, itemIndex) => {
+                      handleCurrencyChange({
+                        value: itemValue,
+                        id: "currency",
+                      });
+                    }}
+                  >
+                    {items.map((item) => {
+                      return (
+                        <Picker.Item
+                          label={item.label}
+                          value={item.value}
+                          key={item.label}
+                        />
+                      );
+                    })}
+                  </Picker>
+                ) : (
+                  <IOSPicker
+                    icon={"cash"}
+                    style={{ height: 100, width: 150 }}
+                    onValueChange={(itemValue, itemIndex) => {
+                      handleCurrencyChange({
+                        value: itemValue,
+                        id: "currency",
+                      });
+                    }}
+                    i18n={i18n}
+                    items={items}
+                    placeholder={
+                      items.filter((item) => item.value == currency)[0]
+                        ?.label || i18n.BudgetScreen.period.label
+                    }
+                  />
+                )}
+              </>
             )}
           </View>
         )}
@@ -319,7 +360,7 @@ const LeftModal = (props) => {
           />
         </View>
 
-        {user?.linkedUsers?.length > 0 && (
+        {reduxUser?.linkedUsers?.length > 0 && (
           <>
             <View style={styles.headingContainer}>
               <View style={styles.heading}>
@@ -328,19 +369,27 @@ const LeftModal = (props) => {
                 </Text>
               </View>
             </View>
-            <View style={styles.allignment}>
-              {user?.linkedUsers.map((person) => {
-                return (
-                  <Text
-                    key={person?.id || person.email}
-                    style={styles.person}
-                  >{`${person.email}`}</Text>
-                );
-              })}
-            </View>
+            {!isConfirming ? (
+              <View style={styles.allignment}>
+                {reduxUser?.linkedUsers.map((person) => {
+                  return (
+                    <Text
+                      key={person?.id || person.email}
+                      style={styles.person}
+                    >{`${person.email}`}</Text>
+                  );
+                })}
+              </View>
+            ) : (
+              <ActivityIndicator
+                style={styles.loader}
+                size="large"
+                color="orange"
+              />
+            )}
           </>
         )}
-        {user?.invites?.length > 0 && (
+        {reduxUser?.invites?.length > 0 && (
           <>
             <View style={styles.headingContainer}>
               <View style={styles.heading}>
@@ -349,26 +398,37 @@ const LeftModal = (props) => {
                 </Text>
               </View>
             </View>
-            {user?.invites.map((person) => {
-              return (
-                <View key={person?.id} style={styles.invites}>
-                  <Text
-                    style={[defaultStyles.text, styles.allignment]}
-                  >{`${person.firstName} ${person.lastName}`}</Text>
-                  <AppButton
-                    mode="contained"
-                    title={i18n.UserDrawer.yes}
-                    onPress={() => acceptInvite(person.userId, person.id)}
-                  />
-                  <AppButton
-                    title={i18n.UserDrawer.no}
-                    onPress={() => removeInvite(person.id)}
-                    mode="outlined"
-                    color={"white"}
-                  />
-                </View>
-              );
-            })}
+
+            {!isConfirming ? (
+              <>
+                {reduxUser?.invites.map((person) => {
+                  return (
+                    <View key={person?.id} style={styles.invites}>
+                      <Text
+                        style={[defaultStyles.text, styles.allignment]}
+                      >{`${person.firstName} ${person.lastName}`}</Text>
+                      <AppButton
+                        mode="contained"
+                        title={i18n.UserDrawer.yes}
+                        onPress={() => acceptInvite(person.userId, person.id)}
+                      />
+                      <AppButton
+                        title={i18n.UserDrawer.no}
+                        onPress={() => removeInvite(person.id)}
+                        mode="outlined"
+                        color={"white"}
+                      />
+                    </View>
+                  );
+                })}
+              </>
+            ) : (
+              <ActivityIndicator
+                style={styles.loader}
+                size="large"
+                color="orange"
+              />
+            )}
           </>
         )}
         <View style={[styles.headingContainer, styles.allignment]}>
@@ -381,8 +441,9 @@ const LeftModal = (props) => {
         <View style={styles.allignment}>
           <AppTextInput
             icon={"email"}
+            keyboardType="email-address"
             placeholder={i18n.UserDrawer.inviteText}
-            onChangeText={(value) => setInvitePerson(value)}
+            onChangeText={(value) => setInvitePerson(value.toLowerCase())}
           ></AppTextInput>
           {!isInviting ? (
             <>
@@ -412,7 +473,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   allignment: {
-    marginTop: 7,
+    marginTop: 9,
   },
 
   heading: {
@@ -493,10 +554,14 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => ({
   userTheme: state.theme.userTheme,
+  reduxCurrency: state.user.currrency,
+  reduxUser: state.user.userInfo,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   setUserTheme: (value) => dispatch(actions.setUserTheme(value)),
+  setReduxCurrency: (value) => dispatch(actions.setCurrency(value)),
+  setUserInfo: (value) => dispatch(actions.setUserInfo(value)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(LeftModal);

@@ -6,9 +6,11 @@ import { colors } from "../../config/colors";
 import RemoveSwipable from "../RemoveSwipable/RemoveSwipable";
 import ListIcon from "../ListIcon/ListIcon";
 import moment from "moment";
+import { connect } from "react-redux";
 
 const FinanceDetails = (props) => {
-  const { financeData, title, highlight, budget, color } = props;
+  const { financeData, title, highlight, budget, color, currencySymbol } =
+    props;
 
   return (
     <View>
@@ -23,7 +25,7 @@ const FinanceDetails = (props) => {
               <ListIcon
                 {...props}
                 icon={items?.icon}
-                color={items.color || colors.secondary}
+                color={items?.color || colors.secondary}
               />
             )}
             right={(props) => (
@@ -37,7 +39,7 @@ const FinanceDetails = (props) => {
                 >
                   {`${formatNumber(
                     parseFloat(items.total).toFixed(2),
-                    items?.currency
+                    currencySymbol
                   )}  `}
                   {budget &&
                     `  ${
@@ -56,7 +58,7 @@ const FinanceDetails = (props) => {
                         : styles.negativeBudget
                     }
                   >
-                    {` ${items?.currency} ${parseFloat(
+                    {` ${currencySymbol} ${parseFloat(
                       items.amountSpent
                     ).toFixed(2)}  `}
                   </Text>
@@ -82,7 +84,7 @@ const FinanceDetails = (props) => {
                       >
                         {`${formatNumber(
                           parseFloat(item.amount).toFixed(2),
-                          items?.currency
+                          currencySymbol
                         )} ${item.amount == 0 ? "❗" : ""}`}
                       </Text>
                       {budget && item.title != "ANY" && (
@@ -93,7 +95,7 @@ const FinanceDetails = (props) => {
                               : styles.negativeBudget
                           }
                         >
-                          {` ${items?.currency} ${parseFloat(
+                          {` ${currencySymbol} ${parseFloat(
                             item.amountSpent
                           ).toFixed(2)}  `}
                         </Text>
@@ -131,7 +133,7 @@ const FinanceDetails = (props) => {
                                 <Text style={items.style}>
                                   {`${formatNumber(
                                     singleEntry?.amount,
-                                    items?.currency
+                                    currencySymbol
                                   )}`}
                                 </Text>
                               </View>
@@ -187,4 +189,10 @@ const styles = StyleSheet.create({
   },
   item: { marginLeft: 10, backgroundColor: colors.gray, marginVertical: 2 },
 });
-export default FinanceDetails;
+
+const mapStateToProps = (state) => ({
+  isLoading: state.loader.isLoading,
+  currencySymbol: state.user.currrency,
+});
+
+export default connect(mapStateToProps)(FinanceDetails);
