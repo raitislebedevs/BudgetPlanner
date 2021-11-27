@@ -12,9 +12,10 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { formatNumber } from "../../utils/standaloneFunctions";
 import LeftModal from "../LeftModal/LeftModal";
 import { connect } from "react-redux";
+import { colors } from "../../config/colors";
 
 const Header = (props) => {
-  const { isLoading, currencySymbol, budget, navigation } = props;
+  const { isLoading, currencySymbol, budget, navigation, userInvites } = props;
   const { i18n } = useLocale();
   const [isModalVisible, setModalVisible] = useState(false);
 
@@ -26,7 +27,12 @@ const Header = (props) => {
     <View
       style={[styles.topNavigation, Platform.OS === "ios" && styles.statusbar]}
     >
-      <View>
+      <View style={styles.menuBar}>
+        {userInvites?.length != 0 && (
+          <View style={styles.notification}>
+            <Text style={styles.notificationText}>{userInvites?.length}</Text>
+          </View>
+        )}
         <Ionicons
           style={styles.leftNav}
           name={"reorder-three-outline"}
@@ -126,11 +132,29 @@ const styles = StyleSheet.create({
   statusbar: {
     paddingTop: 30,
   },
+  menubar: {
+    position: "relative",
+  },
+  notification: {
+    position: "absolute",
+    right: -7,
+    backgroundColor: colors.primary,
+    width: 18,
+    height: 18,
+    borderRadius: 10,
+    justifyContent: "center",
+  },
+  notificationText: {
+    color: colors.white,
+    alignSelf: "center",
+    fontSize: 10,
+  },
 });
 
 const mapStateToProps = (state) => ({
   isLoading: state.loader.isLoading,
   currencySymbol: state.user.currrency,
+  userInvites: state.user.userInvites,
 });
 
 export default connect(mapStateToProps)(Header);

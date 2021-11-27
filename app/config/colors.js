@@ -1,7 +1,6 @@
 import store from "../Redux/store";
 
 const theme = store.getState().theme?.userTheme;
-console.log("Color theme", theme);
 export const colors = {
   primary: "#4751fc",
   secondary: "#FC4C56",

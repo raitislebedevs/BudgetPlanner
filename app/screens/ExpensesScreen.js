@@ -14,6 +14,7 @@ import { connect } from "react-redux";
 import { useLocale } from "react-easy-localization";
 import redColorCodes from "../utils/redColorCodes";
 import * as actions from "../Redux/actions";
+import GroupByUser from "../components/GroupByUser/GroupByUser";
 
 const ExpensesScreen = (props) => {
   const {
@@ -79,7 +80,7 @@ const ExpensesScreen = (props) => {
         {!isLoading ? (
           <>
             {userExpense.length > 0 && (
-              <FinanceDetails
+              <GroupByUser
                 financeData={userExpense}
                 title={i18n.ExpenseScreen.label}
                 highlight={highlight}

@@ -62,16 +62,26 @@ const NavigationMainContainer = ({
       userInfoData?.invites.forEach((person) => {
         userInvites.push(person.id);
       });
-      let filter = { linkedUsers_in: linkedUsers };
 
-      // const { data } = await userInfoServices.FIND(filter);
-      // setLinkedUserInfos(data);
+      let filter = { linkedUsers_in: linkedUsers };
+      const { data } = await userInfoServices.FIND(filter);
+      data.forEach((element) => {
+        delete element?.userCategories;
+        delete element?.linkedUsers;
+        delete element?.currency;
+      });
+      let myUserInfoData = JSON.parse(JSON.stringify(userInfoData));
+      delete myUserInfoData?.userCategories;
+      delete myUserInfoData?.linkedUsers;
+      delete myUserInfoData?.currency;
+      data.push(myUserInfoData);
+      setLinkedUserInfos(data);
 
       setCurrency(userInfoData?.currency?.symbol);
       setUser(userCore);
       setLinkedUsers(linkedUsers);
       setUserInfo(userInfoData);
-      setUserInvites(userInfoData);
+      setUserInvites(userInfoData?.invites);
       setUserCategories(userInfoData?.userCategories);
       await getGlobalBudgetData();
     }

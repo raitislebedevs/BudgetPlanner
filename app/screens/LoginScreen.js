@@ -78,11 +78,17 @@ const LoginScreen = (props) => {
       setLoader(true);
       let userCore = await getUserData();
       let userInfoData = await getUserInfoData(userCore?.userInfo);
+      if (!userInfoData) {
+        setLoader(false);
+        return;
+      }
       let linkedUsers = [];
       let userInvites = [];
+
       userInfoData?.linkedUsers.forEach((person) => {
         linkedUsers.push(person?.id);
       });
+
       linkedUsers.push(userCore?.id);
       userInfoData?.invites.forEach((person) => {
         userInvites.push(person.id);
@@ -90,13 +96,24 @@ const LoginScreen = (props) => {
 
       let filter = { linkedUsers_in: linkedUsers };
       const { data } = await userInfoServices.FIND(filter);
+      data.forEach((element) => {
+        delete element?.userCategories;
+        delete element?.linkedUsers;
+        delete element?.currency;
+      });
+
+      let myUserInfoData = JSON.parse(JSON.stringify(userInfoData));
+      delete myUserInfoData?.userCategories;
+      delete myUserInfoData?.linkedUsers;
+      delete myUserInfoData?.currency;
+      data.push(myUserInfoData);
       setLinkedUserInfos(data);
 
       setCurrency(userInfoData?.currency?.symbol);
       setUser(userCore);
       setLinkedUsers(linkedUsers);
       setUserInfo(userInfoData);
-      setUserInvites(userInfoData);
+      setUserInvites(userInfoData?.invites);
       setUserCategories(userInfoData?.userCategories);
       setLoader(false);
       if (userCore) {
