@@ -321,8 +321,10 @@ const groupDataByPeriod = (budgetData, currency) => {
         (a, b) => a + (parseFloat(b["activityAmount"]) || 0),
         0
       );
+
       let categorySummary = {
         label: el,
+        user: group[el][0].user.userInfo,
         total: totalValue,
         currency: currency,
         style: {
@@ -616,11 +618,11 @@ const calculateBOTPeriods = () => {
   }
 };
 
-const groupDataByIndex = (budgetData, key) => {
+export const groupDataByIndex = (budgetData, key) => {
   var data = budgetData,
     result = data.reduce(function (r, a) {
       r[a[key]] = r[a[key]] || [];
-      delete a.user;
+      a.user;
       r[a[key]].push(a);
       return r;
     }, Object.create(null));

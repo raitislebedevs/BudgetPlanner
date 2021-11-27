@@ -7,6 +7,7 @@ const initialState = {
   linkedUsers: [],
   userInvites: [],
   categories: {},
+  linkedUserInfo: [],
 };
 
 const user = (state = initialState, action) => {
@@ -23,6 +24,8 @@ const user = (state = initialState, action) => {
       return { ...state, userInvites: action.value };
     case Types.SET_USER_CATEGORIES:
       return { ...state, categories: action.value };
+    case Types.SET_LINKED_USER_INFOS:
+      return { ...state, linkedUserInfo: action.value };
   }
   return state;
 };

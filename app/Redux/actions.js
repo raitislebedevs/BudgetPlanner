@@ -44,3 +44,8 @@ export const setUserTheme = (payload) => ({
   type: Types.SET_USER_THEME,
   value: payload,
 });
+
+export const setLinkedUserInfos = (payload) => ({
+  type: Types.SET_LINKED_USER_INFOS,
+  value: payload,
+});

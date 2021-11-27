@@ -29,14 +29,12 @@ const LeftModal = (props) => {
     setModalVisible,
     navigation,
     userTheme,
-    setUserTheme,
     setUserInfo,
     setReduxCurrency,
+    linkedUserInfos,
     reduxUser,
+    user,
   } = props;
-
-  console.log("Redux User", reduxUser);
-
   const { changeLanguage, i18n } = useLocale();
   const [errorText, setErrorText] = useState("");
   const [currencyPicker, setCurrencyPicker] = useState(false);
@@ -49,7 +47,6 @@ const LeftModal = (props) => {
   const [isConfirming, setIsConfirming] = useState(false);
   // const [isEnabled, setIsEnabled] = useState(false);
   const [langPicker, setLangPicker] = useState(false);
-
   // const toggleSwitch = () => {
   //   if (theme === "light") {
   //     setTheme("dark");
@@ -146,6 +143,7 @@ const LeftModal = (props) => {
   };
 
   const sendInvatation = async () => {
+    if (invitePerson == user.email) return;
     try {
       setErrorText("");
       setIsInviting(true);
@@ -360,7 +358,7 @@ const LeftModal = (props) => {
           />
         </View>
 
-        {reduxUser?.linkedUsers?.length > 0 && (
+        {linkedUserInfos?.length > 0 && (
           <>
             <View style={styles.headingContainer}>
               <View style={styles.heading}>
@@ -371,12 +369,12 @@ const LeftModal = (props) => {
             </View>
             {!isConfirming ? (
               <View style={styles.allignment}>
-                {reduxUser?.linkedUsers.map((person) => {
+                {linkedUserInfos.map((person) => {
                   return (
-                    <Text
-                      key={person?.id || person.email}
-                      style={styles.person}
-                    >{`${person.email}`}</Text>
+                    <Text key={person?.id} style={styles.person}>
+                      {" "}
+                      {`${person.firstName} ${person.lastName}`}
+                    </Text>
                   );
                 })}
               </View>
@@ -556,6 +554,8 @@ const mapStateToProps = (state) => ({
   userTheme: state.theme.userTheme,
   reduxCurrency: state.user.currrency,
   reduxUser: state.user.userInfo,
+  user: state.user.user,
+  linkedUserInfos: state?.user?.linkedUserInfo,
 });
 
 const mapDispatchToProps = (dispatch) => ({

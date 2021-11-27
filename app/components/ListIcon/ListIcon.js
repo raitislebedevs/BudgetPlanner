@@ -3,18 +3,18 @@ import { StyleSheet, View } from "react-native";
 import { List } from "react-native-paper";
 import { colors } from "../../config/colors";
 
-function ListIcon({ onPress, icon, color, halfSize, ...others }) {
+function ListIcon({ onPress, icon, color, subIcon, halfSize, ...others }) {
   return (
     <View style={[styles.container, { backgroundColor: color }]}>
       <List.Icon
-        {...others}
         icon={icon || "help"}
         onPress={onPress}
         color={colors.white}
         style={[
           styles.icon,
-          { width: halfSize ? 19 : 25, height: halfSize ? 19 : 25 },
+          { width: halfSize ? 20 : 25, height: halfSize ? 20 : 25 },
         ]}
+        {...others}
       />
     </View>
   );
@@ -26,6 +26,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
   },
   icon: {
+    flex: 1,
     alignSelf: "center",
   },
 });

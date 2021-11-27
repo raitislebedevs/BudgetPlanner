@@ -16,6 +16,7 @@ import { save } from "../utils/expoSecure";
 import { getUserData, getUserInfoData } from "../utils/userData";
 import { connect } from "react-redux";
 import * as actions from "../Redux/actions";
+import userInfoServices from "../services/userInfoServices";
 
 const image = require("../assets/Light.jpg");
 
@@ -26,6 +27,7 @@ const LoginScreen = (props) => {
     setUser,
     setUserInfo,
     setUserCategories,
+    setLinkedUserInfos,
     setLinkedUsers,
     setUserInvites,
     isLoading,
@@ -85,6 +87,10 @@ const LoginScreen = (props) => {
       userInfoData?.invites.forEach((person) => {
         userInvites.push(person.id);
       });
+
+      let filter = { linkedUsers_in: linkedUsers };
+      const { data } = await userInfoServices.FIND(filter);
+      setLinkedUserInfos(data);
 
       setCurrency(userInfoData?.currency?.symbol);
       setUser(userCore);
@@ -180,6 +186,7 @@ const mapDispatchToProps = (dispatch) => ({
   setLinkedUsers: (value) => dispatch(actions.setLinkedUsers(value)),
   setUserInvites: (value) => dispatch(actions.setUserInvites(value)),
   setLoader: (value) => dispatch(actions.setLoader(value)),
+  setLinkedUserInfos: (value) => dispatch(actions.setLinkedUserInfos(value)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(LoginScreen);

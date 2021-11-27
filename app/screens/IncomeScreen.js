@@ -5,7 +5,6 @@ import {
   ActivityIndicator,
   RefreshControl,
 } from "react-native";
-import FinanceDetails from "../components/FinanseDetails/FinanceDetails";
 import AskModal from "../components/AskModal/AskModal";
 import SubmitActivity from "../components/SubmitActivity/SubmitActivity";
 import BudgetPieChart from "../components/BudgetPieChart/BudgetPieChart";
@@ -15,6 +14,7 @@ import { connect } from "react-redux";
 import { incomeCategory } from "../utils/categoryItems";
 import greenColorCodes from "../utils/greenColorCodes";
 import * as actions from "../Redux/actions";
+import GroupByUser from "../components/GroupByUser/GroupByUser";
 
 const IncomeScreen = (props) => {
   const {
@@ -62,6 +62,7 @@ const IncomeScreen = (props) => {
           chartData={budget?.incomeChartData || []}
           color={"green"}
           colorCodes={colorCodes}
+          income={true}
         />
 
         <SubmitActivity
@@ -82,7 +83,7 @@ const IncomeScreen = (props) => {
         {!isLoading ? (
           <>
             {userIncome?.length > 0 && (
-              <FinanceDetails
+              <GroupByUser
                 financeData={userIncome}
                 title={i18n.IncomeScreen.label}
                 highlight={highlight}

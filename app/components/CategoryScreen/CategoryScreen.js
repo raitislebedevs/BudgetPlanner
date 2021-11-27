@@ -122,7 +122,6 @@ function CategoryScreen({
 
   const submitCategory = async () => {
     setIsLoading(true);
-    console.log("Data", data);
     let payloadData = data;
     try {
       if (!reduxUserInfo?.userCategories) {
@@ -133,7 +132,7 @@ function CategoryScreen({
           [type]: payloadData,
           users,
         };
-        console.log("Data", data);
+
         const result = await userCategories.CREATE(payload);
         setUserCategories(result.data);
 

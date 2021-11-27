@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Dimensions, StyleSheet, Text } from "react-native";
+import { Dimensions, Platform, StyleSheet, Text } from "react-native";
 import { colors } from "../../config/colors";
 import { VictoryPie } from "victory-native";
 import { formatNumber, sumWithReduce } from "../../utils/standaloneFunctions";
 import { connect } from "react-redux";
 
 function BudgetPieChart(props) {
-  const { chartData, colorCodes, currrency, color } = props;
+  const { chartData, colorCodes, currrency, color, income } = props;
   const [total, setTotal] = useState("0");
   const screenWidth = Dimensions.get("window").width;
+  // const [fadeValue, setFadeValue] = useState(new Animated.Value(0));
 
   useEffect(() => {
     if (chartData) {
@@ -21,6 +22,22 @@ function BudgetPieChart(props) {
     }
   }, [chartData]);
 
+  // const fadeIn = () => {
+  //   Animated.timing(fadeValue, {
+  //     toValue: 1,
+  //     duration: 100,
+  //     useNativeDriver: true,
+  //   }).start();
+  // };
+
+  // const fadeOut = () => {
+  //   Animated.timing(fadeValue, {
+  //     toValue: 0,
+  //     duration: 500,
+  //     useNativeDriver: true,
+  //   }).start();
+  // };
+
   return (
     <>
       <VictoryPie
@@ -32,6 +49,7 @@ function BudgetPieChart(props) {
         data={chartData}
         colorScale={colorCodes}
         padAngle={1.5}
+        //endAngle={endAngle}
         labelPosition={"centroid"}
         labelPlacement={"parallel"}
         labelRadius={({ innerRadius }) => innerRadius + 30}
@@ -51,7 +69,7 @@ function BudgetPieChart(props) {
       <Text
         style={{
           position: "absolute",
-          top: 150,
+          top: Platform.OS === "ios" ? 135 : 150,
           fontSize: 24,
           fontWeight: "bold",
           justifyContent: "center",

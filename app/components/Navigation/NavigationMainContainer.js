@@ -17,6 +17,7 @@ import { connect } from "react-redux";
 import { setLoader } from "../../Redux/actions";
 import { getUserData, getUserInfoData } from "../../utils/userData";
 import * as actions from "../../Redux/actions";
+import userInfoServices from "../../services/userInfoServices";
 
 const NavigationMainContainer = ({
   navigation,
@@ -32,6 +33,7 @@ const NavigationMainContainer = ({
   setUserCategories,
   setLinkedUsers,
   setUserInvites,
+  setLinkedUserInfos,
 }) => {
   const { i18n } = useLocale();
   //Screen Names
@@ -60,6 +62,10 @@ const NavigationMainContainer = ({
       userInfoData?.invites.forEach((person) => {
         userInvites.push(person.id);
       });
+      let filter = { linkedUsers_in: linkedUsers };
+
+      // const { data } = await userInfoServices.FIND(filter);
+      // setLinkedUserInfos(data);
 
       setCurrency(userInfoData?.currency?.symbol);
       setUser(userCore);
@@ -200,6 +206,7 @@ const mapDispatchToProps = (dispatch) => ({
   setLinkedUsers: (value) => dispatch(actions.setLinkedUsers(value)),
   setUserInvites: (value) => dispatch(actions.setUserInvites(value)),
   setCurrency: (value) => dispatch(actions.setCurrency(value)),
+  setLinkedUserInfos: (value) => dispatch(actions.setLinkedUserInfos(value)),
 });
 
 export default connect(

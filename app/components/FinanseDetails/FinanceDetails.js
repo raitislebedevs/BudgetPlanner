@@ -108,6 +108,7 @@ const FinanceDetails = (props) => {
                       icon={item?.icon || "help"}
                       color={item.color || colors.secondary}
                       halfSize={true}
+                      subIcon={true}
                     />
                   )}
                   key={item.title}
