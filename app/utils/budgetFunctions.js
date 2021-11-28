@@ -321,12 +321,15 @@ const groupDataByPeriod = (budgetData, currency) => {
         (a, b) => a + (parseFloat(b["activityAmount"]) || 0),
         0
       );
-
+      // console.log({
+      //   label: el,
+      //   user: group[el][0].user.userInfo,
+      //   total: totalValue,
+      // });
       let categorySummary = {
         label: el,
         user: group[el][0].user.userInfo,
         total: totalValue,
-        currency: currency,
         style: {
           color: activity == "expense" ? "darkred" : "darkgreen",
           fontWeight: "bold",

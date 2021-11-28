@@ -14,7 +14,7 @@ import { formatNumber } from "../../utils/standaloneFunctions";
 
 function BudgetChart(props) {
   const { budget, currrency } = props;
-  const chartData = budget.budgetChartData;
+  const chartData = budget?.budgetChartData;
   const screenWidth = Dimensions.get("window").width;
 
   if (

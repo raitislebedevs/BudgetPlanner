@@ -9,14 +9,14 @@ function GroupByUser(props) {
   const [userGroup, setUserGroup] = useState({});
   useEffect(() => {
     try {
+      // console.log("Finance Data", financeData);
       let result = groupDataByIndex(financeData, "user");
       setUserGroup(result);
-      console.log("Result", result);
-      console.log("Linked User", linkedUserInfos);
+
       if (linkedUserInfos.length != 0) {
         linkedUserInfos?.forEach((person) => {
-          console.log("Person", person);
-          console.log("User Data", result[person.id]);
+          // console.log("Grouped result", result);
+          //console.log("User Data", result[person.id]);
         });
       }
     } catch (error) {
@@ -25,22 +25,28 @@ function GroupByUser(props) {
   }, []);
 
   return (
-    <>
-      {linkedUserInfos.length != 0 &&
-        linkedUserInfos?.map((person) => (
-          <FinanceDetails
-            key={person.id}
-            financeData={userGroup[person.id]}
-            title={
-              linkedUserInfos.length == 1
-                ? title
-                : `${person.firstName} ${person.lastName}`
-            }
-            highlight={highlight}
-            color={color}
-          />
-        ))}
-    </>
+    <FinanceDetails
+      financeData={financeData}
+      title={title}
+      highlight={highlight}
+      color={color}
+    />
+    // <>
+    //   {linkedUserInfos.length != 0 &&
+    //     linkedUserInfos?.map((person) => (
+    //       <FinanceDetails
+    //         key={person.id}
+    //         financeData={userGroup[person.id]}
+    //         title={
+    //           linkedUserInfos.length == 1
+    //             ? title
+    //             : `${person.firstName} ${person.lastName}`
+    //         }
+    //         highlight={highlight}
+    //         color={color}
+    //       />
+    //     ))}
+    // </>
   );
 }
 

@@ -121,7 +121,7 @@ const RegisterScreen = (props) => {
             placeholder="Email"
             keyboardType="email-address"
             onChangeText={(e) =>
-              handleOnChange({ target: { value: e, id: "email" } })
+              handleOnChange({ target: { value: e.toString(), id: "email" } })
             }
           />
           <AppTextInput

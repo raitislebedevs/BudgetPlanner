@@ -89,10 +89,14 @@ const LeftModal = (props) => {
   };
 
   useEffect(async () => {
-    let currencyData = await handleGetCurrencies();
-    setItems(currencyData);
-    changeLanguage("lv");
-    await refreshUser();
+    try {
+      let currencyData = await handleGetCurrencies();
+      setItems(currencyData);
+      changeLanguage("lv");
+      await refreshUser();
+    } catch (error) {
+      console.log(console.log(error));
+    }
   }, []);
 
   const refreshUser = async () => {
@@ -372,7 +376,6 @@ const LeftModal = (props) => {
                 {linkedUserInfos.map((person) => {
                   return (
                     <Text key={person?.id} style={styles.person}>
-                      {" "}
                       {`${person.firstName} ${person.lastName}`}
                     </Text>
                   );

@@ -58,7 +58,7 @@ const SummaryScreen = (props) => {
               <SummaryChart chartLabels={chartLabels} />
               {budget?.incomeData?.length > 0 && (
                 <FinanceDetails
-                  financeData={budget.incomeData}
+                  financeData={budget?.incomeData}
                   title={i18n.IncomeScreen.label}
                   highlight={highlight}
                   color={{ firstList: "tertiary", secondList: "primary" }}

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Dimensions, Platform, StyleSheet, Text } from "react-native";
+import { Dimensions, Platform, StyleSheet, Text, View } from "react-native";
 import { colors } from "../../config/colors";
 import { VictoryPie } from "victory-native";
 import { formatNumber, sumWithReduce } from "../../utils/standaloneFunctions";
@@ -22,6 +22,8 @@ function BudgetPieChart(props) {
     }
   }, [chartData]);
 
+  let screenXY = Dimensions.get("window");
+  console.log(screenXY);
   // const fadeIn = () => {
   //   Animated.timing(fadeValue, {
   //     toValue: 1,
@@ -40,36 +42,40 @@ function BudgetPieChart(props) {
 
   return (
     <>
-      <VictoryPie
-        animate={{
-          duration: 2000,
-        }}
-        width={screenWidth}
-        height={screenWidth - 70}
-        data={chartData}
-        colorScale={colorCodes}
-        padAngle={1.5}
-        //endAngle={endAngle}
-        labelPosition={"centroid"}
-        labelPlacement={"parallel"}
-        labelRadius={({ innerRadius }) => innerRadius + 30}
-        style={{
-          labels: {
-            fill: colors.black,
-            fontSize: 14,
-            fontWeight: "bold",
-          },
-          data: {
-            fillOpacity: 0.7,
-          },
-        }}
-        cornerRadius={5}
-        innerRadius={80}
-      />
+      <View style={styles.chartContainer}>
+        <VictoryPie
+          animate={{
+            duration: 2000,
+          }}
+          width={screenWidth}
+          height={screenWidth - 70}
+          data={chartData}
+          colorScale={colorCodes}
+          padAngle={1.5}
+          //endAngle={endAngle}
+          labelPosition={"centroid"}
+          labelPlacement={"parallel"}
+          labelRadius={({ innerRadius }) => innerRadius + 30}
+          style={[
+            {
+              labels: {
+                fill: colors.black,
+                fontSize: 14,
+                fontWeight: "bold",
+              },
+              data: {
+                fillOpacity: 0.7,
+              },
+            },
+          ]}
+          cornerRadius={5}
+          innerRadius={80}
+        />
+      </View>
       <Text
         style={{
           position: "absolute",
-          top: Platform.OS === "ios" ? 135 : 150,
+          top: (screenXY.height / screenXY.width / 2.2) * 150,
           fontSize: 24,
           fontWeight: "bold",
           justifyContent: "center",
@@ -92,6 +98,11 @@ export default connect(mapStateToProps)(BudgetPieChart);
 const styles = StyleSheet.create({
   loader: {
     marginTop: 25,
+  },
+  chartContainer: {
+    position: "relative",
+    borderColor: "green",
+    borderWidth: 2,
   },
   text: {
     color: "black",

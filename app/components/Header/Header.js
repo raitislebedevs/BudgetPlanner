@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
   overspentAmount: {
     color: "red",
     fontSize: 15,
-    fontStyle: "italic",
+
     fontWeight: "bold",
   },
   label: {

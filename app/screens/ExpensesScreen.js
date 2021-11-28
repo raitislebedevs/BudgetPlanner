@@ -36,7 +36,7 @@ const ExpensesScreen = (props) => {
   const colorCodes = redColorCodes();
   useEffect(async () => {
     setUserExpense(budget?.expenseData);
-  }, [budget.expenseData]);
+  }, [budget?.expenseData]);
 
   const highlight = (id) => {
     setId(id);

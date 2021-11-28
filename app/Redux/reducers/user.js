@@ -1,7 +1,7 @@
 import * as Types from "../actionTypes";
 
 const initialState = {
-  currrency: "",
+  currrency: "$",
   user: {},
   userInfo: {},
   linkedUsers: [],
