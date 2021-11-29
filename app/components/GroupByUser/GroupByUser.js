@@ -5,9 +5,11 @@ import FinanceDetails from "../FinanseDetails/FinanceDetails";
 import { groupDataByIndex } from "../../utils/budgetFunctions";
 
 function GroupByUser(props) {
-  const { financeData, highlight, color, linkedUserInfos, title } = props;
+  const { budget, financeData, highlight, color, linkedUserInfos, title } =
+    props;
   const [userGroup, setUserGroup] = useState({});
   useEffect(() => {
+    console.log("User income", budget?.incomeUserData);
     try {
       // console.log("Finance Data", financeData);
       let result = groupDataByIndex(financeData, "user");

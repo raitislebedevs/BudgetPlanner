@@ -70,13 +70,7 @@ const NavigationMainContainer = ({
         delete element?.linkedUsers;
         delete element?.currency;
       });
-      // console.log("Linked users", data);
-      // console.log("Linked users", data);
-      // let myUserInfoData = JSON.parse(JSON.stringify(userInfoData));
-      // delete myUserInfoData?.userCategories;
-      // delete myUserInfoData?.linkedUsers;
-      // delete myUserInfoData?.currency;
-      // data.push(myUserInfoData);
+
       setLinkedUserInfos(data);
 
       setCurrency(userInfoData?.currency?.symbol);

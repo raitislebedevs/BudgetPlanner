@@ -49,7 +49,7 @@ export const cleanObject = (obj) => {
 export const random = (min, max) =>
   Math.floor(Math.random() * (max - min)) + min;
 
-export const referralCode = () => {
+export const randomString = () => {
   return "xxxxxxx-xxxxxxx".replace(/[xy]/g, function (c) {
     var r = (Math.random() * 16) | 0,
       v = c == "x" ? r : (r & 0x3) | 0x8;

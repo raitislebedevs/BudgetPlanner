@@ -9,6 +9,8 @@ let rawIncomeData = [];
 let rawExpenseData = [];
 let incomeData = [];
 let expenseData = [];
+let incomeUserData = [];
+let expenseUserData = [];
 let bezierChartData = {};
 let incomeChartData = [];
 let spentChartData = [];
@@ -39,13 +41,19 @@ export const initilizeData = async (
   rawExpenseData = await getBudgetData(period, "expense");
   rawBudgetData = await getBudgetPlanData(period);
 
-  getGroupedIncomeData(currency);
-  getGroupedExpenseData(currency);
-  getGroupedPlannedData(currency);
+  getGroupedIncomeData();
+  getGroupedExpenseData();
+  getGroupedPlannedData();
 
+  getGroupedUserIncomeData();
+  getGroupedUserExpenseData();
+  console.log();
   updateCategories(incomeData, categoryDetails?.incomeCategory);
   updateCategories(expenseData, categoryDetails?.expensCategory);
   updateCategories(budgetPlanningData, categoryDetails?.expensCategory);
+
+  updateUserCategories(incomeUserData, categoryDetails?.incomeCategory);
+  updateUserCategories(expenseUserData, categoryDetails?.expensCategory);
 
   let refObj = JSON.stringify(expenseData);
   let newExpenseData = JSON.parse(refObj);
@@ -68,6 +76,8 @@ export const initilizeData = async (
     incomeChartData,
     spentChartData,
     bezierChartData,
+    incomeUserData,
+    expenseUserData,
     currency,
     budgetPlanningData,
     budgetChartData,
@@ -138,11 +148,21 @@ const resetValues = () => {
   incomeAmount = 0;
   spentAmount = 0;
 };
+const getGroupedUserIncomeData = () => {
+  if (rawIncomeData.length == 0) return (incomeUserData = []);
+  incomeUserData = groupUserDataByPeriod(rawIncomeData);
+};
 
-const getGroupedIncomeData = (currency) => {
+const getGroupedUserExpenseData = () => {
+  if (rawIncomeData.length == 0) return (expenseUserData = []);
+
+  expenseUserData = groupUserDataByPeriod(rawIncomeData);
+};
+
+const getGroupedIncomeData = () => {
   if (rawIncomeData.length == 0) return (incomeData = []);
 
-  incomeData = groupDataByPeriod(rawIncomeData, currency);
+  incomeData = groupDataByPeriod(rawIncomeData);
 };
 
 const getGroupedExpenseData = (currency) => {
@@ -282,7 +302,7 @@ const updateAnyBudget = (budgetData) => {
     });
   });
 };
-const groupDataByPeriod = (budgetData, currency) => {
+const groupDataByPeriod = (budgetData) => {
   try {
     let groupedBudgetData = [];
     let groupedItemData = [];
@@ -338,6 +358,67 @@ const groupDataByPeriod = (budgetData, currency) => {
         data: groupedItemData,
       };
       groupedBudgetData.push(categorySummary);
+    });
+    return groupedBudgetData;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const groupUserDataByPeriod = (budgetData) => {
+  try {
+    let groupedBudgetData = [];
+    let groupedItemData = [];
+    let group = groupDataByIndex(budgetData, "category");
+    let activity = "";
+
+    Object.keys(group).forEach((person) => {
+      let userData = groupDataByIndex(group[person], "user");
+      Object.keys(userData).forEach((el) => {
+        let categoryItems = groupDataByIndex(userData[el], "categoryItem");
+        groupedItemData = [];
+        Object.keys(categoryItems).forEach((el) => {
+          let itemData = [];
+          let categoryItemSummery = {
+            title: el,
+            amount: parseFloat(
+              categoryItems[el].reduce(
+                (a, b) => a + (parseFloat(b["activityAmount"]) || 0),
+                0
+              )
+            ).toFixed(2),
+          };
+          activity = categoryItems[el][0].activity;
+
+          categoryItems[el].forEach((item) => {
+            itemData.push({
+              date: item.activityDate || item?.createdAt,
+              amount: parseFloat(item.activityAmount).toFixed(2),
+              id: item.id,
+            });
+          });
+          itemData.sort((a, b) => new Date(b.date) - new Date(a.date));
+          categoryItemSummery.items = itemData;
+          groupedItemData.push(categoryItemSummery);
+        });
+        //This value here does not Parses great
+        let totalValue = userData[el].reduce(
+          (a, b) => a + (parseFloat(b["activityAmount"]) || 0),
+          0
+        );
+        let categorySummary = {
+          label: el,
+          user: userData[el][0].user.userInfo,
+          total: totalValue,
+          style: {
+            color: activity == "expense" ? "darkred" : "darkgreen",
+            fontWeight: "bold",
+          },
+
+          data: groupedItemData,
+        };
+        groupedBudgetData.push(categorySummary);
+      });
     });
     return groupedBudgetData;
   } catch (error) {
@@ -688,6 +769,26 @@ function updateCategories(data, category) {
       let innerItem = items.filter((i) => i.value == cat.title)[0];
       cat.icon = innerItem?.icon;
       cat.color = innerItem?.color;
+    });
+  });
+}
+
+function updateUserCategories(data, category) {
+  if (!category) return;
+
+  data.forEach((person) => {
+    console.log("Person", person);
+    person.data.forEach((group) => {
+      let item = category.filter((c) => c.value == group.label)[0];
+      if (!item) return;
+      let items = item.items;
+      group.icon = item.icon;
+      group.color = item.color;
+      group.data.forEach((cat) => {
+        let innerItem = items.filter((i) => i.value == cat.title)[0];
+        cat.icon = innerItem?.icon;
+        cat.color = innerItem?.color;
+      });
     });
   });
 }

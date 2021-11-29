@@ -85,8 +85,6 @@ const LoginScreen = (props) => {
       let linkedUsers = [];
       let userInvites = [];
 
-      console.log("Core user", userCore);
-
       userInfoData?.linkedUsers.forEach((person) => {
         linkedUsers.push(person?.id);
       });
