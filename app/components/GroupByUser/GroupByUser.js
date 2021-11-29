@@ -1,54 +1,31 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import FinanceDetails from "../FinanseDetails/FinanceDetails";
-// import * as actions from "../../Redux/actions";
 import { groupDataByIndex } from "../../utils/budgetFunctions";
 
 function GroupByUser(props) {
-  const { budget, financeData, highlight, color, linkedUserInfos, title } =
-    props;
-  const [userGroup, setUserGroup] = useState({});
-  useEffect(() => {
-    console.log("User income", budget?.incomeUserData);
-    try {
-      // console.log("Finance Data", financeData);
-      let result = groupDataByIndex(financeData, "user");
-      setUserGroup(result);
-
-      if (linkedUserInfos.length != 0) {
-        linkedUserInfos?.forEach((person) => {
-          // console.log("Grouped result", result);
-          //console.log("User Data", result[person.id]);
-        });
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }, []);
+  const { financeData, highlight, color, linkedUserInfos, title } = props;
 
   return (
-    <FinanceDetails
-      financeData={financeData}
-      title={title}
-      highlight={highlight}
-      color={color}
-    />
-    // <>
-    //   {linkedUserInfos.length != 0 &&
-    //     linkedUserInfos?.map((person) => (
-    //       <FinanceDetails
-    //         key={person.id}
-    //         financeData={userGroup[person.id]}
-    //         title={
-    //           linkedUserInfos.length == 1
-    //             ? title
-    //             : `${person.firstName} ${person.lastName}`
-    //         }
-    //         highlight={highlight}
-    //         color={color}
-    //       />
-    //     ))}
-    // </>
+    <>
+      {linkedUserInfos.length != 0 &&
+        linkedUserInfos?.map((person) => {
+          if (financeData[person.id])
+            return (
+              <FinanceDetails
+                key={person.id}
+                financeData={financeData[person.id]}
+                title={
+                  linkedUserInfos.length == 1
+                    ? title
+                    : `${person.firstName} ${person.lastName}`
+                }
+                highlight={highlight}
+                color={color}
+              />
+            );
+        })}
+    </>
   );
 }
 

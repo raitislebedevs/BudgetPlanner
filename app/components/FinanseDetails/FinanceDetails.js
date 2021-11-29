@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => ({
   isLoading: state.loader.isLoading,
-  currencySymbol: state.user.currrency,
+  currencySymbol: state.user?.currrency,
 });
 
 export default connect(mapStateToProps)(FinanceDetails);

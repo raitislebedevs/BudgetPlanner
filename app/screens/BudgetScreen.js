@@ -23,7 +23,6 @@ import { useLocale } from "react-easy-localization";
 import AppPicker from "../components/AppPicker/AppPicker";
 import { connect } from "react-redux";
 import * as actions from "../Redux/actions";
-import AppTextInput from "../components/AppTextInput/AppTextInput";
 import IOSPicker from "../components/IOSPicker/IOSPicker";
 
 const BudgetScreen = (props) => {
@@ -137,7 +136,6 @@ const BudgetScreen = (props) => {
   };
   return (
     <>
-      {/* <IOSPicker pickerModal={pickerModal} setPickerModal={setPickerModal} /> */}
       {!isLoading ? (
         <View style={styles.summaryContainer}>
           <View>
@@ -384,7 +382,6 @@ const styles = StyleSheet.create({
   overspentAmount: {
     color: "red",
     fontSize: 11,
-    fontStyle: "italic",
     fontWeight: "bold",
   },
   label: {

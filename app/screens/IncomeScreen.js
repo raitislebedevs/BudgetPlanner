@@ -84,8 +84,7 @@ const IncomeScreen = (props) => {
           <>
             {userIncome?.length > 0 && (
               <GroupByUser
-                budget={budget}
-                financeData={userIncome}
+                financeData={budget?.incomeUserData}
                 title={i18n.IncomeScreen.label}
                 highlight={highlight}
                 color={{ firstList: "tertiary", secondList: "primary" }}

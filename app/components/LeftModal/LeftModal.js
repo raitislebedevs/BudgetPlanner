@@ -45,22 +45,22 @@ const LeftModal = (props) => {
   const [theme, setTheme] = useState(userTheme);
   const [isInviting, setIsInviting] = useState(false);
   const [isConfirming, setIsConfirming] = useState(false);
-  // const [isEnabled, setIsEnabled] = useState(false);
   const [langPicker, setLangPicker] = useState(false);
-  // const toggleSwitch = () => {
-  //   if (theme === "light") {
-  //     setTheme("dark");
-  //     setUserTheme("dark");
-  //   }
-  //   if (theme === "dark") {
-  //     setTheme("light");
-  //     setUserTheme("light");
-  //   }
-  //   setIsEnabled((previousState) => !previousState);
-  // };
 
-  const languageSwitch = () => {
-    setLangPicker(!langPicker);
+  const languageSwitch = async () => {
+    try {
+      let isEnglish = !langPicker;
+      setLangPicker(isEnglish);
+
+      // let payload = {
+      //   language: isEnglish ? "lv" : "en",
+      // };
+      // await userInfoServices.UPDATE(reduxUser?.id, payload);
+      // await refreshUser();
+    } catch (error) {
+      console.log(error);
+    }
+
     return langPicker ? changeLanguage("lv") : changeLanguage("en");
   };
 
@@ -90,6 +90,7 @@ const LeftModal = (props) => {
 
   useEffect(async () => {
     try {
+      // changeLanguage(reduxUser?.language);
       let currencyData = await handleGetCurrencies();
       setItems(currencyData);
       changeLanguage("lv");
@@ -247,7 +248,10 @@ const LeftModal = (props) => {
                 {Platform.OS === "android" ? (
                   <Picker
                     selectedValue={currency}
-                    style={{ height: 50, width: 150 }}
+                    style={{
+                      height: 50,
+                      width: 150,
+                    }}
                     onValueChange={(itemValue, itemIndex) => {
                       handleCurrencyChange({
                         value: itemValue,
@@ -443,7 +447,7 @@ const LeftModal = (props) => {
           <AppTextInput
             icon={"email"}
             keyboardType="email-address"
-            placeholder={i18n.UserDrawer.inviteText}
+            placeholder={i18n.UserDrawer?.inviteText}
             onChangeText={(value) => setInvitePerson(value.toLowerCase())}
           ></AppTextInput>
           {!isInviting ? (

@@ -5,7 +5,6 @@ import {
   ActivityIndicator,
   RefreshControl,
 } from "react-native";
-import FinanceDetails from "../components/FinanseDetails/FinanceDetails";
 import { expenseCategory } from "../utils/categoryItems";
 import AskModal from "../components/AskModal/AskModal";
 import BudgetPieChart from "../components/BudgetPieChart/BudgetPieChart";
@@ -81,7 +80,7 @@ const ExpensesScreen = (props) => {
           <>
             {userExpense.length > 0 && (
               <GroupByUser
-                financeData={userExpense}
+                financeData={budget?.expenseUserData}
                 title={i18n.ExpenseScreen.label}
                 highlight={highlight}
                 color={{ firstList: "secondary", secondList: "primary" }}

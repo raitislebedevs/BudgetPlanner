@@ -47,7 +47,7 @@ export const initilizeData = async (
 
   getGroupedUserIncomeData();
   getGroupedUserExpenseData();
-  console.log();
+
   updateCategories(incomeData, categoryDetails?.incomeCategory);
   updateCategories(expenseData, categoryDetails?.expensCategory);
   updateCategories(budgetPlanningData, categoryDetails?.expensCategory);
@@ -67,6 +67,8 @@ export const initilizeData = async (
   getBezierChartPeriod(period, incomeData, expenseData, t);
   getBudgetChartData();
 
+  // console.log("Income User Data", incomeUserData);
+  // console.log("Expense User Data", expenseUserData);
   return {
     incomeData,
     expenseData,
@@ -154,9 +156,9 @@ const getGroupedUserIncomeData = () => {
 };
 
 const getGroupedUserExpenseData = () => {
-  if (rawIncomeData.length == 0) return (expenseUserData = []);
+  if (rawExpenseData.length == 0) return (expenseUserData = []);
 
-  expenseUserData = groupUserDataByPeriod(rawIncomeData);
+  expenseUserData = groupUserDataByPeriod(rawExpenseData);
 };
 
 const getGroupedIncomeData = () => {
@@ -165,16 +167,16 @@ const getGroupedIncomeData = () => {
   incomeData = groupDataByPeriod(rawIncomeData);
 };
 
-const getGroupedExpenseData = (currency) => {
+const getGroupedExpenseData = () => {
   if (rawExpenseData.length == 0) return (expenseData = []);
 
-  expenseData = groupDataByPeriod(rawExpenseData, currency);
+  expenseData = groupDataByPeriod(rawExpenseData);
 };
 
-const getGroupedPlannedData = (currency) => {
+const getGroupedPlannedData = () => {
   if (rawBudgetData.length == 0) return (budgetPlanningData = []);
 
-  budgetPlanningData = groupDataByPeriod(rawBudgetData, currency);
+  budgetPlanningData = groupDataByPeriod(rawBudgetData);
 };
 
 const getBudgetData = async (period, activity) => {
@@ -367,60 +369,18 @@ const groupDataByPeriod = (budgetData) => {
 
 const groupUserDataByPeriod = (budgetData) => {
   try {
-    let groupedBudgetData = [];
-    let groupedItemData = [];
-    let group = groupDataByIndex(budgetData, "category");
-    let activity = "";
-
-    Object.keys(group).forEach((person) => {
-      let userData = groupDataByIndex(group[person], "user");
-      Object.keys(userData).forEach((el) => {
-        let categoryItems = groupDataByIndex(userData[el], "categoryItem");
-        groupedItemData = [];
-        Object.keys(categoryItems).forEach((el) => {
-          let itemData = [];
-          let categoryItemSummery = {
-            title: el,
-            amount: parseFloat(
-              categoryItems[el].reduce(
-                (a, b) => a + (parseFloat(b["activityAmount"]) || 0),
-                0
-              )
-            ).toFixed(2),
-          };
-          activity = categoryItems[el][0].activity;
-
-          categoryItems[el].forEach((item) => {
-            itemData.push({
-              date: item.activityDate || item?.createdAt,
-              amount: parseFloat(item.activityAmount).toFixed(2),
-              id: item.id,
-            });
-          });
-          itemData.sort((a, b) => new Date(b.date) - new Date(a.date));
-          categoryItemSummery.items = itemData;
-          groupedItemData.push(categoryItemSummery);
-        });
-        //This value here does not Parses great
-        let totalValue = userData[el].reduce(
-          (a, b) => a + (parseFloat(b["activityAmount"]) || 0),
-          0
-        );
-        let categorySummary = {
-          label: el,
-          user: userData[el][0].user.userInfo,
-          total: totalValue,
-          style: {
-            color: activity == "expense" ? "darkred" : "darkgreen",
-            fontWeight: "bold",
-          },
-
-          data: groupedItemData,
+    let journalData = {};
+    linkedUsers.forEach((user) => {
+      let userData = budgetData.filter((item) => item.user.id == user);
+      let userItem = groupDataByPeriod(userData);
+      if (userData.length > 0)
+        journalData = {
+          ...journalData,
+          [userData[0]?.user.userInfo]: userItem,
         };
-        groupedBudgetData.push(categorySummary);
-      });
     });
-    return groupedBudgetData;
+
+    return journalData;
   } catch (error) {
     console.log(error);
   }
@@ -704,7 +664,19 @@ const calculateBOTPeriods = () => {
 
 export const groupDataByIndex = (budgetData, key) => {
   var data = budgetData,
-    result = data.reduce(function (r, a) {
+    result = data?.reduce(function (r, a) {
+      r[a[key]] = r[a[key]] || [];
+      a.user;
+      r[a[key]].push(a);
+      return r;
+    }, Object.create(null));
+
+  return result;
+};
+
+export const groupUserDataByIndex = (budgetData, key) => {
+  var data = budgetData,
+    result = data?.reduce(function (r, a) {
       r[a[key]] = r[a[key]] || [];
       a.user;
       r[a[key]].push(a);
@@ -759,13 +731,13 @@ function getBudgetPeriodFilter(period, filter) {
 function updateCategories(data, category) {
   if (!category) return;
 
-  data.forEach((group) => {
+  data?.forEach((group) => {
     let item = category.filter((c) => c.value == group.label)[0];
     if (!item) return;
     let items = item.items;
     group.icon = item.icon;
     group.color = item.color;
-    group.data.forEach((cat) => {
+    group.data?.forEach((cat) => {
       let innerItem = items.filter((i) => i.value == cat.title)[0];
       cat.icon = innerItem?.icon;
       cat.color = innerItem?.color;
@@ -776,9 +748,8 @@ function updateCategories(data, category) {
 function updateUserCategories(data, category) {
   if (!category) return;
 
-  data.forEach((person) => {
-    console.log("Person", person);
-    person.data.forEach((group) => {
+  for (const key in data) {
+    data[key].forEach((group) => {
       let item = category.filter((c) => c.value == group.label)[0];
       if (!item) return;
       let items = item.items;
@@ -790,5 +761,5 @@ function updateUserCategories(data, category) {
         cat.color = innerItem?.color;
       });
     });
-  });
+  }
 }
