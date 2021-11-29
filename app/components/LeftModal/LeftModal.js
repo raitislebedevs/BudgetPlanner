@@ -210,7 +210,7 @@ const LeftModal = (props) => {
         <View style={styles.headingContainer}>
           <View style={styles.heading}>
             <Text style={[styles.label, defaultStyles.headingText]}>
-              {`${reduxUser.firstName} ${reduxUser.lastName}`}
+              {`${reduxUser?.firstName} ${reduxUser?.lastName}`}
             </Text>
             <TouchableOpacity
               style={styles.close}
