@@ -41,6 +41,8 @@ export const languages = {
     },
     Header: { saved: "Saved", spent: "Spent", planned: "Budget" },
     Common: {
+      receipt: "Total:",
+      item: "+ item",
       week: "Week",
       date: "Date",
       amount: "Amount",
@@ -176,6 +178,8 @@ export const languages = {
     },
     Header: { saved: "Uzkrājums", spent: "Iztērēts", planned: "Budžets" },
     Common: {
+      receipt: "Summa:",
+      item: "+ ieraksts",
       week: "Nedēļa",
       date: "Datums",
       amount: "Summa",
