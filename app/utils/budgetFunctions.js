@@ -30,7 +30,8 @@ export const initilizeData = async (
   t,
   reduxUser,
   reduxLinkedUsers,
-  categoryDetails
+  categoryDetails,
+  chartState
 ) => {
   if (!reduxUser || reduxLinkedUsers?.length == 0) return;
 
@@ -64,7 +65,7 @@ export const initilizeData = async (
   savedAmount = incomeAmount - spentAmount;
   incomeChartData = chartData(incomeData, greenColorCodes);
   spentChartData = chartData(expenseData, redColorCodes);
-  getBezierChartPeriod(period, incomeData, expenseData, t);
+  getBezierChartPeriod(period, incomeData, expenseData, t, chartState);
   getBudgetChartData();
 
   // console.log("Income User Data", incomeUserData);
@@ -430,17 +431,22 @@ const calculateYear = () => {
   return currentMonth.diff(yearStartDate, "days"); // =1
 };
 
-const getBezierChartPeriod = (period, income, expense, lang) => {
+const getBezierChartPeriod = (period, income, expense, lang, chartState) => {
   try {
     let periodData = getBudgetPeriodData(period, lang);
     const { chartLabel, chartPeriods } = periodData;
 
     let xLabel = chartLabel;
-    let incomeChartData = getBezierChartData(chartPeriods, income);
-    let expenseChartData = getBezierChartData(chartPeriods, expense);
+    let incomeChartData = getBezierChartData(chartPeriods, income, chartState);
+    let expenseChartData = getBezierChartData(
+      chartPeriods,
+      expense,
+      chartState
+    );
 
     let postiveLine = formatChartData(xLabel, incomeChartData);
     let negativeLine = formatChartData(xLabel, expenseChartData);
+
     let chartData = { positive: postiveLine, negative: negativeLine };
     let maxPositive = Math.max.apply(
       Math,
@@ -484,11 +490,12 @@ const formatChartData = (xLabel, incomeChartData) => {
   return lineData;
 };
 
-const getBezierChartData = (dates, data) => {
+const getBezierChartData = (dates, data, chartState) => {
   if (dates && data) {
+    let chartPoint = 0;
     let chartData = [];
     dates.forEach((chartDate, dateIndex, array) => {
-      let chartPoint = 0;
+      if (chartState === "default") chartPoint = 0;
       data.forEach((category) => {
         category?.data.forEach((categoryItem) => {
           categoryItem?.items.forEach((point, index) => {

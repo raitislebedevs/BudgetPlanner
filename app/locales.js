@@ -2,7 +2,7 @@ export const languages = {
   en: {
     LoginScreen: {},
     RegisterScreen: {},
-    SummaryScreen: {},
+    SummaryScreen: { chartLabel: "Chart Style" },
     IncomeScreen: { label: "Income", addIncome: "Add income" },
     ExpenseScreen: { label: "Expense", addExpense: "Add expense" },
     BudgetScreen: {
@@ -132,7 +132,7 @@ export const languages = {
   lv: {
     LoginScreen: {},
     RegisterScreen: {},
-    SummaryScreen: {},
+    SummaryScreen: { chartLabel: "Grafika Izskats" },
     IncomeScreen: { label: "Ienākumi", addIncome: "Pievienot ienākumu" },
     ExpenseScreen: { label: "Izdevumi", addExpense: "Pievienot izdevumu" },
     BudgetScreen: {

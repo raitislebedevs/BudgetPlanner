@@ -34,6 +34,7 @@ const NavigationMainContainer = ({
   setLinkedUsers,
   setUserInvites,
   setLinkedUserInfos,
+  summaryChart,
 }) => {
   const { i18n } = useLocale();
   //Screen Names
@@ -47,7 +48,7 @@ const NavigationMainContainer = ({
 
   useEffect(async () => {
     if (period) await getGlobalBudgetData();
-  }, [period]);
+  }, [period, summaryChart]);
 
   useEffect(async () => {
     if (refresh) {
@@ -92,7 +93,8 @@ const NavigationMainContainer = ({
           i18n,
           reduxUser,
           linkedUsers,
-          categoryDetails
+          categoryDetails,
+          summaryChart
         );
         setGlobalBudget(data);
         setIsLoading(false);
@@ -202,6 +204,7 @@ const mapStateToProps = (state) => ({
   linkedUsers: state.user?.linkedUsers,
   categoryDetails: state.user?.categories,
   refresh: state.loader.refreshing,
+  summaryChart: state.theme.summaryChart,
 });
 
 const mapDispatchToProps = (dispatch) => ({

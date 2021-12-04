@@ -49,3 +49,8 @@ export const setLinkedUserInfos = (payload) => ({
   type: Types.SET_LINKED_USER_INFOS,
   value: payload,
 });
+
+export const setSummaryChart = (payload) => ({
+  type: Types.SET_SUMMARY_CHART,
+  value: payload,
+});

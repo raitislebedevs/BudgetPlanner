@@ -6,6 +6,7 @@ import {
   ScrollView,
   ActivityIndicator,
   Text,
+  Switch,
   RefreshControl,
 } from "react-native";
 import AskModal from "../components/AskModal/AskModal";
@@ -14,6 +15,7 @@ import { colors } from "../config/colors";
 import { connect } from "react-redux";
 import SummaryChart from "../components/SummaryChart.js/SummaryChart";
 import * as actions from "../Redux/actions";
+import defaultStyles from "../config/appStyles";
 
 const SummaryScreen = (props) => {
   const {
@@ -23,10 +25,12 @@ const SummaryScreen = (props) => {
     getGlobalBudgetData,
     refreshing,
     setRefreshing,
+    setSummaryChart,
   } = props;
   const { i18n } = useLocale();
   const [modalVisible, setModalVisible] = useState(false);
   const [id, setId] = useState("");
+  const [chart, setChart] = useState(false);
 
   const onRefresh = () => {
     setRefreshing(true);
@@ -39,6 +43,13 @@ const SummaryScreen = (props) => {
     setId(id);
     setModalVisible(true);
   };
+
+  const updateChartStyle = (e) => {
+    setChart(!chart);
+    if (e) return setSummaryChart("sum");
+    return setSummaryChart("default");
+  };
+
   return (
     <View style={styles.container}>
       <AskModal
@@ -56,6 +67,18 @@ const SummaryScreen = (props) => {
           {!isLoading ? (
             <>
               <SummaryChart chartLabels={chartLabels} />
+              <View style={styles.toggle}>
+                <Text style={[defaultStyles.appTextNormal, styles.toogleText]}>
+                  {i18n.SummaryScreen.chartLabel}
+                </Text>
+                <Switch
+                  trackColor={{ false: colors.primary, true: "#fff" }}
+                  thumbColor={chart ? colors.primary : colors.lightGray}
+                  ios_backgroundColor="#3e3e3e"
+                  onValueChange={updateChartStyle}
+                  value={chart}
+                />
+              </View>
               {budget?.incomeData?.length > 0 && (
                 <FinanceDetails
                   financeData={budget?.incomeData}
@@ -129,15 +152,25 @@ const styles = StyleSheet.create({
     borderColor: "green",
     borderWidth: 2,
   },
+  toggle: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+  },
+  toogleText: {
+    fontSize: 14,
+    marginTop: 12,
+  },
 });
 
 const mapStateToProps = (state) => ({
   isLoading: state.loader.isLoading,
   refreshing: state.loader.refreshing,
+  summaryChart: state.theme.summaryChart,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   setRefreshing: (value) => dispatch(actions.setRefresh(value)),
+  setSummaryChart: (value) => dispatch(actions.setSummaryChart(value)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(SummaryScreen);

@@ -93,7 +93,7 @@ const LoginScreen = (props) => {
       userInfoData?.invites.forEach((person) => {
         userInvites.push(person.id);
       });
-      // console.log("Linked users array", linkedUsers);
+
       let filter = { userId_in: linkedUsers };
       const { data } = await userInfoServices.FIND(filter);
       data.forEach((element) => {
@@ -101,13 +101,6 @@ const LoginScreen = (props) => {
         delete element?.linkedUsers;
         delete element?.currency;
       });
-      // console.log("Linked users", data);
-      // console.log("Linked users", data);
-      // let myUserInfoData = JSON.parse(JSON.stringify(userInfoData));
-      // delete myUserInfoData?.userCategories;
-      // delete myUserInfoData?.linkedUsers;
-      // delete myUserInfoData?.currency;
-      // data.push(myUserInfoData);
 
       setLinkedUserInfos(data);
       setCurrency(userInfoData?.currency?.symbol);
