@@ -31,7 +31,7 @@ const ExpensesScreen = (props) => {
   const [id, setId] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [userExpense, setUserExpense] = useState([]);
-  const [inputValues, setInputValues] = useState({ ActivityDate: new Date() });
+  const [inputValues, setInputValues] = useState([]);
   const colorCodes = redColorCodes();
   useEffect(async () => {
     setUserExpense(budget?.expenseData);

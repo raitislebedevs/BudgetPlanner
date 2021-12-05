@@ -3,14 +3,14 @@ import { View, StyleSheet, ActivityIndicator, Text } from "react-native";
 import budgetJournal from "../../services/budgetJournal";
 import DatePickerComponent from "../DatePickerComponent/DatePickerComponent";
 import InputNumericField from "../InputNumericField/InputNumericField";
-import { getMyData } from "../../utils/userData";
 import ToastMessage from "../ToastMessage/ToastMessage";
-import { useLocale, withLocale } from "react-easy-localization";
+import { useLocale } from "react-easy-localization";
 import AppButton from "../AppButton/AppButton";
 import AppPicker from "../AppPicker/AppPicker";
 import { connect } from "react-redux";
 import { colors } from "../../config/colors";
-import { formatNumber } from "../../utils/standaloneFunctions";
+import { formatNumber, randomString } from "../../utils/standaloneFunctions";
+import RemoveSwipable from "../RemoveSwipable/RemoveSwipable";
 
 const SubmitActivity = (props) => {
   const {
@@ -30,8 +30,9 @@ const SubmitActivity = (props) => {
   const [showInput, setShowInput] = useState(false);
   const [isSubmiting, setIsSubmiting] = useState(false);
   const [receiptSum, setReceiptSum] = useState(0);
-  const [receipt, setReceiptt] = useState([
+  const [receipt, setReceipt] = useState([
     {
+      id: randomString(),
       category: "",
       categoryItem: "ANY",
       activityDate: new Date(),
@@ -43,21 +44,29 @@ const SubmitActivity = (props) => {
   const [items, setItems] = useState([]);
 
   const handleOnChange = (event) => {
+    let entry = getSelectedValue(event?.id);
     const value = event?.target?.value ?? event?.value ?? event;
     const id = event?.target?.id ?? event?.id;
-    setInputValues({ ...inputValues, [id]: value });
+    entry[id] = value;
 
+    const filteredList = inputValues.filter((entry) => entry.id != event?.id);
+    setInputValues([...filteredList, { ...entry }]);
     if (id === "ActivityAmount") sumReceipt();
+
+    // console.log("Input Values", inputValues);
   };
 
   const handleOnChangeCategoryInputValue = (event) => {
+    let entry = getSelectedValue(event?.id);
+
     const value = event?.target?.value ?? event?.value ?? event;
     const id = event?.target?.id ?? event?.id;
-    setInputValues({
-      ...inputValues,
-      [id]: value,
-      CategoryItem: "",
-    });
+    entry[id] = value;
+    entry.CategoryItem = "";
+
+    const filteredList = inputValues.filter((entry) => entry.id != event?.id);
+
+    setInputValues([...filteredList, { ...entry }]);
   };
 
   const handleOnChangeCategory = (event) => {
@@ -67,8 +76,7 @@ const SubmitActivity = (props) => {
     })[0];
 
     setItems(category?.items);
-    let iconTarget = { value: category?.icon, id: "icon" };
-    handleOnChangeCategoryInputValue(event, iconTarget);
+    handleOnChangeCategoryInputValue(event);
   };
 
   const submitEntry = async () => {
@@ -79,10 +87,32 @@ const SubmitActivity = (props) => {
         setShowInput(!showInput);
         return;
       }
+      inputValues.forEach((item) => {
+        if (!item.Category || !item.ActivityDate || !item.ActivityAmount) {
+          setIsSubmiting(false);
+          return ToastMessage(
+            "error",
+            "Hold your horses",
+            "Please fill all fields"
+          );
+        }
+
+        console.log("Single Entry", singleEntry);
+        //submitSingleEntry(singleEntry);
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const submitSingleEntry = async (singleEntry) => {
+    try {
+      setIsSubmiting(true);
+
       if (
-        !inputValues.Category ||
-        !inputValues.ActivityDate ||
-        !inputValues.ActivityAmount
+        !singleEntry.Category ||
+        !singleEntry.ActivityDate ||
+        !singleEntry.ActivityAmount
       ) {
         setIsSubmiting(false);
         return ToastMessage(
@@ -93,10 +123,10 @@ const SubmitActivity = (props) => {
       }
 
       let payload = {
-        category: inputValues.Category,
-        categoryItem: inputValues?.CategoryItem || "ANY",
-        activityDate: inputValues.ActivityDate,
-        activityAmount: inputValues.ActivityAmount,
+        category: singleEntry.Category,
+        categoryItem: singleEntry?.CategoryItem || "ANY",
+        activityDate: singleEntry.ActivityDate,
+        activityAmount: singleEntry.ActivityAmount,
         activity: activity,
         user: user?.userId,
       };
@@ -114,9 +144,11 @@ const SubmitActivity = (props) => {
   };
 
   const addNewItem = () => {
-    setReceiptt([
+    if (receipt.length > 100) return;
+    setReceipt([
       ...receipt,
       {
+        id: randomString(),
         category: "",
         categoryItem: "ANY",
         activityDate: new Date(),
@@ -128,14 +160,27 @@ const SubmitActivity = (props) => {
   };
 
   const sumReceipt = () => {
-    console.log("Calls");
     let receiptAmount = 0;
-
-    receipt.forEach((item) => {
-      receiptAmount += item.activityAmount;
+    inputValues.forEach((item) => {
+      receiptAmount += parseFloat(item.ActivityAmount);
     });
-
     setReceiptSum(receiptAmount);
+  };
+
+  const removeItem = (id) => {
+    let newReceipt = receipt.filter((item) => item.id != id);
+    setReceipt(newReceipt);
+  };
+
+  const getSelectedValue = (id) => {
+    let entry = {};
+    const filter = inputValues.filter((entry) => entry.id == id);
+    if (typeof filter[0] === "undefined") {
+      entry.id = id;
+    } else {
+      entry = filter[0];
+    }
+    return entry;
   };
 
   return (
@@ -145,48 +190,64 @@ const SubmitActivity = (props) => {
           {!isSubmiting ? (
             <>
               {receipt.map((item) => (
-                <View style={styles.submitContainer}>
-                  <View style={styles.pickerItemContainer}>
-                    <AppPicker
-                      icon={"apps"}
-                      underlineColor="brown"
-                      placeholder={i18n.Common.category}
-                      items={categoryItems}
-                      onSelectItem={(itemValue) => {
-                        handleOnChangeCategory({
-                          target: { value: itemValue, id: "Category" },
-                        });
-                      }}
-                      selectedItem={inputValues?.Category}
-                    />
-                    <AppPicker
-                      icon="apps"
-                      underlineColor="brown"
-                      placeholder={i18n.Common.categoryItem}
-                      items={items}
-                      onSelectItem={(value) => {
-                        handleOnChange({
-                          target: { value, id: "CategoryItem" },
-                        });
-                      }}
-                      selectedItem={inputValues?.CategoryItem}
-                    />
+                <RemoveSwipable
+                  key={item.id}
+                  onPress={() => removeItem(item.id)}
+                >
+                  <View style={styles.submitContainer}>
+                    <View style={styles.pickerItemContainer}>
+                      <AppPicker
+                        icon={"apps"}
+                        underlineColor="brown"
+                        placeholder={i18n.Common.category}
+                        items={categoryItems}
+                        onSelectItem={(itemValue) => {
+                          handleOnChangeCategory({
+                            id: item.id,
+                            target: { value: itemValue, id: "Category" },
+                          });
+                        }}
+                        selectedItem={getSelectedValue(item?.id)?.Category}
+                      />
+                      <AppPicker
+                        icon="apps"
+                        underlineColor="brown"
+                        placeholder={i18n.Common.categoryItem}
+                        items={items}
+                        onSelectItem={(value) => {
+                          handleOnChange({
+                            id: item.id,
+                            target: { value, id: "CategoryItem" },
+                          });
+                        }}
+                        selectedItem={getSelectedValue(item?.id)?.CategoryItem}
+                      />
+                    </View>
+                    <View style={styles.valueDetails}>
+                      <DatePickerComponent
+                        i18n={i18n}
+                        handleOnChange={(value) => {
+                          handleOnChange({
+                            id: item.id,
+                            ...value,
+                          });
+                        }}
+                      />
+                      <InputNumericField
+                        icon={"cash"}
+                        id={"ActivityAmount"}
+                        handleOnChange={(value) => {
+                          handleOnChange({
+                            id: item.id,
+                            ...value,
+                          });
+                        }}
+                        label={i18n.Common.amount}
+                        currency={currencySymbol}
+                      />
+                    </View>
                   </View>
-                  <View style={styles.valueDetails}>
-                    <DatePickerComponent
-                      i18n={i18n}
-                      handleOnChange={handleOnChange}
-                    />
-
-                    <InputNumericField
-                      icon={"cash"}
-                      id={"ActivityAmount"}
-                      handleOnChange={handleOnChange}
-                      label={i18n.Common.amount}
-                      currency={currencySymbol}
-                    />
-                  </View>
-                </View>
+                </RemoveSwipable>
               ))}
             </>
           ) : (
@@ -204,7 +265,8 @@ const SubmitActivity = (props) => {
           <>
             <View style={styles.receipt}>
               <Text>
-                {i18n.Common.receipt} {formatNumber(receiptSum, currency)}
+                {i18n.Common.receipt}{" "}
+                {formatNumber(parseFloat(receiptSum).toFixed(2), currency)}
               </Text>
             </View>
             <AppButton
