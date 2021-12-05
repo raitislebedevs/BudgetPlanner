@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, StyleSheet, ActivityIndicator, Text } from "react-native";
 import budgetJournal from "../../services/budgetJournal";
 import DatePickerComponent from "../DatePickerComponent/DatePickerComponent";
@@ -30,18 +30,27 @@ const SubmitActivity = (props) => {
   const [showInput, setShowInput] = useState(false);
   const [isSubmiting, setIsSubmiting] = useState(false);
   const [receiptSum, setReceiptSum] = useState(0);
-  const [receipt, setReceipt] = useState([
-    {
-      id: randomString(),
-      category: "",
-      categoryItem: "ANY",
-      activityDate: new Date(),
-      activityAmount: 0,
-      activity: "",
-      user: user?.userId,
-    },
-  ]);
+
   const [items, setItems] = useState([]);
+
+  useEffect(() => {
+    initilizeInputValues();
+  }, []);
+
+  const initilizeInputValues = () => {
+    setInputValues([
+      {
+        id: randomString(),
+        Category: "",
+        CategoryItem: "",
+        ActivityDate: new Date(),
+        ActivityAmount: 0,
+        activity: activity,
+        user: user?.id,
+      },
+    ]);
+    setReceiptSum(0);
+  };
 
   const handleOnChange = (event) => {
     let entry = getSelectedValue(event?.id);
@@ -49,11 +58,9 @@ const SubmitActivity = (props) => {
     const id = event?.target?.id ?? event?.id;
     entry[id] = value;
 
-    const filteredList = inputValues.filter((entry) => entry.id != event?.id);
-    setInputValues([...filteredList, { ...entry }]);
+    const index = inputValues.findIndex((entry) => entry.id == event?.id);
+    setInputValues([...resultArray(inputValues, entry, index)]);
     if (id === "ActivityAmount") sumReceipt();
-
-    // console.log("Input Values", inputValues);
   };
 
   const handleOnChangeCategoryInputValue = (event) => {
@@ -63,10 +70,8 @@ const SubmitActivity = (props) => {
     const id = event?.target?.id ?? event?.id;
     entry[id] = value;
     entry.CategoryItem = "";
-
-    const filteredList = inputValues.filter((entry) => entry.id != event?.id);
-
-    setInputValues([...filteredList, { ...entry }]);
+    const index = inputValues.findIndex((entry) => entry.id == event?.id);
+    setInputValues([...resultArray(inputValues, entry, index)]);
   };
 
   const handleOnChangeCategory = (event) => {
@@ -81,25 +86,31 @@ const SubmitActivity = (props) => {
 
   const submitEntry = async () => {
     try {
-      setIsSubmiting(true);
+      let newInputValues = [...inputValues];
+      let errorCount = 0;
+
       if (!showInput) {
-        setIsSubmiting(false);
         setShowInput(!showInput);
         return;
       }
-      inputValues.forEach((item) => {
+      newInputValues.forEach((item) => {
         if (!item.Category || !item.ActivityDate || !item.ActivityAmount) {
-          setIsSubmiting(false);
-          return ToastMessage(
-            "error",
-            "Hold your horses",
-            "Please fill all fields"
-          );
+          item.error = i18n.Error.itemFields;
+          errorCount++;
+          return;
         }
-
-        console.log("Single Entry", singleEntry);
-        //submitSingleEntry(singleEntry);
+        item.error = "";
       });
+      setInputValues([...newInputValues]);
+      if (errorCount) {
+        return;
+      }
+
+      if (!errorCount) {
+        await inputValues.forEach((item) => {
+          submitSingleEntry(item);
+        });
+      }
     } catch (error) {
       console.log(error);
     }
@@ -115,11 +126,7 @@ const SubmitActivity = (props) => {
         !singleEntry.ActivityAmount
       ) {
         setIsSubmiting(false);
-        return ToastMessage(
-          "error",
-          "Hold your horses",
-          "Please fill all fields"
-        );
+        return;
       }
 
       let payload = {
@@ -128,12 +135,12 @@ const SubmitActivity = (props) => {
         activityDate: singleEntry.ActivityDate,
         activityAmount: singleEntry.ActivityAmount,
         activity: activity,
-        user: user?.userId,
+        user: user?.id,
       };
       const { data } = await budgetJournal.CREATE(payload);
       setIsSubmiting(false);
       setShowInput(!showInput);
-      setInputValues({});
+      initilizeInputValues();
       getGlobalBudgetData();
       return data;
     } catch (error) {
@@ -144,35 +151,37 @@ const SubmitActivity = (props) => {
   };
 
   const addNewItem = () => {
-    if (receipt.length > 100) return;
-    setReceipt([
-      ...receipt,
+    if (inputValues.length > 100) return;
+    setInputValues([
+      ...inputValues,
       {
         id: randomString(),
-        category: "",
-        categoryItem: "ANY",
-        activityDate: new Date(),
-        activityAmount: 0,
-        activity: "",
-        user: user?.userId,
+        Category: "",
+        CategoryItem: "",
+        ActivityDate: new Date(),
+        ActivityAmount: 0,
+        activity: activity,
+        user: user?.id,
       },
     ]);
   };
 
   const sumReceipt = () => {
     let receiptAmount = 0;
-    inputValues.forEach((item) => {
-      receiptAmount += parseFloat(item.ActivityAmount);
+    inputValues?.forEach((item) => {
+      if (isNaN(parseFloat(item?.ActivityAmount))) return;
+      receiptAmount += parseFloat(item?.ActivityAmount);
     });
     setReceiptSum(receiptAmount);
   };
 
   const removeItem = (id) => {
-    let newReceipt = receipt.filter((item) => item.id != id);
-    setReceipt(newReceipt);
+    let newReceipt = inputValues.filter((item) => item.id != id);
+    setInputValues(newReceipt);
   };
 
   const getSelectedValue = (id) => {
+    if (!id) return;
     let entry = {};
     const filter = inputValues.filter((entry) => entry.id == id);
     if (typeof filter[0] === "undefined") {
@@ -183,13 +192,22 @@ const SubmitActivity = (props) => {
     return entry;
   };
 
+  const resultArray = (array, element, index) => {
+    let resultArray = [
+      ...array.slice(0, index),
+      element,
+      ...array.slice(index + 1),
+    ];
+    return resultArray;
+  };
+
   return (
     <>
       {showInput && (
         <>
           {!isSubmiting ? (
             <>
-              {receipt.map((item) => (
+              {inputValues.map((item) => (
                 <RemoveSwipable
                   key={item.id}
                   onPress={() => removeItem(item.id)}
@@ -246,6 +264,12 @@ const SubmitActivity = (props) => {
                         currency={currencySymbol}
                       />
                     </View>
+                  </View>
+
+                  <View style={styles.error}>
+                    <Text style={styles.error}>
+                      {item?.error && item.error}
+                    </Text>
                   </View>
                 </RemoveSwipable>
               ))}
@@ -337,5 +361,13 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     paddingTop: 10,
     paddingRight: "5%",
+  },
+  error: {
+    marginBottom: 3,
+    color: colors.danger,
+    fontSize: 12,
+    fontFamily: Platform.OS === "android" ? "Roboto" : "Avenir",
+    fontWeight: "bold",
+    alignSelf: "center",
   },
 });

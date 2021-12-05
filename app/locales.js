@@ -130,6 +130,9 @@ export const languages = {
       organisation: "Organisation",
       church: "Church",
     },
+    Error: {
+      itemFields: "Please fill all fields",
+    },
   },
   lv: {
     LoginScreen: {},
@@ -266,6 +269,9 @@ export const languages = {
       friends: "Draugi",
       organisation: "Organizācijas",
       church: "Baznīca",
+    },
+    Error: {
+      itemFields: "Visu lauki nav aizpildīti",
     },
   },
 };

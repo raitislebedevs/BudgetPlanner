@@ -33,7 +33,7 @@ const IncomeScreen = (props) => {
   const [id, setId] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [userIncome, setUserIncome] = useState([]);
-  const [inputValues, setInputValues] = useState({ ActivityDate: new Date() });
+  const [inputValues, setInputValues] = useState([]);
   const colorCodes = greenColorCodes();
   useEffect(async () => {
     setUserIncome(budget?.incomeData);
