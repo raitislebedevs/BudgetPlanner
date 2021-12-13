@@ -3,7 +3,6 @@ import { View, StyleSheet, ActivityIndicator, Text } from "react-native";
 import budgetJournal from "../../services/budgetJournal";
 import DatePickerComponent from "../DatePickerComponent/DatePickerComponent";
 import InputNumericField from "../InputNumericField/InputNumericField";
-import ToastMessage from "../ToastMessage/ToastMessage";
 import { useLocale } from "react-easy-localization";
 import AppButton from "../AppButton/AppButton";
 import AppPicker from "../AppPicker/AppPicker";
@@ -30,7 +29,6 @@ const SubmitActivity = (props) => {
   const [showInput, setShowInput] = useState(false);
   const [isSubmiting, setIsSubmiting] = useState(false);
   const [receiptSum, setReceiptSum] = useState(0);
-
   const [items, setItems] = useState([]);
 
   useEffect(() => {
@@ -44,7 +42,7 @@ const SubmitActivity = (props) => {
         Category: "",
         CategoryItem: "",
         ActivityDate: new Date(),
-        ActivityAmount: 0,
+        ActivityAmount: [0],
         activity: activity,
         user: user?.id,
       },
@@ -94,7 +92,16 @@ const SubmitActivity = (props) => {
         return;
       }
       newInputValues.forEach((item) => {
-        if (!item.Category || !item.ActivityDate || !item.ActivityAmount) {
+        let zeroCount = item.ActivityAmount.filter(
+          (price) => price == 0
+        ).length;
+
+        if (
+          !item.Category ||
+          !item.ActivityDate ||
+          (item.ActivityAmount.length == 1 && item.ActivityAmount[0] == 0) ||
+          zeroCount == item.ActivityAmount.length
+        ) {
           item.error = i18n.Error.itemFields;
           errorCount++;
           return;
@@ -108,7 +115,11 @@ const SubmitActivity = (props) => {
 
       if (!errorCount) {
         await inputValues.forEach((item) => {
-          submitSingleEntry(item);
+          let purchase = JSON.parse(JSON.stringify(item));
+          item.ActivityAmount.forEach((price) => {
+            purchase.ActivityAmount = price;
+            if (price) submitSingleEntry(purchase);
+          });
         });
       }
     } catch (error) {
@@ -159,7 +170,7 @@ const SubmitActivity = (props) => {
         Category: "",
         CategoryItem: "",
         ActivityDate: new Date(),
-        ActivityAmount: 0,
+        ActivityAmount: [0],
         activity: activity,
         user: user?.id,
       },
@@ -167,12 +178,22 @@ const SubmitActivity = (props) => {
   };
 
   const sumReceipt = () => {
-    let receiptAmount = 0;
-    inputValues?.forEach((item) => {
-      if (isNaN(parseFloat(item?.ActivityAmount))) return;
-      receiptAmount += parseFloat(item?.ActivityAmount);
-    });
-    setReceiptSum(receiptAmount);
+    try {
+      let receiptAmount = 0;
+      inputValues?.forEach((item) => {
+        if (isNaN(parseFloat(item?.ActivityAmount))) return;
+        let receipt = JSON.parse(JSON.stringify(item?.ActivityAmount));
+        let result = receipt.reduce(add, 0);
+        receiptAmount += result;
+      });
+      setReceiptSum(receiptAmount);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const add = (accumulator, a) => {
+    return parseFloat(accumulator) + parseFloat(a);
   };
 
   const removeItem = (id) => {
@@ -199,6 +220,24 @@ const SubmitActivity = (props) => {
       ...array.slice(index + 1),
     ];
     return resultArray;
+  };
+
+  const addNewPurchase = (item) => {
+    if (item.ActivityAmount.length > 9) return;
+    item.ActivityAmount.push(0);
+    const index = inputValues.findIndex((entry) => entry.id == item?.id);
+    setInputValues([...resultArray(inputValues, item, index)]);
+  };
+
+  const handleOnAmountChange = (purchaseItem) => {
+    const { id, index, target } = purchaseItem;
+    const inputIndex = inputValues.findIndex((entry) => entry.id == id);
+    const purchase = { ...inputValues[inputIndex] };
+
+    if (target?.value == "NaN") target.value = 0;
+    purchase.ActivityAmount[index] = parseFloat(target?.value || 0);
+    setInputValues([...resultArray(inputValues, purchase, inputIndex)]);
+    sumReceipt();
   };
 
   return (
@@ -251,11 +290,14 @@ const SubmitActivity = (props) => {
                           });
                         }}
                       />
+
                       <InputNumericField
                         icon={"cash"}
                         id={"ActivityAmount"}
                         handleOnChange={(value) => {
-                          handleOnChange({
+                          handleOnAmountChange({
+                            itemId: item.id,
+                            index: 0,
                             id: item.id,
                             ...value,
                           });
@@ -264,8 +306,55 @@ const SubmitActivity = (props) => {
                         currency={currencySymbol}
                       />
                     </View>
-                  </View>
+                    <View style={styles.addItem}>
+                      <View
+                        style={[styles.justifyEvenly, styles.addItemButtom]}
+                      >
+                        <AppButton
+                          title={
+                            i18n.Common.additem +
+                            " " +
+                            formatNumber(
+                              parseFloat(
+                                item?.ActivityAmount.reduce(add, 0)
+                              ).toFixed(2),
+                              currency
+                            )
+                          }
+                          onPress={() => addNewPurchase(item)}
+                          color={"photo"}
+                        />
+                      </View>
+                      <View>
+                        {item?.ActivityAmount?.map((element, index) => {
+                          if (index < 1) return;
 
+                          return (
+                            <View
+                              style={styles.sumItem}
+                              key={`${item.id}_${index}`}
+                            >
+                              <InputNumericField
+                                icon={"cash"}
+                                value={element}
+                                id={"ActivityAmount"}
+                                handleOnChange={(value) => {
+                                  handleOnAmountChange({
+                                    itemId: item.id,
+                                    index,
+                                    id: item.id,
+                                    ...value,
+                                  });
+                                }}
+                                label={i18n.Common.amount}
+                                currency={currencySymbol}
+                              />
+                            </View>
+                          );
+                        })}
+                      </View>
+                    </View>
+                  </View>
                   <View style={styles.error}>
                     <Text style={styles.error}>
                       {item?.error && item.error}
@@ -288,7 +377,7 @@ const SubmitActivity = (props) => {
         {showInput ? (
           <>
             <View style={styles.receipt}>
-              <Text>
+              <Text style={styles.receiptText}>
                 {i18n.Common.receipt}{" "}
                 {formatNumber(parseFloat(receiptSum).toFixed(2), currency)}
               </Text>
@@ -362,6 +451,17 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingRight: "5%",
   },
+  receiptCategory: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "flex-start",
+    marginBottom: 12,
+    paddingTop: 10,
+    paddingLeft: "5%",
+  },
+  receiptText: {
+    fontSize: 18,
+  },
   error: {
     marginBottom: 3,
     color: colors.danger,
@@ -369,5 +469,22 @@ const styles = StyleSheet.create({
     fontFamily: Platform.OS === "android" ? "Roboto" : "Avenir",
     fontWeight: "bold",
     alignSelf: "center",
+  },
+  addItem: {
+    display: "flex",
+    flexDirection: "row",
+  },
+  justifyEvenly: {
+    display: "flex",
+    width: "50%",
+    justifyContent: "flex-end",
+    alignItems: "flex-end",
+  },
+  addItemButtom: {
+    marginTop: 10,
+  },
+
+  sumItem: {
+    width: "133%",
   },
 });

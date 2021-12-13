@@ -42,12 +42,13 @@ export const languages = {
     Header: { saved: "Saved", spent: "Spent", planned: "Budget" },
     Common: {
       receipt: "Total:",
-      item: "+ item",
+      item: "+ category",
       week: "Week",
       date: "Date",
       amount: "Amount",
       category: "Category",
       categoryItem: "Subcategory",
+      additem: "+ unit",
       categoryChange: {
         add: "Add Category",
         submit: "Submit Changes",
@@ -182,12 +183,13 @@ export const languages = {
     Header: { saved: "Uzkrājums", spent: "Iztērēts", planned: "Budžets" },
     Common: {
       receipt: "Summa:",
-      item: "+ ieraksts",
+      item: "+ kategorija",
       week: "Nedēļa",
       date: "Datums",
       amount: "Summa",
       category: "Kategorija",
       categoryItem: "Apakškategorija",
+      additem: "+ vienība",
       categoryChange: {
         add: "Pievienots ketegoriju",
         submit: "Apstiprināt izmaiņas",

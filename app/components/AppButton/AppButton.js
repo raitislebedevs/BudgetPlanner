@@ -21,6 +21,7 @@ function AppButton({ title, onPress, color = "primary", mode = "contained" }) {
 }
 const styles = StyleSheet.create({
   contained: {
+    width: "100%",
     backgroundColor: colors.primary,
     color: colors.white,
     minWidth: 90,
