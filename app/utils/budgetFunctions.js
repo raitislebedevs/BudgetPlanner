@@ -41,7 +41,7 @@ export const initilizeData = async (
   rawIncomeData = await getBudgetData(period, "income");
   rawExpenseData = await getBudgetData(period, "expense");
   rawBudgetData = await getBudgetPlanData(period);
-
+  console.log("Raw data", rawExpenseData);
   getGroupedIncomeData();
   getGroupedExpenseData();
   getGroupedPlannedData();
@@ -189,6 +189,7 @@ const getBudgetData = async (period, activity) => {
     getPeriodFilter(period, count, filter);
 
     const { data } = await budgetJournal.FIND({
+      _limit: 999999999999,
       _where: filter,
     });
     return data;

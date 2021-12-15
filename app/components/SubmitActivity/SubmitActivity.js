@@ -128,6 +128,7 @@ const SubmitActivity = (props) => {
   };
 
   const submitSingleEntry = async (singleEntry) => {
+    console.log("Single entry", singleEntry);
     try {
       setIsSubmiting(true);
 
@@ -153,12 +154,10 @@ const SubmitActivity = (props) => {
       setShowInput(!showInput);
       initilizeInputValues();
       getGlobalBudgetData();
-      return data;
     } catch (error) {
       console.log(error);
     }
     setIsSubmiting(false);
-    return null;
   };
 
   const addNewItem = () => {
